@@ -388,6 +388,8 @@ public:
 
 	// Class factory
 	static CBaseEntity				*CreatePredictedEntityByName( const char *classname, const char *module, int line, bool persist = false );
+	Class_T GetClass(const char* sFaction);
+	const char* GetClass(Class_T nFaction);
 
 // IHandleEntity overrides.
 public:

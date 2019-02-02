@@ -14,6 +14,7 @@
 #include "ai_networkmanager.h"
 #include "ndebugoverlay.h"
 #include "datacache/imdlcache.h"
+#include "util.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -782,6 +783,39 @@ void CC_NPC_Relationships( const CCommand &args )
 	SetDebugBits( UTIL_GetCommandClient(),args[1], OVERLAY_NPC_RELATION_BIT );
 }
 static ConCommand npc_relationships("npc_relationships", CC_NPC_Relationships, "Displays the relationships between this NPC and all others.\n\tArguments:   	{entity_name} / {class_name} / no argument picks what player is looking at", FCVAR_CHEAT );
+
+//------------------------------------------------------------------------------
+// Purpose: Set Player's relationships to NPCs
+//------------------------------------------------------------------------------
+void CC_NPC_Set_Class(const CCommand &args)
+{
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	if (pPlayer)
+	{
+		Class_T nClassTarget = pPlayer->GetClass(args[1]);
+
+
+		if (nClassTarget == CLASS_NONE)
+		{
+			Msg("Invalid class: %s\n", args[1]);
+		}
+		else
+		{
+			CBaseCombatCharacter::SetPlayerRelationship(nClassTarget);
+
+			// some output to the hud
+			hudtextparms_t textparms;
+
+			textparms.fadeinTime = 5;
+			textparms.holdTime = 20;
+			textparms.fadeoutTime = 10;
+
+			UTIL_HudMessage(NULL, textparms, args[1]);
+		}
+	}
+
+}
+static ConCommand npc_setclass("npc_setclass", CC_NPC_Set_Class, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
 
 //------------------------------------------------------------------------------
 // Purpose: Show an NPC's steering regulations
