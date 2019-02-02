@@ -1,7 +1,7 @@
 "GameInfo"
 {
-	game 		"My First Episodic Mod"
-	title 		"HALF-LIFE'"
+	game 		"Engine Test"
+	title 		"Sorce SDK 2013 setup"
 	title2		""
 	supportsvr	1
 
