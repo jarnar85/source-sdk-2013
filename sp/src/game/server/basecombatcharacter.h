@@ -361,8 +361,11 @@ public:
 
 	// Relationships
 	static void			AllocateDefaultRelationships( );
+	static void			SetPlayerRelationship(Class_T nClass);
+	static void			CopyDefaultRelationship(Class_T nClass, Class_T nClassTarget);
 	static void			SetDefaultRelationship( Class_T nClass, Class_T nClassTarget,  Disposition_t nDisposition, int nPriority );
-	Disposition_t		GetDefaultRelationshipDisposition( Class_T nClassTarget );
+	static void			SetFullDefaultRelationship(Class_T nClass, Class_T nClassTarget, Disposition_t nDisposition, Disposition_t nDispositionTarget, int nPriority);
+	Disposition_t		GetDefaultRelationshipDisposition(Class_T nClassTarget);
 	virtual void		AddEntityRelationship( CBaseEntity *pEntity, Disposition_t nDisposition, int nPriority );
 	virtual bool		RemoveEntityRelationship( CBaseEntity *pEntity );
 	virtual void		AddClassRelationship( Class_T nClass, Disposition_t nDisposition, int nPriority );

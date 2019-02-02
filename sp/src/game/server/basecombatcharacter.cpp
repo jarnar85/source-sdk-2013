@@ -2677,6 +2677,78 @@ void CBaseCombatCharacter::AllocateDefaultRelationships( )
 
 
 //-----------------------------------------------------------------------------
+// Set player relationships based on new class
+//-----------------------------------------------------------------------------
+void CBaseCombatCharacter::SetPlayerRelationship(Class_T nClass)
+{
+
+	if (m_DefaultRelationship)
+	{
+		Disposition_t disp_self = m_DefaultRelationship[nClass][nClass].disposition;
+		int prio_self = m_DefaultRelationship[nClass][nClass].priority;
+
+		// set relationship of new class to player and allies as if they were the same class
+		SetDefaultRelationship(nClass, CLASS_PLAYER, disp_self, prio_self);
+		SetDefaultRelationship(nClass, CLASS_PLAYER_ALLY, disp_self, prio_self);
+		SetDefaultRelationship(nClass, CLASS_PLAYER_ALLY_VITAL, disp_self, prio_self);
+
+		// set new relationship of player
+		CopyDefaultRelationship(CLASS_PLAYER, nClass);
+		SetDefaultRelationship(CLASS_PLAYER, CLASS_PLAYER, D_NU, 0);
+
+		// set new relationship of allies and make sure they still like the player
+		CopyDefaultRelationship(CLASS_PLAYER_ALLY, nClass);
+		SetDefaultRelationship(CLASS_PLAYER_ALLY, CLASS_PLAYER, D_LI, 0);
+		CopyDefaultRelationship(CLASS_PLAYER_ALLY_VITAL, nClass);
+		SetDefaultRelationship(CLASS_PLAYER_ALLY_VITAL, CLASS_PLAYER, D_LI, 0);
+
+		// set relationship of all other classes to player
+		int i;
+		for (i = 0; i<NUM_AI_CLASSES; ++i)
+		{
+			Class_T nClassTarget = static_cast<Class_T>(i);
+
+			if (nClassTarget == nClass)
+			{
+				continue;
+			}
+
+			switch (nClassTarget)
+			{
+			case CLASS_PLAYER:
+			case CLASS_PLAYER_ALLY:
+			case CLASS_PLAYER_ALLY_VITAL:
+				continue;
+			default:
+				Disposition_t dispo = m_DefaultRelationship[nClassTarget][nClass].disposition;
+				int prio = m_DefaultRelationship[nClassTarget][nClass].priority;
+
+				// make others see the player and his allies as the new class
+				SetDefaultRelationship(nClassTarget, CLASS_PLAYER, dispo, prio);
+				SetDefaultRelationship(nClassTarget, CLASS_PLAYER_ALLY, dispo, prio);
+				SetDefaultRelationship(nClassTarget, CLASS_PLAYER_ALLY_VITAL, dispo, prio);
+				break;
+			}
+		}
+
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Return an interaction ID (so we have no collisions)
+// Input  :
+// Output :
+//-----------------------------------------------------------------------------
+void CBaseCombatCharacter::CopyDefaultRelationship(Class_T nClass, Class_T nClassTarget)
+{
+	if (m_DefaultRelationship)
+	{
+		m_DefaultRelationship[nClass] = m_DefaultRelationship[nClassTarget];
+	}
+}
+
+
+//-----------------------------------------------------------------------------
 // Purpose: Return an interaction ID (so we have no collisions)
 // Input  :
 // Output :
@@ -2685,9 +2757,21 @@ void CBaseCombatCharacter::SetDefaultRelationship(Class_T nClass, Class_T nClass
 {
 	if (m_DefaultRelationship)
 	{
-		m_DefaultRelationship[nClass][nClassTarget].disposition	= nDisposition;
-		m_DefaultRelationship[nClass][nClassTarget].priority	= nPriority;
+		m_DefaultRelationship[nClass][nClassTarget].disposition	 = nDisposition;
+		m_DefaultRelationship[nClass][nClassTarget].priority	 = nPriority;
 	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Return an interaction ID (so we have no collisions)
+// Input  :
+// Output :
+//-----------------------------------------------------------------------------
+void CBaseCombatCharacter::SetFullDefaultRelationship(Class_T nClass, Class_T nClassTarget, Disposition_t nDisposition, Disposition_t nDispositionTarget, int nPriority)
+{
+	CBaseCombatCharacter::SetDefaultRelationship(nClass, nClassTarget, nDisposition, nPriority);
+	CBaseCombatCharacter::SetDefaultRelationship(nClassTarget, nClass, nDispositionTarget, nPriority);
 }
 
 //-----------------------------------------------------------------------------
