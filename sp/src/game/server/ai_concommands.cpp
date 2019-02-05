@@ -815,7 +815,7 @@ void CC_NPC_Set_Class(const CCommand &args)
 	}
 
 }
-static ConCommand npc_setclass("npc_setclass", CC_NPC_Set_Class, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+static ConCommand npc_setclass("player_setclass", CC_NPC_Set_Class, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
 
 //------------------------------------------------------------------------------
 // Purpose: Show an NPC's steering regulations
