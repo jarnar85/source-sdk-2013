@@ -20,7 +20,8 @@ For this it's necessary to implement some RPG characteristics into the game engi
 * [ ] Create a test map
 	* [ ] Add a trigger for player_setclass command
 	* [ ] Add a trigger to spawn certain NPCs (combine, rebel, zombie, ...)
-* [ ] create a documentation for the changes
+* [ ] create a [documentation](DOCUMENTATION.md) for the changes
+	* [x] Add player_setclass command
 
 ## Legal notices
 
