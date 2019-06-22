@@ -9,13 +9,19 @@ For this it's necessary to implement some RPG characteristics into the game engi
 	* [x] create command player_setclass <CLASS_NAME> to change the players relationship
 	* [ ] Further optimizations to make it easier to change the settings (maybe load initially from database?)
 	* [ ] Change player model (and hands) on change of relationship
-	* [ ] Add overlay for certain classes (combine/metropolice)
+	* [ ] Change HUD depending on class
+		* [ ] Set HUD color depending on class
+		* [ ] Add overlay for certain classes (combine/metropolice)
+	* [ ] Change character values based on class
+		* [ ] Health
+		* [ ] Armor
+		* [ ] Suit
 	* [ ] Save changed relationship in usual save files
 * World
 	* [ ] Make an easy way to add variables that are updated while exiting a map (eg. number of combine killed, a mini game score, number of items of some sort collected, ...)
 * Player
 	* [ ] Make it possible to select a character in the new game dialog
-	* [ ] Make the starting map and and difficulty dependent on the selected character
+	* [ ] Make the starting map and difficulty dependent on the selected character
 	* [ ] Create a trigger that can do different stuff depending on the type of player death (eg. stun stick knocks you out and sends you to prison)
 * [ ] Create a test map
 	* [ ] Add a trigger for player_setclass command
