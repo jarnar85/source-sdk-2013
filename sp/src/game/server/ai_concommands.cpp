@@ -787,7 +787,7 @@ static ConCommand npc_relationships("npc_relationships", CC_NPC_Relationships, "
 //------------------------------------------------------------------------------
 // Purpose: Set Player's relationships to NPCs
 //------------------------------------------------------------------------------
-void CC_NPC_Set_Class(const CCommand &args)
+void CC_NPC_Set_Relation(const CCommand &args)
 {
 	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
@@ -802,20 +802,55 @@ void CC_NPC_Set_Class(const CCommand &args)
 		else
 		{
 			CBaseCombatCharacter::SetPlayerRelationship(nClassTarget);
-
-			// some output to the hud
-			hudtextparms_t textparms;
-
-			textparms.fadeinTime = 5;
-			textparms.holdTime = 20;
-			textparms.fadeoutTime = 10;
-
-			UTIL_HudMessage(NULL, textparms, args[1]);
 		}
 	}
 
 }
-static ConCommand npc_setclass("player_setclass", CC_NPC_Set_Class, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+static ConCommand npc_setrelation("player_setrelation", CC_NPC_Set_Relation, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+
+//------------------------------------------------------------------------------
+// Purpose: Set Player's class
+//------------------------------------------------------------------------------
+void CC_NPC_Set_Class(const CCommand &args)
+{
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	if (pPlayer)
+	{
+		// TODO: get data for the selected class here
+		const char* sFaction = args[1];
+		// const char* sHud		 = args[1];
+		// const char* sModel	 = args[1];
+		// const char* sHealth	 = args[1];
+		// const char* sArmor	 = args[1];
+		// const char* sSuit	 = args[1];
+
+		// change player relation to NPCs
+		Class_T nFaction = pPlayer->GetClass(sFaction);
+		if (nFaction == CLASS_NONE)
+		{
+			Msg("Invalid class: %s\n", args[1]);
+		}
+		else
+		{
+			CBaseCombatCharacter::SetPlayerRelationship(nFaction);
+		}
+
+		// TODO: Change HUD depending on class
+		// some output to the hud
+		hudtextparms_t textparms;
+
+		textparms.fadeinTime = 5;
+		textparms.holdTime = 20;
+		textparms.fadeoutTime = 10;
+
+		UTIL_HudMessage(NULL, textparms, sFaction);
+		// TODO: Change Player/Hand Model depending on class
+		// TODO: Change Stats depending on class
+	}
+
+}
+static ConCommand npc_class("player_setclass", CC_NPC_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
 
 //------------------------------------------------------------------------------
 // Purpose: Show an NPC's steering regulations
