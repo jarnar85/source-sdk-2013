@@ -818,15 +818,11 @@ void CC_NPC_Set_Class(const CCommand &args)
 	if (pPlayer)
 	{
 		// TODO: get data for the selected class here
-		const char* sFaction = args[1];
-		// const char* sHud		 = args[1];
-		// const char* sModel	 = args[1];
-		// const char* sHealth	 = args[1];
-		// const char* sArmor	 = args[1];
-		// const char* sSuit	 = args[1];
+		
+		PlayerClass_T nClass = pPlayer->GetPlayerClass(args[1]);
 
 		// change player relation to NPCs
-		Class_T nFaction = pPlayer->GetClass(sFaction);
+		Class_T nFaction = pPlayer->GetClassFaction(nClass);
 		if (nFaction == CLASS_NONE)
 		{
 			Msg("Invalid class: %s\n", args[1]);
@@ -834,19 +830,24 @@ void CC_NPC_Set_Class(const CCommand &args)
 		else
 		{
 			CBaseCombatCharacter::SetPlayerRelationship(nFaction);
+			// TODO: Change HUD depending on class
+			// some output to the hud
+			hudtextparms_t textparms;
+
+			textparms.fadeinTime = 5;
+			textparms.holdTime = 20;
+			textparms.fadeoutTime = 10;
+
+			UTIL_HudMessage(pPlayer, textparms, args[1]);
+			// TODO: Change Player/Hand Model depending on class
+
+			// TODO: Change Stats depending on class
+			int iHealth	 = pPlayer->GetHealth();
+			iHealth	*= pPlayer->GetClassHealth(nClass);
+			iHealth /= pPlayer->GetMaxHealth();
+			pPlayer->SetMaxHealth(pPlayer->GetClassHealth(nClass));
+			pPlayer->SetHealth(iHealth);
 		}
-
-		// TODO: Change HUD depending on class
-		// some output to the hud
-		hudtextparms_t textparms;
-
-		textparms.fadeinTime = 5;
-		textparms.holdTime = 20;
-		textparms.fadeoutTime = 10;
-
-		UTIL_HudMessage(NULL, textparms, sFaction);
-		// TODO: Change Player/Hand Model depending on class
-		// TODO: Change Stats depending on class
 	}
 
 }

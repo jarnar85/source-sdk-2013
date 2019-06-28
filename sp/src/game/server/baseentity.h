@@ -92,15 +92,15 @@ typedef CUtlVector< CBaseEntity* > EntityList_t;
 // For CLASSIFY
 enum Class_T
 {
-	CLASS_NONE=0,				
-	CLASS_PLAYER,			
+	CLASS_NONE = 0,
+	CLASS_PLAYER,
 	CLASS_PLAYER_ALLY,
 	CLASS_PLAYER_ALLY_VITAL,
 	CLASS_ANTLION,
 	CLASS_BARNACLE,
 	CLASS_BULLSEYE,
 	//CLASS_BULLSQUID,	
-	CLASS_CITIZEN_PASSIVE,	
+	CLASS_CITIZEN_PASSIVE,
 	CLASS_CITIZEN_REBEL,
 	CLASS_COMBINE,
 	CLASS_COMBINE_GUNSHIP,
@@ -108,10 +108,10 @@ enum Class_T
 	CLASS_HEADCRAB,
 	//CLASS_HOUNDEYE,
 	CLASS_MANHACK,
-	CLASS_METROPOLICE,		
-	CLASS_MILITARY,		
-	CLASS_SCANNER,		
-	CLASS_STALKER,		
+	CLASS_METROPOLICE,
+	CLASS_MILITARY,
+	CLASS_SCANNER,
+	CLASS_STALKER,
 	CLASS_VORTIGAUNT,
 	CLASS_ZOMBIE,
 	CLASS_PROTOSNIPER,
@@ -122,6 +122,26 @@ enum Class_T
 	CLASS_COMBINE_HUNTER,
 
 	NUM_AI_CLASSES
+};
+
+enum PlayerClass_T
+{
+	PC_NONE=0,
+	PC_PLAYER,
+	PC_CITIZEN,
+	PC_REBEL,
+	PC_MANHACK,
+	PC_METROPOLICE,
+	PC_COMBINE_GUARD,
+	PC_COMBINE_SOLDIER,
+	PC_COMBINE_ELITE,
+	PC_STALKER,
+	PC_ZOMBIE,
+	PC_ZOMBIE_POISON,
+	PC_ZOMBIE_FAST,
+	PC_ZOMBIE_COMBINE,
+
+	NUM_PC_CLASSES
 };
 
 #elif defined( HL1_DLL )
@@ -390,6 +410,12 @@ public:
 	static CBaseEntity				*CreatePredictedEntityByName( const char *classname, const char *module, int line, bool persist = false );
 	Class_T GetClass(const char* sFaction);
 	const char* GetClass(Class_T nFaction);
+
+	PlayerClass_T GetPlayerClass(const char* sClass);
+
+	Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass);
+	int CBaseEntity::GetClassHealth(PlayerClass_T nClass);
+	const char* CBaseEntity::GetClassModel(PlayerClass_T nClass);
 
 // IHandleEntity overrides.
 public:
