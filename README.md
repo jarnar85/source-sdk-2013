@@ -16,8 +16,9 @@ For this it's necessary to implement some RPG characteristics into the game engi
 	* [ ] Make the starting map and difficulty dependent on the selected character
 	* [ ] Create a trigger that can do different stuff depending on the type of player death (eg. stun stick knocks you out and sends you to prison)
 	* [x] create command player_setclass <PLAYER_CLASS> to change the players class (job/faction)
-		* [ ] Change player model (and hands)
-		* [x] change relationship
+		* [x] Change player model (and hands)
+			* [ ] Create better alternative models
+		* [x] Change relationship
 		* [ ] Change HUD depending on class
 			* [ ] Set HUD color depending on class
 			* [ ] Add overlay for certain classes (combine/metropolice)
@@ -25,6 +26,7 @@ For this it's necessary to implement some RPG characteristics into the game engi
 			* [x] Health
 			* [ ] Armor
 			* [ ] Suit
+	* [ ] Create player_class <PLAYER_CLASS> (using player_setclass functionality without cheat protection and fiter of available target classes depending on current class eg. combine become zombine and not classic zombies)
 * [ ] Create a test map
 	* [ ] Add a trigger for player_setclass command
 	* [ ] Add a trigger to spawn certain NPCs (combine, rebel, zombie, ...)

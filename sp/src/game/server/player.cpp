@@ -9310,10 +9310,28 @@ void CBasePlayer::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	}
 }
 
-void CBasePlayer::SetModel( const char *szModelName )
+void CBasePlayer::SetModelCaching(const char *szModelName)
 {
-	BaseClass::SetModel( szModelName );
-	m_nBodyPitchPoseParam = LookupPoseParameter( "body_pitch" );
+	if (!engine->IsModelPrecached(szModelName))
+	{
+		static bool t_bAllowPrecache = m_bAllowPrecache;
+
+		m_bAllowPrecache = true;
+
+		PrecacheModel(szModelName);
+		Precache();
+
+		m_bAllowPrecache = t_bAllowPrecache;
+	}
+
+	BaseClass::SetModel(szModelName);
+	m_nBodyPitchPoseParam = LookupPoseParameter("body_pitch");
+}
+
+void CBasePlayer::SetModel(const char *szModelName)
+{
+	BaseClass::SetModel(szModelName);
+	m_nBodyPitchPoseParam = LookupPoseParameter("body_pitch");
 }
 
 void CBasePlayer::SetBodyPitch( float flPitch )

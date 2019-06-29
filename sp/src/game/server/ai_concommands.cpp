@@ -840,6 +840,8 @@ void CC_NPC_Set_Class(const CCommand &args)
 
 			UTIL_HudMessage(pPlayer, textparms, args[1]);
 			// TODO: Change Player/Hand Model depending on class
+			const char *szModelName = pPlayer->GetClassModel(nClass);
+			pPlayer->SetModelCaching(szModelName);
 
 			// TODO: Change Stats depending on class
 			int iHealth	 = pPlayer->GetHealth();

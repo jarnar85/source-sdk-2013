@@ -184,7 +184,7 @@ class CPlayerInfo : public IBotController, public IPlayerInfo
 public:
 	CPlayerInfo () { m_pParent = NULL; } 
 	~CPlayerInfo () {}
-	void SetParent( CBasePlayer *parent ) { m_pParent = parent; } 
+	void SetParent( CBasePlayer *parent ) { m_pParent = parent; }
 
 	// IPlayerInfo interface
 	virtual const char *GetName();
@@ -253,7 +253,7 @@ public:
 	IPlayerInfo *GetPlayerInfo() { return &m_PlayerInfo; }
 	IBotController *GetBotController() { return &m_PlayerInfo; }
 
-	virtual void			SetModel( const char *szModelName );
+	virtual void			SetModel(const char *szModelName);
 	void					SetBodyPitch( float flPitch );
 
 	virtual void			UpdateOnRemove( void );
@@ -384,6 +384,9 @@ public:
 	void					ShowCrosshair( bool bShow );
 
 	// View model prediction setup
+
+
+	void					SetModelCaching(const char *szModelName);
 	void					CalcView( Vector &eyeOrigin, QAngle &eyeAngles, float &zNear, float &zFar, float &fov );
 
 	// Handle view smoothing when going up stairs
