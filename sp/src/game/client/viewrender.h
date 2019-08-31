@@ -523,6 +523,8 @@ private:
 #if defined( REPLAY_ENABLED )
 	CReplayScreenshotTaker	*m_pReplayScreenshotTaker;
 #endif
+
+	void			DrawManhackScreen(const CViewSetup &viewSet);
 };
 
 #endif // VIEWRENDER_H

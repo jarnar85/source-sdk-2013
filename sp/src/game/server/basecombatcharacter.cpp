@@ -1582,6 +1582,7 @@ Killed
 void CBaseCombatCharacter::Event_Killed( const CTakeDamageInfo &info )
 {
 	extern ConVar npc_vphysics;
+	extern ConVar sk_plr_death_special;
 
 	// Advance life state to dying
 	m_lifeState = LIFE_DYING;
@@ -1659,6 +1660,15 @@ void CBaseCombatCharacter::Event_Killed( const CTakeDamageInfo &info )
 		{
 			BecomeRagdoll( info, forceVector );
 		}
+	}
+
+	// convert character to other class/faction and return to full health on some special deaths
+	if (sk_plr_death_special.GetBool())
+	{
+		/*
+		If attacker is headcrab convert to zombie
+		If attacker is metrocop and stun batton used on convert to stalker
+		*/
 	}
 	
 	// no longer standing on a nav area

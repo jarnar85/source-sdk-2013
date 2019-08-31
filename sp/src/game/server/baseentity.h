@@ -144,6 +144,18 @@ enum PlayerClass_T
 	NUM_PC_CLASSES
 };
 
+enum Job_T
+{
+	JOB_NONE = 0,
+	JOB_SCIENTIST,
+	JOB_OFFICER,
+	JOB_SOLDIER,
+	JOB_GUARD,
+	JOB_SNIPER,
+
+	NUM_JOB_CLASSES
+};
+
 #elif defined( HL1_DLL )
 
 enum Class_T

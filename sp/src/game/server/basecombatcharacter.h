@@ -497,6 +497,10 @@ private:
 	static int					m_lastInteraction;	// Last registered interaction #
 	static Relationship_t**		m_DefaultRelationship;
 
+	static PlayerClass_T		m_Class;	// current class
+	static Class_T				m_Faction;	// current faction
+	static Job_T				m_Job;		// current job
+
 	// attack/damage
 	int					m_LastHitGroup;			// the last body region that took damage
 	float				m_flDamageAccumulator;	// so very small amounts of damage do not get lost.

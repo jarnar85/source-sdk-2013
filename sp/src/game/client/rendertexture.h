@@ -23,6 +23,7 @@ ITexture *GetSmallBufferHDR1( void );
 
 ITexture *GetSmallBuffer0( void );							// quarter-sized texture, same fmt as screen
 ITexture *GetSmallBuffer1( void );							// quarter-sized texture, same fmt as screen
+ITexture *GetManhackScreenTexture(void); //TERO: for weapon_manhack
 
 #define MAX_TEENY_TEXTURES 3
 

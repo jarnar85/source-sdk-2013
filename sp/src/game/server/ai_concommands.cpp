@@ -818,7 +818,6 @@ void CC_NPC_Set_Class(const CCommand &args)
 	if (pPlayer)
 	{
 		// TODO: get data for the selected class here
-		
 		PlayerClass_T nClass = pPlayer->GetPlayerClass(args[1]);
 
 		// change player relation to NPCs

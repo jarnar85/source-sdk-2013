@@ -1,0 +1,9 @@
+"UnlitGeneric"
+{
+	"$basetexture" "sprites/metrocop_hud/manhack_upper"
+
+	"$vertexcolor" "1"
+	"$vertexalpha" "1"
+	"$ignorez"     "1"
+}
+

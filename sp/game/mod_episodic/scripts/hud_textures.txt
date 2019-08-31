@@ -103,5 +103,21 @@
 				"font"		"Crosshairs"
 				"character"	"Q"
 		}
+		"manhack_upper"
+		{
+				"file"		"sprites/metrocop_hud/manhack_upper"
+				"x"			"0"
+				"y"			"0"
+				"width"		"64"
+				"height"	"128"
+		}
+		"manhack_lower"
+		{
+				"file"		"sprites/metrocop_hud/manhack_lower"
+				"x"			"0"
+				"y"			"0"
+				"width"		"64"
+				"height"	"128"
+		}
 	}	
 }

@@ -97,9 +97,11 @@ ConVar	sk_autoaim_scale2( "sk_autoaim_scale2", "1.0", FCVAR_REPLICATED );
 // Quantity scale for ammo received by the player.
 ConVar	sk_ammo_qty_scale1 ( "sk_ammo_qty_scale1", "1.20", FCVAR_REPLICATED );
 ConVar	sk_ammo_qty_scale2 ( "sk_ammo_qty_scale2", "1.00", FCVAR_REPLICATED );
-ConVar	sk_ammo_qty_scale3 ( "sk_ammo_qty_scale3", "0.60", FCVAR_REPLICATED );
+ConVar	sk_ammo_qty_scale3("sk_ammo_qty_scale3", "0.60", FCVAR_REPLICATED);
 
-ConVar	sk_plr_health_drop_time		( "sk_plr_health_drop_time", "30", FCVAR_REPLICATED );
+ConVar	sk_plr_death_special("sk_plr_death_special", "0", FCVAR_SPONLY | FCVAR_PRINTABLEONLY);	// allow special deaths
+
+ConVar	sk_plr_health_drop_time("sk_plr_health_drop_time", "30", FCVAR_REPLICATED);
 ConVar	sk_plr_grenade_drop_time	( "sk_plr_grenade_drop_time", "30", FCVAR_REPLICATED );
 
 ConVar	sk_plr_dmg_ar2			( "sk_plr_dmg_ar2","0", FCVAR_REPLICATED );
@@ -1351,8 +1353,12 @@ CAmmoDef *GetAmmoDef()
 #ifdef HL2_EPISODIC
 		def.AddAmmoType("Hopwire",			DMG_BLAST,					TRACER_NONE,			"sk_plr_dmg_grenade",		"sk_npc_dmg_grenade",		"sk_max_hopwire",		0, 0);
 		def.AddAmmoType("CombineHeavyCannon",	DMG_BULLET,				TRACER_LINE,			40,	40, NULL, 10 * 750 * 12, AMMO_FORCE_DROP_IF_CARRIED ); // hit like a 10 kg weight at 750 ft/s
-		def.AddAmmoType("ammo_proto1",			DMG_BULLET,				TRACER_LINE,			0, 0, 10, 0, 0 );
+		def.AddAmmoType("ammo_proto1",			DMG_BULLET,				TRACER_LINE,			0,		0,		10,	0,	0);
 #endif // HL2_EPISODIC
+
+		//TERO: Define the manhack ammo
+		def.AddAmmoType("Manhack",				DMG_CLUB,				TRACER_NONE,			NULL,	NULL,	3,	0,	0);
+		def.AddAmmoType("ManhacksOnline",		DMG_CLUB,				TRACER_NONE,			NULL,	NULL,	3,	0,	0);
 	}
 
 	return &def;
