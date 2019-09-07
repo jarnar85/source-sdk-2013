@@ -77,3 +77,8 @@ sp/src/mathlib/Debug/
 sp/src/raytrace/Debug/
 sp/src/tier1/Debug/
 sp/src/vgui2/vgui_controls/Debug/
+/sp/game/bin/*.exe
+/sp/game/bin
+/sp/game/mod_episodic/bin
+/sp/game/mod_episodic/save/*.sav
+/sp/game/mod_episodic/save
