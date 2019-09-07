@@ -1822,7 +1822,7 @@ void CBaseAnimating::SetupBones( matrix3x4_t *pBoneToWorld, int boneMask )
 		else
 		{
 			// Msg( "%.03f : %s:%s\n", gpGlobals->curtime, GetClassname(), GetEntityName().ToCStr() );
-			GetSkeleton( pStudioHdr, pos, q, boneMask );
+			GetSkeleton( pStudioHdr, pos, q, boneMask );	 // pos[11].z = INF
 		}
 	}
 	
@@ -1841,7 +1841,7 @@ void CBaseAnimating::SetupBones( matrix3x4_t *pBoneToWorld, int boneMask )
 				q, 
 				pBoneToWorld, 
 				pParent, 
-				pParentCache );
+				pParentCache);
 			
 			RemoveEFlags( EFL_SETTING_UP_BONES );
 			if (ai_setupbones_debug.GetBool())
@@ -1929,7 +1929,7 @@ bool CBaseAnimating::GetAttachment ( int iAttachment, Vector &absOrigin, QAngle 
 {
 	matrix3x4_t attachmentToWorld;
 
-	bool bRet = GetAttachment( iAttachment, attachmentToWorld );
+	bool bRet = GetAttachment( iAttachment, attachmentToWorld ); // next step
 	MatrixAngles( attachmentToWorld, absAngles, absOrigin );
 	return bRet;
 }

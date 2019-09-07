@@ -54,6 +54,7 @@ public:
 	float m_flTooCloseTimer;
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 };
 

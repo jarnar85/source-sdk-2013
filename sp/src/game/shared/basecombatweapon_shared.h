@@ -83,6 +83,21 @@ typedef struct
 	bool		required;
 } acttable_t;
 
+#define DECLARE_CLASSTABLE()		static classtable_t m_classtable[];\
+	classtable_t *ClassList( void );\
+	int ClassListCount( void );
+
+#define IMPLEMENT_CLASSTABLE(className) \
+	classtable_t *className::ClassList( void ) { return m_classtable; } \
+	int className::ClassListCount( void ) { return ARRAYSIZE(m_classtable); } \
+
+typedef struct
+{
+	PlayerClass_T	cls;
+	bool			usable;
+} classtable_t;
+
+
 class CHudTexture;
 class Color;
 
@@ -256,6 +271,7 @@ public:
 #endif
 
 	virtual bool			IsWeaponZoomed() { return false; }		// Is this weapon in its 'zoomed in' mode?
+	virtual bool			IsWeaponManhack(void) { return false; }	// Is this wepaon a manhack?
 
 	// Reloading
 	virtual	void			CheckReload( void );
@@ -388,6 +404,9 @@ public:
 	virtual Activity		ActivityOverride( Activity baseAct, bool *pRequired );
 	virtual	acttable_t*		ActivityList( void ) { return NULL; }
 	virtual	int				ActivityListCount( void ) { return 0; }
+
+	virtual classtable_t*	ClassList( void ) { return NULL; }
+	virtual int				ClassListCount(void) { return 0; }
 
 	virtual void			Activate( void );
 

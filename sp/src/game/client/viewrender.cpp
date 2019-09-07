@@ -6281,10 +6281,7 @@ void CViewRender::DrawManhackScreen(const CViewSetup &viewSet)
 	if (!pWeapon)
 		return;
 
-	//if (!pWeapon->IsWeaponManhack()) 
-	//If you want to add IsWeaponManhack( void ) { return false; } to 
-	//C_BaseCombatWeapon you wont have to use FClassnameIs
-	if (!FClassnameIs(pWeapon, "weapon_manhack"))
+	if (!pWeapon->IsWeaponManhack())
 		return;
 
 	if (!pWeapon->GetViewModel())

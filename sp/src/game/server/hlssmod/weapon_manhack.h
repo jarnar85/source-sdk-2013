@@ -21,7 +21,7 @@ public:
 
 	CWeapon_Manhack();
 
-	//void			Spawn( void );
+//	void			Spawn( void );
 	void			Precache( void );
 
 	void			ItemBusyFrame( void );
@@ -67,7 +67,7 @@ public:
 
 private:
 
-	//EHANDLE			m_hManhack;
+	EHANDLE			m_hManhack;
 
 	//Animation booleans
 	bool			m_bIsDrawing;
@@ -89,6 +89,8 @@ private:
 	int				m_iManhackHintTimeShown;
 	bool			m_bHadControllable;		//If Manhacks used to be controllable, but now they are not, other the other way around
 
+	bool			fSpawnedManhack;
+
 	int				m_iLastNumberOfManhacks;
 
 	EHANDLE			m_hScreen;
@@ -96,6 +98,7 @@ private:
 	CNetworkVar( int, m_iManhackDistance );
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 	DECLARE_DATADESC();
 };
 

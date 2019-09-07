@@ -6744,7 +6744,12 @@ bool CAI_BaseNPC::IsNavHullValid() const
 	{
 		Assert( VPhysicsGetObject() );
 		const CPhysCollide *pPhysCollide = VPhysicsGetObject()->GetCollide();
-		physcollision->CollideGetAABB( &vecMins, &vecMaxs, pPhysCollide, GetAbsOrigin(), GetAbsAngles() ); 
+		physcollision->CollideGetAABB( &vecMins, &vecMaxs, pPhysCollide, GetAbsOrigin(), GetAbsAngles() );
+
+#ifdef _DEBUG
+		physcollision->OutputDebugInfo(pPhysCollide);
+#endif
+
 		vecMins -= GetAbsOrigin();
 		vecMaxs -= GetAbsOrigin();
 	}

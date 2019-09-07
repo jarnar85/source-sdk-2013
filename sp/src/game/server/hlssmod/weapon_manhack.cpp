@@ -39,8 +39,8 @@
 // Save/Restore
 //---------------------------------------------------------
 BEGIN_DATADESC( CWeapon_Manhack )
-//	DEFINE_FIELD( m_hManhack,				FIELD_EHANDLE),
 	DEFINE_FIELD( m_bIsDrawing,				FIELD_BOOLEAN),
+	DEFINE_FIELD( m_hManhack,				FIELD_EHANDLE),
 	DEFINE_FIELD( m_bIsDoingShit,			FIELD_BOOLEAN),
 	DEFINE_FIELD( m_bIsDoingShitToo,		FIELD_BOOLEAN),
 	DEFINE_FIELD( m_bRedraw,				FIELD_BOOLEAN),
@@ -66,6 +66,24 @@ acttable_t	CWeapon_Manhack::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeapon_Manhack);
 
+classtable_t CWeapon_Manhack::m_classtable[] =
+{
+	{ PLC_PLAYER, false },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, false },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, true },
+	{ PLC_COMBINE_GUARD, true },
+	{ PLC_COMBINE_SOLDIER, true },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeapon_Manhack);
 
 IMPLEMENT_SERVERCLASS_ST( CWeapon_Manhack, DT_Weapon_Manhack)
 	SendPropInt(SENDINFO(m_iManhackDistance), SPROP_CHANGES_OFTEN),
@@ -115,7 +133,7 @@ void CWeapon_Manhack::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombat
 
 							m_iManhackHintTimeShown++;
 						}
-//						fSpawnedManhack = true;
+						fSpawnedManhack = true;
 					}
 				}
 			}
@@ -124,9 +142,9 @@ void CWeapon_Manhack::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombat
 				DecrementAmmo( pOwner );	
 				EnableManhackSubModel(false);	
 				m_bRedraw=true;
-//				fSpawnedManhack = true;
+				fSpawnedManhack = true;
 
-				//CBasePlayer *pPlayer = ToBasePlayer( pOwner );
+				// CBasePlayer *pPlayer = ToBasePlayer( pOwner );
 				if ( pOwner != NULL && m_iManhackHintTimeShown <2)
 				{
 					if (GlobalEntity_GetState("manhacks_not_controllable") == GLOBAL_ON )
@@ -202,24 +220,23 @@ void CWeapon_Manhack::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombat
 	}
 
 #define RETHROW_DELAY	0.5
-/*	if( fSpawnedManhack )
+	if( fSpawnedManhack )
 	{
 		m_flNextPrimaryAttack	= gpGlobals->curtime + RETHROW_DELAY;
 		m_flNextSecondaryAttack	= gpGlobals->curtime + RETHROW_DELAY;
 		m_flTimeWeaponIdle = FLT_MAX; //NOTE: This is set once the animation has finished up!
 
 	}
-	*/
 }
 
 void CWeapon_Manhack::GetControlPanelInfo( int PanelIndex, const char *&pPanelName)
 {
-	pPanelName = NULL; //"manhack_screen";
+	pPanelName = "manhack_screen";
 }
 
 CWeapon_Manhack::CWeapon_Manhack(void)
 {
-//	m_hManhack = NULL;
+	m_hManhack = NULL;
 	m_bIsDrawing=false;
 	m_bIsDoingShit=false;
 	m_bIsDoingShitToo=false;
@@ -308,8 +325,8 @@ void CWeapon_Manhack::ItemPostFrame( void )
 		{
 			if ( pOwner->m_nButtons & IN_ATTACK2 && m_bHasFreeSlot )
 			{
-				//SendWeaponAnim(ACT_SLAM_DETONATOR_THROW_DRAW);
-				//m_bIsDoingShitToo=true;
+				SendWeaponAnim(ACT_SLAM_DETONATOR_THROW_DRAW);
+				m_bIsDoingShitToo=true;
 
 				CBaseCombatCharacter *pOwner  = GetOwner();
 				if (pOwner && pOwner->GetAmmoCount(m_iPrimaryAmmoType) > 0 && !m_bSpawnSomeMore )
@@ -320,9 +337,8 @@ void CWeapon_Manhack::ItemPostFrame( void )
 				else if ( HasNPCManhack() && m_bSpawnSomeMore)
 				{
 					m_bSpawnSomeMore=false;
-					//m_bIsDoingShitToo=true;
-					//m_bIsDoingController=true;
 					m_bIsDoingShitToo=true;
+					m_bIsDoingController=true;
 					m_bRedraw=true;
 					m_bSkip = true;
 				}
@@ -335,7 +351,7 @@ void CWeapon_Manhack::ItemPostFrame( void )
 
 bool CWeapon_Manhack::FindVehicleManhack()
 {
-	/*if (m_hManhack==NULL)
+	if (m_hManhack==NULL)
 	{
 		CBaseEntity *pVehicleManhack = gEntList.FindEntityByName( NULL, "manhack_controller" );
 		if (pVehicleManhack!=NULL)
@@ -343,7 +359,7 @@ bool CWeapon_Manhack::FindVehicleManhack()
 			m_hManhack=pVehicleManhack;
 			return true;
 		}
-	}*/
+	}
 	if (CPropVehicleManhack::GetManhackVehicle() != NULL)
 		return true;
 
@@ -415,10 +431,10 @@ void CWeapon_Manhack::PrimaryAttack()
 	DevMsg("                return true\n");
 
 	// If I'm now out of ammo, switch away
-	/*if ( !HasPrimaryAmmo() )
+	if ( !HasPrimaryAmmo() )
 	{
 		pPlayer->SwitchToNextBestWeapon( this );
-	}*/
+	}
 }
 
 //------------------------------------------------------------------------------
@@ -469,18 +485,18 @@ void CWeapon_Manhack::UpdateControllerPanel()
 
 void CWeapon_Manhack::WeaponIdle( void )
 {
-	/*bool hasAmmo = false;
+	bool hasAmmo = false;
 	CBaseCombatCharacter *pOwner  = GetOwner();
-	if (pOwner==NULL) return false;
+	if (pOwner==NULL)
+		return;
 	if (pOwner->GetAmmoCount(m_iSecondaryAmmoType) > 0)
-		hasAmmo=true;*/
+		hasAmmo=true;
 
 	// Ready to switch animations?
  
 	int	 iAnim;
 
 	//TERO: lets set how many Manhacks we have online
-	CBaseCombatCharacter *pOwner  = GetOwner();
 	if (pOwner)
 	{
 		pOwner->SetAmmoCount( NumberOfManhacks(), m_iSecondaryAmmoType );
@@ -544,7 +560,7 @@ void CWeapon_Manhack::WeaponIdle( void )
 
 void CWeapon_Manhack::EnableManhackSubModel(bool bEnable)
 {
-	//SetBodygroup( 0, bEnable );
+	SetBodygroup( 0, bEnable );
 	if (bEnable)
 		DevMsg("weapon_manhack: enabling manhack submodel\n");
 	else
@@ -583,7 +599,7 @@ bool CWeapon_Manhack::Deploy( void )
 	if ( m_bHasAmmo && m_bHasFreeSlot && (!m_bIsDoingController || bNoDrivable))
 	{
 		iActivity = ACT_VM_DRAW;
-		//EnableManhackSubModel(true);
+		EnableManhackSubModel(true);
 
 		CBasePlayer *pPlayer = ToBasePlayer( pOwner );
 			if ( pPlayer != NULL)
@@ -636,7 +652,8 @@ bool CWeapon_Manhack::Deploy( void )
 
 	if (!m_hScreen)
 	{
-		/*CBaseViewModel *vm = pOwner->GetViewModel( m_nViewModelIndex );
+		/*
+		CBaseViewModel *vm = pOwner->GetViewModel( m_nViewModelIndex );
 		if (vm)
 		{
 
@@ -656,8 +673,8 @@ bool CWeapon_Manhack::Deploy( void )
 			MatrixGetColumn( panelToWorld, 3, lr );
 			VectorTransform( lr, worldToPanel, lrlocal );
 
-			float flWidth = lrlocal.x;
-			float flHeight = lrlocal.y;
+			// float flWidth = lrlocal.x;
+			// float flHeight = lrlocal.y;
 
 			CVGuiScreen *pScreen = CreateVGuiScreen( "vgui_screen", "manhack_screen", this, this, 0 );
 			pScreen->ChangeTeam( 69 );
@@ -666,10 +683,11 @@ bool CWeapon_Manhack::Deploy( void )
 			pScreen->MakeVisibleOnlyToTeammates( true );
 			pScreen->SetAttachedToViewModel(true);
 			m_hScreen.Set( pScreen );
-		}*/
+		}
+		*/
 
 		CVGuiScreen *pScreen = CreateVGuiScreen( "vgui_screen", "manhack_screen", this, this, 0 );
-		//pScreen->SetActualSize( 128, 64 );
+		pScreen->SetActualSize( 128, 64 );
 		pScreen->SetActive( true );
 		pScreen->MakeVisibleOnlyToTeammates( true );
 		pScreen->SetAttachedToViewModel(true);
@@ -717,7 +735,7 @@ void CWeapon_Manhack::DecrementAmmo( CBaseCombatCharacter *pOwner )
 
 bool CWeapon_Manhack::Reload( void )
 {
-	//Deploy();
+	Deploy();
 	WeaponIdle();
 	return true;
 }
@@ -727,11 +745,13 @@ bool CWeapon_Manhack::Reload( void )
 //TERO: This is called when we don't have either vehicle or NPC manhack
 bool CWeapon_Manhack::CreateControllableVehicleManhack( CBasePlayer *pPlayer )
 {
-	/*Vector vecOrigin;
+	/*
+	Vector vecOrigin;
 	QAngle vecAngles;
 
 	int turretSpawnAttachment = LookupAttachment( "manhackSpawn" );
-	GetAttachment( turretSpawnAttachment, vecOrigin, vecAngles );*/
+	GetAttachment( turretSpawnAttachment, vecOrigin, vecAngles );
+	*/
 
 	Vector	vForward, vRight, vUp, vThrowPos;
 	
@@ -741,28 +761,30 @@ bool CWeapon_Manhack::CreateControllableVehicleManhack( CBasePlayer *pPlayer )
 
 	vThrowPos += vForward * 20.0f;
 
-	/*m_hManhack=VehicleManhack_Create( vThrowPos, pPlayer->EyeAngles(), pPlayer );
+	m_hManhack=VehicleManhack_Create( vThrowPos, pPlayer->EyeAngles(), pPlayer );
 
 	if (m_hManhack == NULL) 
-		return false;*/
+		return false;
 
-	VehicleManhack_Create( vThrowPos, pPlayer->EyeAngles(), pPlayer );
+	// VehicleManhack_Create( vThrowPos, pPlayer->EyeAngles(), pPlayer );
 
 	if (CPropVehicleManhack::GetManhackVehicle() == NULL)
 		return false;
 
-	//WeaponSound( SINGLE );
+	WeaponSound( SINGLE );
 	return true;
 }
 
 //TERO: This is called when we already have the vehicle manhack (the CP model), it creates the actual NPC manhack
 bool CWeapon_Manhack::CreateControllableNPCManhack( CBasePlayer *pPlayer )
 {
-	/*Vector vecOrigin;
+	/*
+	Vector vecOrigin;
 	QAngle vecAngles;
 
 	int turretSpawnAttachment = LookupAttachment( "manhackSpawn" );
-	GetAttachment( turretSpawnAttachment, vecOrigin, vecAngles );*/
+	GetAttachment( turretSpawnAttachment, vecOrigin, vecAngles );
+*/
 
 	Vector	vForward, vRight, vUp, vThrowPos;
 	
@@ -778,7 +800,7 @@ bool CWeapon_Manhack::CreateControllableNPCManhack( CBasePlayer *pPlayer )
 		return pManhack->CreateControllableManhack(vThrowPos, pPlayer->EyeAngles(), pPlayer);
 	}	
 
-	//WeaponSound( SINGLE );
+	WeaponSound( SINGLE );
 	return false;
 }
 

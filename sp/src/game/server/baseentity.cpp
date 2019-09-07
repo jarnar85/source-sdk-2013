@@ -3045,59 +3045,59 @@ PlayerClass_T CBaseEntity::GetPlayerClass(const char* sClass)
 {
 
 	if (strcmp(sClass, "player") == 0)
-		return PC_PLAYER;
+		return PLC_PLAYER;
 	else if (strcmp(sClass, "citizen") == 0)
-		return PC_CITIZEN;
+		return PLC_CITIZEN;
 	else if (strcmp(sClass, "rebel") == 0)
-		return PC_REBEL;
+		return PLC_REBEL;
 	else if (strcmp(sClass, "manhack") == 0)
-		return PC_MANHACK;
+		return PLC_MANHACK;
 	else if (strcmp(sClass, "metropolice") == 0)
-		return PC_METROPOLICE;
+		return PLC_METROPOLICE;
 	else if (strcmp(sClass, "combine_guard") == 0)
-		return PC_COMBINE_GUARD;
+		return PLC_COMBINE_GUARD;
 	else if (strcmp(sClass, "combine_soldier") == 0)
-		return PC_COMBINE_SOLDIER;
+		return PLC_COMBINE_SOLDIER;
 	else if (strcmp(sClass, "combine_elite") == 0)
-		return PC_COMBINE_ELITE;
+		return PLC_COMBINE_ELITE;
 	else if (strcmp(sClass, "stalker") == 0)
-		return PC_STALKER;
+		return PLC_STALKER;
 	else if (strcmp(sClass, "zombie") == 0)
-		return PC_ZOMBIE;
+		return PLC_ZOMBIE;
 	else if (strcmp(sClass, "zombie_poison") == 0)
-		return PC_ZOMBIE_POISON;
+		return PLC_ZOMBIE_POISON;
 	else if (strcmp(sClass, "zombie_fast") == 0)
-		return PC_ZOMBIE_FAST;
+		return PLC_ZOMBIE_FAST;
 	else if (strcmp(sClass, "zombie_combine") == 0)
-		return PC_ZOMBIE_COMBINE;
+		return PLC_ZOMBIE_COMBINE;
 	else
-		return PC_NONE;
+		return PLC_NONE;
 }
 
 Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
 {
 	switch (nClass)
 	{
-	case PC_MANHACK:
+	case PLC_MANHACK:
 		return CLASS_MANHACK;
-	case PC_CITIZEN:
+	case PLC_CITIZEN:
 		return CLASS_CITIZEN_PASSIVE;
-	case PC_REBEL:
+	case PLC_REBEL:
 		return CLASS_CITIZEN_REBEL;
-	case PC_METROPOLICE:
+	case PLC_METROPOLICE:
 		return CLASS_METROPOLICE;
-	case PC_COMBINE_GUARD:
-	case PC_COMBINE_SOLDIER:
-	case PC_COMBINE_ELITE:
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_COMBINE_ELITE:
 		return CLASS_COMBINE;
-	case PC_STALKER:
+	case PLC_STALKER:
 		return CLASS_STALKER;
-	case PC_PLAYER:
+	case PLC_PLAYER:
 		return CLASS_PLAYER;
-	case PC_ZOMBIE:
-	case PC_ZOMBIE_FAST:
-	case PC_ZOMBIE_COMBINE:
-	case PC_ZOMBIE_POISON:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_FAST:
+	case PLC_ZOMBIE_COMBINE:
+	case PLC_ZOMBIE_POISON:
 		return CLASS_ZOMBIE;
 	default:
 		return CLASS_NONE;
@@ -3108,24 +3108,24 @@ int CBaseEntity::GetClassHealth(PlayerClass_T nClass)
 {
 	switch (nClass)
 	{
-	case PC_MANHACK:
+	case PLC_MANHACK:
 			return 25;
-	case PC_CITIZEN:
-	case PC_REBEL:
-	case PC_METROPOLICE:
+	case PLC_CITIZEN:
+	case PLC_REBEL:
+	case PLC_METROPOLICE:
 		return 40;
-	case PC_COMBINE_GUARD:
-	case PC_COMBINE_SOLDIER:
-	case PC_STALKER:
-	case PC_ZOMBIE:
-	case PC_ZOMBIE_FAST:
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_STALKER:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_FAST:
 		return 50;
-	case PC_COMBINE_ELITE:
+	case PLC_COMBINE_ELITE:
 		return 70;
-	case PC_PLAYER:
-	case PC_ZOMBIE_COMBINE:
+	case PLC_PLAYER:
+	case PLC_ZOMBIE_COMBINE:
 		return 100;
-	case PC_ZOMBIE_POISON:
+	case PLC_ZOMBIE_POISON:
 		return 175;
 	default:
 		return 100;
@@ -3136,34 +3136,34 @@ const char* CBaseEntity::GetClassModel(PlayerClass_T nClass)
 {
 	switch (nClass)
 	{
-	case PC_MANHACK:
+	case PLC_MANHACK:
 		return "models/manhack.mdl";
-	case PC_CITIZEN:
+	case PLC_CITIZEN:
 		return "models/humans/group01/male_04.mdl";
-	case PC_REBEL:
+	case PLC_REBEL:
 		return "models/humans/group03/male_04.mdl";
-	case PC_METROPOLICE:
+	case PLC_METROPOLICE:
 		return "models/police.mdl";
-	case PC_COMBINE_GUARD:
+	case PLC_COMBINE_GUARD:
 		return "models/combine_soldier_prisonguard.mdl";
 		// return "models/soldier_stripped.mdl";
-	case PC_COMBINE_SOLDIER:
+	case PLC_COMBINE_SOLDIER:
 		return "models/combine_soldier.mdl";
 		// return "models/soldier_stripped.mdl";
-	case PC_COMBINE_ELITE:
+	case PLC_COMBINE_ELITE:
 		return "models/combine_super_soldier.mdl";
 		// return "models/soldier_stripped.mdl";
-	case PC_STALKER:
+	case PLC_STALKER:
 		return "models/stalker.mdl";
-	case PC_PLAYER:
+	case PLC_PLAYER:
 		return "models/player.mdl";
-	case PC_ZOMBIE:
+	case PLC_ZOMBIE:
 		return "models/zombie/classic.mdl";
-	case PC_ZOMBIE_FAST:
+	case PLC_ZOMBIE_FAST:
 		return "models/zombie/fast.mdl";
-	case PC_ZOMBIE_COMBINE:
+	case PLC_ZOMBIE_COMBINE:
 		return "models/zombie/zombie_soldier.mdl";
-	case PC_ZOMBIE_POISON:
+	case PLC_ZOMBIE_POISON:
 		return "models/zombie/poison.mdl";
 	default:
 		return "";

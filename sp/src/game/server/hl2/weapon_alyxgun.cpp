@@ -89,6 +89,25 @@ acttable_t	CWeaponAlyxGun::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponAlyxGun);
 
+classtable_t CWeaponAlyxGun::m_classtable[] =
+{
+	{ PLC_PLAYER,			true },
+	{ PLC_CITIZEN,			true },
+	{ PLC_REBEL,			true },
+	{ PLC_MANHACK,			false },
+	{ PLC_METROPOLICE,		false },
+	{ PLC_COMBINE_GUARD,	false },
+	{ PLC_COMBINE_SOLDIER,	false },
+	{ PLC_COMBINE_ELITE,	false },
+	{ PLC_STALKER,			false },
+	{ PLC_ZOMBIE,			false },
+	{ PLC_ZOMBIE_POISON,	false },
+	{ PLC_ZOMBIE_FAST,		false },
+	{ PLC_ZOMBIE_COMBINE,	false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponAlyxGun);
+
 #define TOOCLOSETIMER_OFF	0.0f
 #define ALYX_TOOCLOSETIMER	1.0f		// Time an enemy must be tooclose before Alyx is allowed to shoot it.
 

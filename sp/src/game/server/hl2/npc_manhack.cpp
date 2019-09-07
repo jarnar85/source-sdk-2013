@@ -2663,7 +2663,7 @@ void CNPC_Manhack::Spawn(void)
 
 	SetModel( "models/manhack.mdl" );
 	SetHullType(HULL_TINY_CENTERED);
-	SetHullSizeSmall();
+	SetHullSizeNormal();
 
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );

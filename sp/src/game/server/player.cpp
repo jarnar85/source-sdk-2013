@@ -7258,6 +7258,20 @@ void CBasePlayer::ResetAutoaim( void )
 //-----------------------------------------------------------------------------
 bool CBasePlayer::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
+	classtable_t	*pTable		 = pWeapon->ClassList();
+	int				classCount	 = pWeapon->ClassListCount();
+
+	if (classCount > 1)
+	{
+		for (int i = 0; i < classCount; i++, pTable++)
+		{
+			if (pTable->cls == m_Class)
+			{
+				return pTable->usable;
+			}
+		}
+	}
+
 	return true;
 }
 

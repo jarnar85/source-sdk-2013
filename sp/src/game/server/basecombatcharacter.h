@@ -487,6 +487,10 @@ public:
 protected:
 	// Visibility-related stuff
 	bool ComputeLOS( const Vector &vecEyePosition, const Vector &vecTarget ) const;
+
+	PlayerClass_T		m_Class;	// current class
+	Class_T				m_Faction;	// current faction
+	Job_T				m_Job;		// current job
 private:
 	// For weapon strip
 	void ThrowDirForWeaponStrip( CBaseCombatWeapon *pWeapon, const Vector &vecForward, Vector *pVecThrowDir );
@@ -496,10 +500,6 @@ private:
 	
 	static int					m_lastInteraction;	// Last registered interaction #
 	static Relationship_t**		m_DefaultRelationship;
-
-	static PlayerClass_T		m_Class;	// current class
-	static Class_T				m_Faction;	// current faction
-	static Job_T				m_Job;		// current job
 
 	// attack/damage
 	int					m_LastHitGroup;			// the last body region that took damage
