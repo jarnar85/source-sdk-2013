@@ -780,6 +780,7 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 			case CLASS_ANTLION:			return "CLASS_ANTLION";
 			case CLASS_BARNACLE:		return "CLASS_BARNACLE";
 			case CLASS_BULLSEYE:		return "CLASS_BULLSEYE";
+			case CLASS_BULLSQUID:		return "CLASS_BULLSQUID";	
 			case CLASS_CITIZEN_PASSIVE: return "CLASS_CITIZEN_PASSIVE";		
 			case CLASS_CITIZEN_REBEL:	return "CLASS_CITIZEN_REBEL";
 			case CLASS_COMBINE:			return "CLASS_COMBINE";
@@ -787,6 +788,7 @@ ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REP
 			case CLASS_COMBINE_HUNTER:	return "CLASS_COMBINE_HUNTER";
 			case CLASS_CONSCRIPT:		return "CLASS_CONSCRIPT";
 			case CLASS_HEADCRAB:		return "CLASS_HEADCRAB";
+			case CLASS_HOUNDEYE:		return "CLASS_HOUNDEYE";
 			case CLASS_MANHACK:			return "CLASS_MANHACK";
 			case CLASS_METROPOLICE:		return "CLASS_METROPOLICE";
 			case CLASS_MILITARY:		return "CLASS_MILITARY";	
@@ -1129,6 +1131,20 @@ float CHalfLife2::AdjustPlayerDamageInflicted( float damage )
 		break;
 	}
 }
+	#ifdef EZ
+void CHalfLife2::OnSkillLevelChanged(int iNewLevel)
+{
+	// Fire achievement change for difficulty level changed
+	IGameEvent *event = gameeventmanager->CreateEvent("skill_changed");
+	if (event)
+	{
+		event->SetInt("skill_level", iNewLevel);
+		gameeventmanager->FireEvent(event);
+	}
+
+	BaseClass::OnSkillLevelChanged(iNewLevel);
+}
+	#endif
 #endif//CLIENT_DLL
 
 //---------------------------------------------------------
@@ -1302,6 +1318,12 @@ CAmmoDef *GetAmmoDef()
 		def.AddAmmoType("GaussEnergy",		DMG_SHOCK,					TRACER_NONE,			"sk_jeep_gauss_damage",		"sk_jeep_gauss_damage", "sk_max_gauss_round", BULLET_IMPULSE(650, 8000), 0 ); // hit like a 10kg weight at 400 in/s
 		def.AddAmmoType("CombineCannon",	DMG_BULLET,					TRACER_LINE,			"sk_npc_dmg_gunship_to_plr", "sk_npc_dmg_gunship", NULL, 1.5 * 750 * 12, 0 ); // hit like a 1.5kg weight at 750 ft/s
 		def.AddAmmoType("AirboatGun",		DMG_AIRBOAT,				TRACER_LINE,			"sk_plr_dmg_airboat",		"sk_npc_dmg_airboat",		NULL,					BULLET_IMPULSE(10, 600), 0 );
+			
+		//Entropy Zero
+		def.AddAmmoType("Manhack", DMG_BURN, TRACER_NONE, 0, 0, 2, 0, 0);
+
+		// Custom
+		def.AddAmmoType("FlareRound", DMG_BURN, TRACER_NONE, "sk_plr_dmg_flare_round", "sk_npc_dmg_flare_round", "sk_max_flare_round", 0, 0);
 
 		//=====================================================================
 		// STRIDER MINIGUN DAMAGE - Pull up a chair and I'll tell you a tale.
