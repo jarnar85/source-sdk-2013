@@ -87,7 +87,11 @@ ConVar	manhack_blend_collision("hlss_manhack_blend_collision", "16");
 ConVar	sk_manhack_health( "sk_manhack_health","0");
 ConVar	sk_manhack_melee_dmg( "sk_manhack_melee_dmg","0");
 ConVar	sk_manhack_v2( "sk_manhack_v2","1");
-ConVar  manhack_debug_collision("hlss_manhack_debug_collision","0");
+ConVar  manhack_debug_collision("hlss_manhack_debug_collision", "0");
+
+ConVar	cls_manhack_faction("cls_manhack_faction", "0");
+ConVar	cls_manhack_health("cls_manhack_health", "0");
+ConVar	cls_manhack_model("cls_manhack_model", "0");
 
 extern void		SpawnBlood(Vector vecSpot, const Vector &vAttackDir, int bloodColor, float flDamage);
 extern float	GetFloorZ(const Vector &origin);

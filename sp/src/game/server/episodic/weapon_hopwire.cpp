@@ -70,6 +70,7 @@ private:
 	CHandle<CGrenadeHopwire>	m_hActiveHopWire;
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 	DECLARE_DATADESC();
 };
@@ -88,6 +89,25 @@ acttable_t	CWeaponHopwire::m_acttable[] =
 };
 
 IMPLEMENT_ACTTABLE(CWeaponHopwire);
+
+classtable_t CWeaponHopwire::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, false },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_SOLDIER, false },
+	{ PLC_COMBINE_ELITE, true },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponHopwire);
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponHopwire, DT_WeaponHopwire)
 END_SEND_TABLE()

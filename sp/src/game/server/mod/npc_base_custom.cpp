@@ -32,6 +32,8 @@ const float MAX_TIME_NEXT_SOUND = 1.0f;
 const float MIN_TIME_NEXT_FOUNDENEMY_SOUND = 2.0f;
 const float MAX_TIME_NEXT_FOUNDENEMY_SOUND = 5.0f;
 
+LINK_ENTITY_TO_CLASS(npc_base_custom, CNPC_BaseCustomNPC);
+
 //---------------------------------------------------------
 // Save/Restore
 //---------------------------------------------------------

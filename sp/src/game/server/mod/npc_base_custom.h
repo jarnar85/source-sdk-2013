@@ -130,4 +130,3 @@ protected:
 };
 
 
-LINK_ENTITY_TO_CLASS(npc_base_custom, CNPC_BaseCustomNPC);

@@ -62,6 +62,7 @@ public:
 	void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 	CWeaponAnnabelle(void);
 };
@@ -99,6 +100,25 @@ acttable_t	CWeaponAnnabelle::m_acttable[] =
 };
 
 IMPLEMENT_ACTTABLE(CWeaponAnnabelle);
+
+classtable_t CWeaponAnnabelle::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_SOLDIER, false },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponAnnabelle);
 
 void CWeaponAnnabelle::Precache( void )
 {

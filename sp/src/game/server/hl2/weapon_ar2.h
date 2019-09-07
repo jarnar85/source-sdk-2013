@@ -83,6 +83,7 @@ protected:
 	int						m_nVentPose;
 	
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 	DECLARE_DATADESC();
 };
 

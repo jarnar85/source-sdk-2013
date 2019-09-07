@@ -67,6 +67,14 @@ ConVar  sk_citizen_default_proficiency("sk_citizen_default_proficiency", "1"); /
 ConVar  sk_citizen_default_willpower("sk_citizen_default_willpower", "1"); // Added by 1upD. Amount of mental stress damage citizen can take before panic
 #endif
 
+ConVar	cls_citizen_faction("cls_citizen_faction", "0");
+ConVar	cls_citizen_health("cls_citizen_health", "0");
+ConVar	cls_citizen_model("cls_citizen_model", "0");
+
+ConVar	cls_rebel_faction("cls_rebel_faction", "0");
+ConVar	cls_rebel_health("cls_rebel_health", "0");
+ConVar	cls_rebel_model("cls_rebel_model", "0");
+
 ConVar	g_ai_citizen_show_enemy( "g_ai_citizen_show_enemy", "0" );
 
 ConVar	npc_citizen_insignia( "npc_citizen_insignia", "0" );

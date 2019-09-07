@@ -40,6 +40,24 @@ acttable_t CWeaponStunStick::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponStunStick);
 
+classtable_t CWeaponStunStick::m_classtable[] =
+{
+	{ PLC_PLAYER, false },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, false },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, true },
+	{ PLC_COMBINE_GUARD, true },
+	{ PLC_COMBINE_SOLDIER, false },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponStunStick);
 
 BEGIN_DATADESC( CWeaponStunStick )
 

@@ -24,7 +24,11 @@
 // ACT_FLINCH_PHYSICS
 
 
-ConVar	sk_zombie_health( "sk_zombie_health","0");
+ConVar	sk_zombie_health("sk_zombie_health", "0");
+
+ConVar	cls_zombie_faction("cls_zombie_faction", "0");
+ConVar	cls_zombie_health("cls_zombie_health", "0");
+ConVar	cls_zombie_model("cls_zombie_model", "0");
 
 envelopePoint_t envZombieMoanVolumeFast[] =
 {

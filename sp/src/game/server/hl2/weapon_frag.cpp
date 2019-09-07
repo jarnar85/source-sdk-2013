@@ -68,6 +68,7 @@ private:
 	bool	m_fDrawbackFinished;
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 	DECLARE_DATADESC();
 };
@@ -85,6 +86,25 @@ acttable_t	CWeaponFrag::m_acttable[] =
 };
 
 IMPLEMENT_ACTTABLE(CWeaponFrag);
+
+classtable_t CWeaponFrag::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_GUARD, true },
+	{ PLC_COMBINE_SOLDIER, true },
+	{ PLC_COMBINE_ELITE, true },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponFrag);
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponFrag, DT_WeaponFrag)
 END_SEND_TABLE()

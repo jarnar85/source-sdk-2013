@@ -113,6 +113,25 @@ acttable_t	CWeaponAR2::m_acttable[] =
 
 IMPLEMENT_ACTTABLE(CWeaponAR2);
 
+classtable_t CWeaponAR2::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, false },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_SOLDIER, true },
+	{ PLC_COMBINE_ELITE, true },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponAR2);
+
 CWeaponAR2::CWeaponAR2( )
 {
 	m_fMinRange1	= 65;

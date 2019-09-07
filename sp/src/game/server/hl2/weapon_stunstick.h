@@ -26,6 +26,7 @@ public:
 
 	DECLARE_SERVERCLASS();
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 	virtual void Precache();
 

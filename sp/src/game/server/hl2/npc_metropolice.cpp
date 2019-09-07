@@ -113,7 +113,11 @@ ConVar	sk_metropolice_stitch_along_hitcount( "sk_metropolice_stitch_along_hitcou
 
 ConVar	sk_metropolice_health( "sk_metropolice_health","0");
 ConVar	sk_metropolice_simple_health( "sk_metropolice_simple_health","26");
-ConVar	sk_metropolice_stitch_distance( "sk_metropolice_stitch_distance","1000");
+ConVar	sk_metropolice_stitch_distance("sk_metropolice_stitch_distance", "1000");
+
+ConVar	cls_metropolice_faction("cls_metropolice_faction", "0");
+ConVar	cls_metropolice_health("cls_metropolice_health", "0");
+ConVar	cls_metropolice_model("cls_metropolice_model", "0");
 
 ConVar	metropolice_chase_use_follow( "metropolice_chase_use_follow", "0" );
 ConVar  metropolice_move_and_melee("metropolice_move_and_melee", "1" );

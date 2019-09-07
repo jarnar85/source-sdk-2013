@@ -239,6 +239,7 @@ public:
 	CBaseEntity *GetMissile( void ) { return m_hMissile; }
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 	DECLARE_DATADESC();
 	
 protected:

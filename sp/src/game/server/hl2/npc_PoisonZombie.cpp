@@ -62,6 +62,10 @@
 #define ZOMBIE_ENEMY_BREATHE_DIST		300	// How close we must be to our enemy before we start breathing hard.
 
 
+ConVar	cls_zombie_poison_faction("cls_zombie_poison_faction", "0");
+ConVar	cls_zombie_poison_health("cls_zombie_poison_health", "0");
+ConVar	cls_zombie_poison_model("cls_zombie_poison_model", "0");
+
 envelopePoint_t envPoisonZombieMoanVolumeFast[] =
 {
 	{	1.0f, 1.0f,

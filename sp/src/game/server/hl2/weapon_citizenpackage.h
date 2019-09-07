@@ -23,6 +23,7 @@ public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();	
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 	void ItemPostFrame( void );
 	void Drop( const Vector &vecVelocity );

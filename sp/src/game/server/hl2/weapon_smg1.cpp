@@ -65,6 +65,7 @@ public:
 	void Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 protected:
 
@@ -138,6 +139,25 @@ acttable_t	CWeaponSMG1::m_acttable[] =
 };
 
 IMPLEMENT_ACTTABLE(CWeaponSMG1);
+
+classtable_t CWeaponSMG1::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_GUARD, true },
+	{ PLC_COMBINE_SOLDIER, true },
+	{ PLC_COMBINE_ELITE, true },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponSMG1);
 
 //=========================================================
 CWeaponSMG1::CWeaponSMG1( )

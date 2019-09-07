@@ -26,6 +26,25 @@ acttable_t	CWeaponCitizenPackage::m_acttable[] =
 };
 IMPLEMENT_ACTTABLE(CWeaponCitizenPackage);
 
+classtable_t CWeaponCitizenPackage::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, true },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, true },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_SOLDIER, false },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponCitizenPackage);
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -55,6 +74,7 @@ public:
 	DECLARE_SERVERCLASS();
 	DECLARE_DATADESC();	
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 };
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponCitizenSuitcase, DT_WeaponCitizenSuitcase)
@@ -72,3 +92,22 @@ acttable_t	CWeaponCitizenSuitcase::m_acttable[] =
 	{ ACT_WALK,						ACT_WALK_SUITCASE,					false },
 };
 IMPLEMENT_ACTTABLE(CWeaponCitizenSuitcase);
+
+classtable_t CWeaponCitizenSuitcase::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, true },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, true },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_SOLDIER, false },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponCitizenSuitcase);

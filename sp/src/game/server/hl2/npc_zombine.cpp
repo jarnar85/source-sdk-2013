@@ -72,6 +72,10 @@ int AE_ZOMBINE_PULLPIN;
 extern bool IsAlyxInDarknessMode();
 
 ConVar	sk_zombie_soldier_health( "sk_zombie_soldier_health","150"); // Breadman - was 0
+								 
+ConVar	cls_zombie_combine_faction("cls_zombie_combine_faction", "0");
+ConVar	cls_zombie_combine_health("cls_zombie_combine_health", "0");
+ConVar	cls_zombie_combine_model("cls_zombie_combine_model", "0");
 
 float g_flZombineGrenadeTimes = 0;
 

@@ -105,6 +105,7 @@ public:
 	}
 
 	DECLARE_ACTTABLE();
+	DECLARE_CLASSTABLE();
 
 private:
 	float	m_flSoonestPrimaryAttack;
@@ -149,6 +150,25 @@ acttable_t	CWeaponPistol::m_acttable[] =
 
 
 IMPLEMENT_ACTTABLE( CWeaponPistol );
+
+classtable_t CWeaponPistol::m_classtable[] =
+{
+	{ PLC_PLAYER, true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, true },
+	{ PLC_MANHACK, false },
+	{ PLC_METROPOLICE, true },
+	{ PLC_COMBINE_GUARD, true },
+	{ PLC_COMBINE_SOLDIER, true },
+	{ PLC_COMBINE_ELITE, false },
+	{ PLC_STALKER, false },
+	{ PLC_ZOMBIE, false },
+	{ PLC_ZOMBIE_POISON, false },
+	{ PLC_ZOMBIE_FAST, false },
+	{ PLC_ZOMBIE_COMBINE, false }
+};
+
+IMPLEMENT_CLASSTABLE(CWeaponPistol);
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor

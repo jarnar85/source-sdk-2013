@@ -61,6 +61,10 @@ ConVar	sk_zombie_fast_dmg_one_slash("sk_zombie_fast_dmg_one_slash", "12");
 ConVar	sk_zombie_fast_dmg_both_slash("sk_zombie_fast_dmg_both_slash", "22"); // Originally hard coded to 50 in Entropy : Zero
 #endif
 
+ConVar	cls_zombie_fast_faction("cls_zombie_fast_faction", "0");
+ConVar	cls_zombie_fast_health("cls_zombie_fast_health", "0");
+ConVar	cls_zombie_fast_model("cls_zombie_fast_model", "0");
+
 enum
 {
 	COND_FASTZOMBIE_CLIMB_TOUCH	= LAST_BASE_ZOMBIE_CONDITION,
