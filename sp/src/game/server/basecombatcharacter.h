@@ -484,13 +484,31 @@ protected:
 public:
 	static int					GetInteractionID();	// Returns the next interaction #
 
+	PlayerClass_T	GetClass(bool current=true);
+	void			SetClass(PlayerClass_T cls);
+	void			ResetClass();
+	Class_T			GetFaction(bool current=true);
+	void			SetFaction(Class_T faction);
+	void			ResetFaction();
+	Job_T			GetJob(bool current=true);
+	void			SetJob(Job_T job);
+	void			ResetJob();
+
 protected:
 	// Visibility-related stuff
 	bool ComputeLOS( const Vector &vecEyePosition, const Vector &vecTarget ) const;
 
-	PlayerClass_T		m_Class;	// current class
-	Class_T				m_Faction;	// current faction
-	Job_T				m_Job;		// current job
+	// -------------------
+	// character abilities
+	// -------------------
+	PlayerClass_T		m_Class;
+	Class_T				m_Faction;
+	Job_T				m_Job;
+
+	// previous values
+	PlayerClass_T		p_Class = PLC_NONE;
+	Class_T				p_Faction = CLASS_NONE;
+	Job_T				p_Job = JOB_NONE;
 private:
 	// For weapon strip
 	void ThrowDirForWeaponStrip( CBaseCombatWeapon *pWeapon, const Vector &vecForward, Vector *pVecThrowDir );

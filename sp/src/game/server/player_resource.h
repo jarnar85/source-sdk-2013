@@ -36,6 +36,13 @@ protected:
 	CNetworkArray( int, m_iTeam, MAX_PLAYERS+1 );
 	CNetworkArray( int, m_bAlive, MAX_PLAYERS+1 );
 	CNetworkArray( int, m_iHealth, MAX_PLAYERS+1 );
+	
+	CNetworkArray(int, p_Class, MAX_PLAYERS + 1);
+	CNetworkArray(int, p_Faction, MAX_PLAYERS + 1);
+	CNetworkArray(int, p_Job, MAX_PLAYERS + 1);
+	CNetworkArray(int, m_Class, MAX_PLAYERS + 1);
+	CNetworkArray(int, m_Faction, MAX_PLAYERS + 1);
+	CNetworkArray(int, m_Job, MAX_PLAYERS + 1);
 		
 	int	m_nUpdateCounter;
 };

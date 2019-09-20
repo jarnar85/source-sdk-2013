@@ -5659,7 +5659,7 @@ CBaseEntity	*CBasePlayer::GiveNamedItem( const char *pszName, int iSubType )
 	if ( Weapon_OwnsThisType(pszName, iSubType) )
 		return NULL;
 
-	// Msg( "giving %s\n", pszName );
+	Msg( "giving %s\n", pszName );
 
 	EHANDLE pent;
 
@@ -7286,17 +7286,30 @@ bool CBasePlayer::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 	classtable_t	*pTable		 = pWeapon->ClassList();
 	int				classCount	 = pWeapon->ClassListCount();
 
+	/*
+	Msg("Weapon_CanUse: "); 
+	Msg((char*) pWeapon->GetName());
+	*/
+
 	if (classCount > 1)
 	{
 		for (int i = 0; i < classCount; i++, pTable++)
 		{
 			if (pTable->cls == m_Class)
 			{
+				/*
+				Msg((m_Class == PLC_PLAYER) ? " player - " : "no player - ");
+				Msg((m_Class == PLC_METROPOLICE) ? " cop - " : "no cop - ");
+				Msg(pTable->usable?"true":"false");
+				Msg("\n");
+				*/
+
 				return pTable->usable;
 			}
 		}
 	}
 
+	// Msg(" default\n");
 	return true;
 }
 

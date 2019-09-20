@@ -58,6 +58,14 @@ C_PlayerResource::C_PlayerResource()
 	memset( m_iTeam, 0, sizeof( m_iTeam ) );
 	memset( m_bAlive, 0, sizeof( m_bAlive ) );
 	memset( m_iHealth, 0, sizeof( m_iHealth ) );
+
+	memset(p_Class, 0, sizeof(p_Class));
+	memset(p_Faction, 0, sizeof(p_Faction));
+	memset(p_Job, 0, sizeof(p_Job));
+	memset(m_Class, 0, sizeof(m_Class));
+	memset(m_Faction, 0, sizeof(m_Faction));
+	memset(m_Job, 0, sizeof(m_Job));
+	
 	m_szUnconnectedName = 0;
 	
 	for ( int i=0; i<MAX_TEAMS; i++ )

@@ -106,6 +106,14 @@ void CPlayerResource::UpdatePlayerData( void )
 			m_bAlive.Set( i, pPlayer->IsAlive()?1:0 );
 			m_iHealth.Set(i, MAX( 0, pPlayer->GetHealth() ) );
 
+
+			p_Class.Set(i, pPlayer->GetClass(false));
+			p_Faction.Set(i, pPlayer->GetFaction(false));
+			p_Job.Set(i, pPlayer->GetJob(false));
+			m_Class.Set(i, pPlayer->GetClass());
+			m_Faction.Set(i, pPlayer->GetFaction());
+			m_Job.Set(i, pPlayer->GetJob());
+
 			// Don't update ping / packetloss everytime
 
 			if ( !(m_nUpdateCounter%20) )

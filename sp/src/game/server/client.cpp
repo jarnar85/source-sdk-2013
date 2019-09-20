@@ -1032,6 +1032,82 @@ static ConCommand use("use", CC_Player_Use, "Use a particular weapon\t\nArgument
 
 
 //------------------------------------------------------------------------------
+// Purpose: Set Player's relationships to NPCs
+//------------------------------------------------------------------------------
+void CC_Player_Set_Relation(const CCommand &args)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClassTarget = pPlayer->GetClassStr(args[1]);
+
+
+		if (nClassTarget == CLASS_NONE)
+		{
+			Msg("Invalid class: %s\n", args[1]);
+		}
+		else
+		{
+			CBaseCombatCharacter::SetPlayerRelationship(nClassTarget);
+		}
+	}
+
+}
+static ConCommand npc_setrelation("player_setrelation", CC_Player_Set_Relation, "Set the relationships between the player and NPCs.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+
+//------------------------------------------------------------------------------
+// Purpose: Set Player's class
+//------------------------------------------------------------------------------
+void CC_Player_Set_Class(const CCommand &args)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		PlayerClass_T nClass = pPlayer->GetPlayerClass(args[1]);
+
+		// change player relation to NPCs
+		Class_T nFaction = pPlayer->GetClassFaction(nClass);
+		if (nFaction == CLASS_NONE)
+		{
+			Msg("Invalid class: %s\n", args[1]);
+		}
+		else
+		{
+			CBaseCombatCharacter::SetPlayerRelationship(nFaction);
+			// TODO: Change HUD depending on class
+			// some output to the hud
+			hudtextparms_t textparms;
+
+			textparms.fadeinTime = 5;
+			textparms.holdTime = 20;
+			textparms.fadeoutTime = 10;
+
+			UTIL_HudMessage(pPlayer, textparms, args[1]);
+			// TODO: Change Player/Hand Model depending on class
+			const char *szModelName = pPlayer->GetClassModel(nClass);
+			pPlayer->SetModelCaching(szModelName);
+
+			// TODO: Change Stats depending on class
+			int iHealth = pPlayer->GetHealth();
+			iHealth *= pPlayer->GetClassHealth(nClass);
+			iHealth /= pPlayer->GetMaxHealth();
+			pPlayer->SetMaxHealth(pPlayer->GetClassHealth(nClass));
+			pPlayer->SetHealth(iHealth);
+
+			Msg("Set class ... ");
+			pPlayer->SetClass(nClass);
+			Msg(args[1]);
+			Msg("\nSet faction ... ");
+			pPlayer->SetFaction(nFaction);
+			Msg("\n");
+		}
+	}
+
+}
+static ConCommand npc_class("player_setclass", CC_Player_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+//------------------------------------------------------------------------------
 // A small wrapper around SV_Move that never clips against the supplied entity.
 //------------------------------------------------------------------------------
 static bool TestEntityPosition ( CBasePlayer *pPlayer )

@@ -924,6 +924,13 @@ protected:
 	float					m_iRespawnFrames;	// used in PlayerDeathThink() to make sure players can always respawn
  	unsigned int			m_afPhysicsFlags;	// physics flags - set when 'normal' physics should be revisited or overriden
 	
+
+	// default values for players
+	PlayerClass_T		m_Class = PLC_PLAYER;
+	Class_T				m_Faction = CLASS_PLAYER;
+	Job_T				m_Job = JOB_NONE;
+
+
 	// Vehicles
 	CNetworkHandle( CBaseEntity, m_hVehicle );
 

@@ -2855,6 +2855,72 @@ int CBaseCombatCharacter::IRelationPriority( CBaseEntity *pTarget )
 	return 0;
 }
 
+
+//-----------------------------------------------------------------------------
+// Character stats
+//-----------------------------------------------------------------------------
+
+
+PlayerClass_T CBaseCombatCharacter::GetClass(bool current)
+{
+	if (current)
+		return m_Class;
+	
+	return p_Class;
+}
+
+
+void CBaseCombatCharacter::SetClass(PlayerClass_T cls)
+{
+	p_Class = m_Class;
+	m_Class = cls;
+}
+
+void CBaseCombatCharacter::ResetClass()
+{
+	m_Class = p_Class;
+}
+
+Class_T CBaseCombatCharacter::GetFaction(bool current)
+{
+	if (current)
+		return m_Faction;
+
+	return p_Faction;
+}
+
+
+void CBaseCombatCharacter::SetFaction(Class_T faction)
+{
+	p_Faction = m_Faction;
+	m_Faction = faction;
+}
+
+void CBaseCombatCharacter::ResetFaction()
+{
+	m_Faction = p_Faction;
+}
+
+Job_T CBaseCombatCharacter::GetJob(bool current)
+{
+	if (current)
+		return m_Job;
+
+	return p_Job;
+}
+
+
+void CBaseCombatCharacter::SetJob(Job_T job)
+{
+	p_Job = m_Job;
+	m_Job = job;
+}
+
+void CBaseCombatCharacter::ResetJob()
+{
+	m_Job = p_Job;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Get shoot position of BCC at current position/orientation
 // Input  :
