@@ -1332,6 +1332,12 @@ public:
 	// was pev->speed
 	float							m_flSpeed;
 
+	// Special points
+	int		m_iRation;
+	int		m_iRank;
+	int		m_iCredits;
+	int		m_iMemRepl;
+
 	// Team Handling
 	int								m_iTeamNum;
 

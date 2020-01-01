@@ -590,6 +590,10 @@ public:
 	CUserCmd *				GetCurrentCommand( void )	{ return m_pCurrentCommand; }
 	float					GetTimeSinceLastUserCommand( void ) { return ( !IsConnected() || IsFakeClient() || IsBot() ) ? 0.f : gpGlobals->curtime - m_flLastUserCommandTime; }
 
+	// Class Handling
+	virtual void SetClass(PlayerClass_T nClass);
+	virtual void SetFaction(Class_T nFaction);
+
 	// Team Handling
 	virtual void			ChangeTeam( int iTeamNum ) { ChangeTeam(iTeamNum,false, false); }
 	virtual void			ChangeTeam( int iTeamNum, bool bAutoTeam, bool bSilent );
@@ -699,6 +703,9 @@ public:
 	void	SetConnected( PlayerConnectedState iConnected ) { m_iConnected = iConnected; }
 	virtual void EquipSuit( bool bPlayEffects = true );
 	virtual void RemoveSuit( void );
+
+	void CBasePlayer::EquipByClass(PlayerClass_T nClass);
+
 	void	SetMaxSpeed( float flMaxSpeed ) { m_flMaxspeed = flMaxSpeed; }
 
 	void	NotifyNearbyRadiationSource( float flRange );
@@ -862,7 +869,12 @@ public:
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_vecBaseVelocity );
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_nNextThinkTick );
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_vecVelocity );
-	IMPLEMENT_NETWORK_VAR_FOR_DERIVED( m_nWaterLevel );
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_nWaterLevel);
+
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iRation);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iRank);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iCredits);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iMemRepl);
 	
 	int						m_nButtons;
 	int						m_afButtonPressed;
@@ -929,6 +941,10 @@ protected:
 	PlayerClass_T		m_Class = PLC_PLAYER;
 	Class_T				m_Faction = CLASS_PLAYER;
 	Job_T				m_Job = JOB_NONE;
+
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Class);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Faction);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Job);
 
 
 	// Vehicles

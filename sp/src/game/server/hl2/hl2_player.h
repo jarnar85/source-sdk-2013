@@ -137,6 +137,7 @@ public:
 	bool SuitPower_ShouldRecharge( void );
 	float SuitPower_GetCurrentPercentage( void ) { return m_HL2Local.m_flSuitPower; }
 	
+	void EquipByClass(PlayerClass_T nClass);
 	void SetFlashlightEnabled( bool bState );
 
 	// Apply a battery

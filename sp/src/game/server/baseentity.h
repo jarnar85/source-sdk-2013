@@ -1037,6 +1037,11 @@ public:
 	CNetworkVarForDerived( int, m_iMaxHealth ); // CBaseEntity doesn't care about changes to this variable, but there are derived classes that do.
 	CNetworkVarForDerived( int, m_iHealth );
 
+	CNetworkVarForDerived(int, m_iRation);
+	CNetworkVarForDerived(int, m_iRank);
+	CNetworkVarForDerived(int, m_iCredits);
+	CNetworkVarForDerived(int, m_iMemRepl);
+
 	CNetworkVarForDerived( char, m_lifeState );
 	CNetworkVarForDerived( char , m_takedamage );
 

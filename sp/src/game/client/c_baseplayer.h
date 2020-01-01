@@ -299,6 +299,11 @@ public:
 
 	C_BaseEntity				*GetUseEntity();
 
+	// default values for players
+	PlayerClass_T		m_Class = PLC_PLAYER;
+	Class_T				m_Faction = CLASS_PLAYER;
+	Job_T				m_Job = JOB_NONE;
+
 	// Vehicles...
 	IClientVehicle			*GetVehicle();
 

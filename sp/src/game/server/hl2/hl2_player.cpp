@@ -2006,6 +2006,40 @@ bool CHL2_Player::SuitPower_ShouldRecharge( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
+void CHL2_Player::EquipByClass(PlayerClass_T nClass)
+{
+	switch (nClass)
+	{
+	case PLC_CITIZEN:
+	case PLC_MANHACK:
+		sk_suit_maxarmor.SetValue(10);
+			break;
+	case PLC_METROPOLICE:
+	case PLC_REBEL:
+		sk_suit_maxarmor.SetValue(50);
+		break;
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_PLAYER:
+	case PLC_ZOMBIE_COMBINE:
+		sk_suit_maxarmor.SetValue(100);
+		break;
+	case PLC_COMBINE_ELITE:
+		sk_suit_maxarmor.SetValue(200);
+		break;
+	case PLC_STALKER:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_POISON:
+	case PLC_ZOMBIE_FAST:
+	default:
+		sk_suit_maxarmor.SetValue(0);
+	}
+
+	BaseClass::EquipByClass(nClass);
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 ConVar	sk_battery( "sk_battery","0" );			
 
 bool CHL2_Player::ApplyBattery( float powerMultiplier )
@@ -2487,6 +2521,32 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	}
 
 #endif
+
+	// TODO: modify points depending on defeated enemy
+	switch (m_Faction)
+	{
+		case 	CLASS_COMBINE:
+			m_iCredits += 1;
+			break;
+		case 	CLASS_CONSCRIPT:
+			m_iCredits += 1;
+			break;
+		case 	CLASS_MANHACK:
+			m_iCredits += 1;
+			break;
+		case 	CLASS_METROPOLICE:
+			m_iCredits += 1;
+			break;
+		case 	CLASS_STALKER:
+			m_iCredits += 1;
+			break;
+		case 	CLASS_PROTOSNIPER:
+			m_iCredits += 1;
+			break;
+		default:
+			m_iCredits += 0;
+	}
+
 }
 
 //-----------------------------------------------------------------------------

@@ -1804,6 +1804,13 @@ BEGIN_DATADESC_NO_BASE( CBaseEntity )
 	// DEFINE_FIELD( m_pLink, FIELD_CLASSPTR ),
 	DEFINE_KEYFIELD( m_target, FIELD_STRING, "target" ),
 
+
+	DEFINE_KEYFIELD(m_iRation, FIELD_INTEGER, "rations"),
+	DEFINE_KEYFIELD(m_iRank, FIELD_INTEGER, "rank"),
+	DEFINE_KEYFIELD(m_iCredits, FIELD_INTEGER, "credits"),
+	DEFINE_KEYFIELD(m_iMemRepl, FIELD_INTEGER, "mem_repl"),
+
+
 	DEFINE_KEYFIELD( m_iszDamageFilterName, FIELD_STRING, "damagefilter" ),
 	DEFINE_FIELD( m_hDamageFilter, FIELD_EHANDLE ),
 	

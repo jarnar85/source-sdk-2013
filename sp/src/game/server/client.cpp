@@ -1075,16 +1075,8 @@ void CC_Player_Set_Class(const CCommand &args)
 		else
 		{
 			CBaseCombatCharacter::SetPlayerRelationship(nFaction);
-			// TODO: Change HUD depending on class
-			// some output to the hud
-			hudtextparms_t textparms;
 
-			textparms.fadeinTime = 5;
-			textparms.holdTime = 20;
-			textparms.fadeoutTime = 10;
-
-			UTIL_HudMessage(pPlayer, textparms, args[1]);
-			// TODO: Change Player/Hand Model depending on class
+			// TODO: Change Player/Hand Model depending on class (first person is missing)
 			const char *szModelName = pPlayer->GetClassModel(nClass);
 			pPlayer->SetModelCaching(szModelName);
 
@@ -1094,6 +1086,9 @@ void CC_Player_Set_Class(const CCommand &args)
 			iHealth /= pPlayer->GetMaxHealth();
 			pPlayer->SetMaxHealth(pPlayer->GetClassHealth(nClass));
 			pPlayer->SetHealth(iHealth);
+
+			// TODO: Change HUD depending on Class
+			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
 
 			Msg("Set class ... ");
 			pPlayer->SetClass(nClass);
@@ -1106,6 +1101,20 @@ void CC_Player_Set_Class(const CCommand &args)
 
 }
 static ConCommand npc_class("player_setclass", CC_Player_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+void CC_Player_Rank(const CCommand &args)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Msg("You have: %d Ration Units, %d Rank Points, %d Credits and undergone %d Memory replacements\n", pPlayer->m_iRation, pPlayer->m_iRank, pPlayer->m_iCredits, pPlayer->m_iMemRepl);
+	}
+	else
+	{
+		Msg("Unable to get data\n");
+	}
+}
+static ConCommand npc_rank("player_rank", CC_Player_Rank, "Show Rank, Credits and Rations of the player.\n", FCVAR_CHEAT);
 
 //------------------------------------------------------------------------------
 // A small wrapper around SV_Move that never clips against the supplied entity.

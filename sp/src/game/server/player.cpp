@@ -7496,6 +7496,52 @@ void CBasePlayer::PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPla
 #endif // USES_ECON_ITEMS
 
 //================================================================================
+// CLASS HANDLING
+//================================================================================
+
+void CBasePlayer::SetClass(PlayerClass_T nClass)
+{
+	switch (nClass)
+	{
+	case PLC_COMBINE_ELITE:
+		m_iMemRepl = 5;
+		break;
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_STALKER:
+		m_iMemRepl = 3;
+		break;
+	case PLC_PLAYER:
+	case PLC_CITIZEN:
+		m_iRation = 10;
+	case PLC_REBEL:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_COMBINE:
+	case PLC_ZOMBIE_FAST:
+	case PLC_ZOMBIE_POISON:
+		m_iMemRepl = 0;
+		break;
+	case PLC_METROPOLICE:
+		m_iRank		 = 1;
+		m_iCredits	 = 10;
+		break;
+	default:
+		break;
+	}
+
+	// CBaseCombatCharacter::SetClass(nClass); // not working - doing it right here
+	p_Class	 = m_Class;
+	m_Class	 = nClass;
+}
+
+void CBasePlayer::SetFaction(Class_T nFaction)
+{
+	// CBaseCombatCharacter::SetFaction(nFaction); // not working - doing it right here
+	p_Faction = m_Faction;
+	m_Faction = nFaction;
+}
+
+//================================================================================
 // TEAM HANDLING
 //================================================================================
 //-----------------------------------------------------------------------------
@@ -7547,8 +7593,6 @@ void CBasePlayer::ChangeTeam( int iTeamNum, bool bAutoTeam, bool bSilent)
 
 	BaseClass::ChangeTeam( iTeamNum );
 }
-
-
 
 //-----------------------------------------------------------------------------
 // Purpose: Locks a player to the spot; they can't move, shoot, or be hurt
@@ -8663,6 +8707,30 @@ void CBasePlayer::EquipSuit( bool bPlayEffects )
 void CBasePlayer::RemoveSuit( void )
 {
 	m_Local.m_bWearingSuit = false;
+}
+
+void CBasePlayer::EquipByClass(PlayerClass_T nClass)
+{
+	switch (nClass)
+	{
+	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_MANHACK:
+	case PLC_METROPOLICE:
+	case PLC_PLAYER:
+	case PLC_STALKER:
+	case PLC_ZOMBIE_COMBINE:
+		m_Local.m_bWearingSuit = true;
+		break;
+	case PLC_CITIZEN:
+	case PLC_REBEL:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_POISON:
+	case PLC_ZOMBIE_FAST:
+	default:
+		m_Local.m_bWearingSuit = false;
+	}
 }
 
 //-----------------------------------------------------------------------------
