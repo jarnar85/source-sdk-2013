@@ -2522,30 +2522,35 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 
 #endif
 
-	// TODO: modify points depending on defeated enemy
-	switch (m_Faction)
+	int iKill = 1;
+	// TODO: set iKill to 2 if it was a one-hit kill
+
+	int iCredits = floor(pVictim->m_iMaxHealth / 50 * iKill);
+	
+	switch (m_Class)
 	{
-		case 	CLASS_COMBINE:
-			m_iCredits += 1;
+		case 	PLC_METROPOLICE:
+			iCredits *= 2;
+
+			if (iCredits < 1)
+				iCredits = 1;
 			break;
-		case 	CLASS_CONSCRIPT:
-			m_iCredits += 1;
+		case 	PLC_STALKER:
+			iCredits	 *= 2;
 			break;
-		case 	CLASS_MANHACK:
-			m_iCredits += 1;
+		case 	PLC_COMBINE_GUARD:
+		case 	PLC_COMBINE_SOLDIER:
+			// multiply by 1 (= do nothing)
 			break;
-		case 	CLASS_METROPOLICE:
-			m_iCredits += 1;
-			break;
-		case 	CLASS_STALKER:
-			m_iCredits += 1;
-			break;
-		case 	CLASS_PROTOSNIPER:
-			m_iCredits += 1;
+		case 	PLC_COMBINE_ELITE:
+		case 	PLC_MANHACK:
+			iCredits = iKill;
 			break;
 		default:
-			m_iCredits += 0;
+			iCredits	 = 0;
 	}
+
+	m_iCredits += iCredits;
 
 }
 
