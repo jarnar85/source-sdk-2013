@@ -279,14 +279,14 @@ class CMattsPipe : public CWeaponCrowbar
 static const char *g_ppszRandomHeads[] = 
 {
 	"male_01.mdl",
-	"male_02.mdl",
 	"female_01.mdl",
-	"male_03.mdl",
+	"male_02.mdl",
 	"female_02.mdl",
-	"male_04.mdl",
+	"male_03.mdl",
 	"female_03.mdl",
-	"male_05.mdl",
+	"male_04.mdl",
 	"female_04.mdl",
+	"male_05.mdl",
 	"male_06.mdl",
 	"female_06.mdl",
 	"male_07.mdl",
@@ -297,13 +297,13 @@ static const char *g_ppszRandomHeads[] =
 
 static const char *g_ppszModelLocs[] =
 {
-	"Group01",
-	"Group01",
-	"Group02",
-	"Group03%s",
-	"Group03%s",
-	"Group03b",
-	"Group03x", // May wish to change this to "Group04%s" IF a brute and medic version of the long fall rebel are created - then we can have Group04, Group04b, Group04m
+	"group01",
+	"group01",
+	"group02",
+	"group03%s",
+	"group03%s",
+	"group03b",
+	"group03x", // May wish to change this to "Group04%s" IF a brute and medic version of the long fall rebel are created - then we can have Group04, Group04b, Group04m
 };
 
 #define IsExcludedHead( type, bMedic, iHead) false // see XBox codeline for an implementation
@@ -766,9 +766,9 @@ void CNPC_Citizen::SelectModel()
 		if (m_Type == CT_LONGFALL)
 			subtype = "x"; // We may wish to change this so that long fall boot rebels are Group04. We would do this in order to get a separate -b and -m group for long fall citizens - for now let's not bother
 
-		SetModelName( AllocPooledString( CFmtStr( "models/Humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], subtype )), pszModelName ) ) );
+		SetModelName( AllocPooledString( CFmtStr( "models/humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], subtype )), pszModelName ) ) );
 #else		
-	SetModelName( AllocPooledString( CFmtStr( "models/Humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], ( IsMedic() ) ? "m" : "" )), pszModelName ) ) );
+	SetModelName( AllocPooledString( CFmtStr( "models/humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], ( IsMedic() ) ? "m" : "" )), pszModelName ) ) );
 #endif
 	}
 }
@@ -887,6 +887,67 @@ Class_T	CNPC_Citizen::Classify()
 #else
 	return CLASS_PLAYER_ALLY;
 #endif
+}
+
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_Citizen::GetBaseData(Job_T tJob, char szGender, CitizenType_t cType)
+{
+	NPC_Basedata data;
+
+	if (cType == CT_REBEL)
+	{
+		data.iMaxHealth = cls_rebel_health.GetInt();
+		data.nFaction = CLASS_CITIZEN_REBEL;
+	}
+	else
+	{
+		data.iMaxHealth = cls_citizen_health.GetInt();
+		data.nFaction = CLASS_CITIZEN_PASSIVE;
+	}
+
+	// TODO: Models need to be made truly variable (optimization) but normal script makes precaching impossible on skin change via command
+	switch (cType)
+	{
+	case CT_REBEL:
+		switch (tJob)
+		{
+		case JOB_BRUTE:
+			if (szGender == 'f')
+				data.szModelName = "models/humans/group03b/female_04.mdl";
+			else
+				data.szModelName = "models/humans/group03b/male_04.mdl";
+			break;
+		case JOB_MEDIC:
+			if (szGender == 'f')
+				data.szModelName = "models/humans/group03m/female_04.mdl";
+			else
+				data.szModelName = "models/humans/group03m/male_04.mdl";
+			break;
+		default:
+			if (szGender == 'f')
+				data.szModelName = "models/humans/group03/female_04.mdl";
+			else
+				data.szModelName = "models/humans/group03/male_04.mdl";
+		}
+		break;
+	case CT_REFUGEE:
+		if (szGender == 'f')
+			data.szModelName = "models/humans/group02/female_04.mdl";
+		else
+			data.szModelName = "models/humans/group02/male_04.mdl";
+	case CT_DOWNTRODDEN:
+	default:
+		if (szGender == 'f')
+			data.szModelName = "models/humans/group01/female_04.mdl";
+		else
+			data.szModelName = "models/humans/group01/male_04.mdl";
+	}
+
+	return data;
 }
 
 //-----------------------------------------------------------------------------

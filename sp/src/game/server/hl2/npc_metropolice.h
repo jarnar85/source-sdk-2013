@@ -43,6 +43,9 @@ public:
 
 	Class_T		Classify( void );
 	Disposition_t IRelationType(CBaseEntity *pTarget);
+
+	static NPC_Basedata	GetBaseData();
+
 	float		MaxYawSpeed( void );
 	void		HandleAnimEvent( animevent_t *pEvent );
 	Activity NPC_TranslateActivity( Activity newActivity );

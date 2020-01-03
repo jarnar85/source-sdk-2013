@@ -118,8 +118,7 @@ public:
 	CNPC_BaseZombie( void );
 	~CNPC_BaseZombie( void );
 
-	void Spawn( void );
-	void Precache( void );
+	void Spawn( void );void Precache( void );
 	void StartTouch( CBaseEntity *pOther );
 	bool CreateBehaviors();
 	float MaxYawSpeed( void );

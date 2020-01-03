@@ -63,6 +63,8 @@ public:
 	Class_T	CNPC_Manhack::Classify(void);
 	Disposition_t	IRelationType( CBaseEntity *pEnemy );
 
+	static NPC_Basedata	GetBaseData();
+
 	bool			CorpseGib( const CTakeDamageInfo &info );
 	void			Event_Dying(void);
 	void			Event_Killed( const CTakeDamageInfo &info );

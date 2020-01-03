@@ -68,7 +68,9 @@ public:
 	void			Precache( void );
 	bool			CreateBehaviors();
 	float			MaxYawSpeed( void );
-	Class_T			Classify ( void );
+	Class_T			Classify(void);
+
+	static NPC_Basedata	GetBaseData();
 
 	void			PrescheduleThink();
 

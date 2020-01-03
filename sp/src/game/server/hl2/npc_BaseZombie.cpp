@@ -1709,7 +1709,6 @@ void CNPC_BaseZombie::Spawn( void )
 	m_ActBusyBehavior.SetUseRenderBounds(true);
 }
 
-
 //-----------------------------------------------------------------------------
 // Purpose: Pecaches all resources this NPC needs.
 //-----------------------------------------------------------------------------

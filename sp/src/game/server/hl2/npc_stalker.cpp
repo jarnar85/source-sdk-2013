@@ -65,7 +65,6 @@ enum StalkerBeamPower_e
 ConVar	sk_stalker_health( "sk_stalker_health","0");
 ConVar	sk_stalker_melee_dmg("sk_stalker_melee_dmg", "0");
 
-ConVar	cls_stalker_faction("cls_stalker_faction", "0");
 ConVar	cls_stalker_health("cls_stalker_health", "0");
 ConVar	cls_stalker_model("cls_stalker_model", "0");
 
@@ -203,6 +202,20 @@ Class_T CNPC_Stalker::Classify( void )
 	return CLASS_CITIZEN_REBEL; // Breadman
 #endif
 	return CLASS_STALKER;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_Stalker::GetBaseData()
+{
+	NPC_Basedata data;
+
+	data.iMaxHealth = cls_stalker_health.GetInt();
+	data.nFaction = CLASS_STALKER;
+	data.szModelName = cls_stalker_model.GetString();
+
+	return data;
 }
 
 //-----------------------------------------------------------------------------

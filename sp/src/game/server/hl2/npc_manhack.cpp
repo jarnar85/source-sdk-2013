@@ -89,7 +89,6 @@ ConVar	sk_manhack_melee_dmg( "sk_manhack_melee_dmg","0");
 ConVar	sk_manhack_v2( "sk_manhack_v2","1");
 ConVar  manhack_debug_collision("hlss_manhack_debug_collision", "0");
 
-ConVar	cls_manhack_faction("cls_manhack_faction", "0");
 ConVar	cls_manhack_health("cls_manhack_health", "0");
 ConVar	cls_manhack_model("cls_manhack_model", "0");
 
@@ -266,6 +265,19 @@ Class_T	CNPC_Manhack::Classify(void)
 
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_Manhack::GetBaseData()
+{
+	NPC_Basedata data;
+
+	data.iMaxHealth		 = cls_manhack_health.GetInt();
+	data.nFaction		 = CLASS_MANHACK;
+	data.szModelName	 = cls_manhack_model.GetString();
+
+	return data;
+}
 
 
 //-----------------------------------------------------------------------------

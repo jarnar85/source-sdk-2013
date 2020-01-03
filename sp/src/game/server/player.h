@@ -705,6 +705,7 @@ public:
 	virtual void RemoveSuit( void );
 
 	void CBasePlayer::EquipByClass(PlayerClass_T nClass);
+	void CBasePlayer::SetStats(PlayerClass_T nClass);
 
 	void	SetMaxSpeed( float flMaxSpeed ) { m_flMaxspeed = flMaxSpeed; }
 

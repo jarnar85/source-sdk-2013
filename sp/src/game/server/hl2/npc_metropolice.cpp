@@ -2722,6 +2722,20 @@ Class_T	CNPC_MetroPolice::Classify ( void )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_MetroPolice::GetBaseData()
+{
+	NPC_Basedata data;
+
+	data.iMaxHealth = cls_metropolice_health.GetInt();
+	data.nFaction = CLASS_METROPOLICE;
+	data.szModelName = cls_metropolice_model.GetString();
+
+	return data;
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.
 //-----------------------------------------------------------------------------

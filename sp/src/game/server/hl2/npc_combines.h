@@ -24,7 +24,10 @@ class CNPC_CombineS : public CNPC_Combine
 
 public: 
 	void		Spawn( void );
-	void		Precache( void );
+	void		Precache(void);
+
+	static NPC_Basedata	GetBaseData(Job_T job, bool iElite = false);
+
 	void		DeathSound( const CTakeDamageInfo &info );
 	void		PrescheduleThink( void );
 	void		BuildScheduleTestBits( void );

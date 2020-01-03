@@ -1067,34 +1067,20 @@ void CC_Player_Set_Class(const CCommand &args)
 		PlayerClass_T nClass = pPlayer->GetPlayerClass(args[1]);
 
 		// change player relation to NPCs
-		Class_T nFaction = pPlayer->GetClassFaction(nClass);
-		if (nFaction == CLASS_NONE)
+		if (nClass == PLC_NONE)
 		{
 			Msg("Invalid class: %s\n", args[1]);
 		}
 		else
 		{
-			CBaseCombatCharacter::SetPlayerRelationship(nFaction);
-
-			// TODO: Change Player/Hand Model depending on class (first person is missing)
-			const char *szModelName = pPlayer->GetClassModel(nClass);
-			pPlayer->SetModelCaching(szModelName);
-
-			// TODO: Change Stats depending on class
-			int iHealth = pPlayer->GetHealth();
-			iHealth *= pPlayer->GetClassHealth(nClass);
-			iHealth /= pPlayer->GetMaxHealth();
-			pPlayer->SetMaxHealth(pPlayer->GetClassHealth(nClass));
-			pPlayer->SetHealth(iHealth);
-
 			// TODO: Change HUD depending on Class
 			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
 
 			Msg("Set class ... ");
 			pPlayer->SetClass(nClass);
 			Msg(args[1]);
-			Msg("\nSet faction ... ");
-			pPlayer->SetFaction(nFaction);
+
+			pPlayer->SetStats(nClass);
 			Msg("\n");
 		}
 	}

@@ -22,7 +22,7 @@
 #include "ai_task.h"
 #include "activitylist.h"
 #include "engine/IEngineSound.h"
-#include "npc_BaseZombie.h"
+#include "npc_PoisonZombie.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -103,13 +103,10 @@ enum
 	SCHED_ZOMBIE_POISON_RANGE_ATTACK1,
 };
 
-
 //-----------------------------------------------------------------------------
 // The maximum number of headcrabs we can have riding on our back.
 // NOTE: If you change this value you must also change the lookup table in Spawn!
 //-----------------------------------------------------------------------------
-#define MAX_CRABS	3	
-
 int AE_ZOMBIE_POISON_THROW_WARN_SOUND;
 int AE_ZOMBIE_POISON_PICKUP_CRAB;
 int AE_ZOMBIE_POISON_THROW_SOUND;
@@ -138,101 +135,6 @@ static const char *pMoanSounds[] =
 //-----------------------------------------------------------------------------
 ConVar sk_zombie_poison_health( "sk_zombie_poison_health", "0");
 ConVar sk_zombie_poison_dmg_spit( "sk_zombie_poison_dmg_spit","0");
-
-class CNPC_PoisonZombie : public CAI_BlendingHost<CNPC_BaseZombie>
-{
-	DECLARE_CLASS( CNPC_PoisonZombie, CAI_BlendingHost<CNPC_BaseZombie> );
-
-public:
-
-	//
-	// CBaseZombie implemenation.
-	//
-	virtual Vector HeadTarget( const Vector &posSrc );
-	bool ShouldBecomeTorso( const CTakeDamageInfo &info, float flDamageThreshold );
-	virtual bool IsChopped( const CTakeDamageInfo &info )	{ return false; }
-
-	//
-	// CAI_BaseNPC implementation.
-	//
-	virtual float MaxYawSpeed( void );
-
-	virtual int RangeAttack1Conditions( float flDot, float flDist );
-	virtual int RangeAttack2Conditions( float flDot, float flDist );
-
-	virtual float GetClawAttackRange() const { return 70; }
-
-	virtual void PrescheduleThink( void );
-	virtual void BuildScheduleTestBits( void );
-	virtual int SelectSchedule( void );
-	virtual int SelectFailSchedule( int nFailedSchedule, int nFailedTask, AI_TaskFailureCode_t eTaskFailCode );
-	virtual int TranslateSchedule( int scheduleType );
-
-	virtual bool ShouldPlayIdleSound( void );
-
-	//
-	// CBaseAnimating implementation.
-	//
-	virtual void HandleAnimEvent( animevent_t *pEvent );
-
-	//
-	// CBaseEntity implementation.
-	//
-	virtual void Spawn( void );
-	virtual void Precache( void );
-	virtual void SetZombieModel( void );
-
-	virtual Class_T Classify( void );
-	virtual void Event_Killed( const CTakeDamageInfo &info );
-	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &inputInfo );
-
-	DECLARE_DATADESC();
-	DEFINE_CUSTOM_AI;
-
-	void PainSound( const CTakeDamageInfo &info );
-	void AlertSound( void );
-	void IdleSound( void );
-	void AttackSound( void );
-	void AttackHitSound( void );
-	void AttackMissSound( void );
-	void FootstepSound( bool fRightFoot );
-	void FootscuffSound( bool fRightFoot ) {};
-
-	virtual void StopLoopingSounds( void );
-
-protected:
-
-	virtual void MoanSound( envelopePoint_t *pEnvelope, int iEnvelopeSize );
-	virtual bool MustCloseToAttack( void );
-
-	virtual const char *GetMoanSound( int nSoundIndex );
-	virtual const char *GetLegsModel( void );
-	virtual const char *GetTorsoModel( void );
-	virtual const char *GetHeadcrabClassname( void );
-	virtual const char *GetHeadcrabModel( void );
-
-private:
-
-	void BreatheOffShort( void );
-
-	void EnableCrab( int nCrab, bool bEnable );
-	int RandomThrowCrab( void );
-	void EvacuateNest( bool bExplosion, float flDamage, CBaseEntity *pAttacker );
-
-	CSoundPatch *m_pFastBreathSound;
-	CSoundPatch *m_pSlowBreathSound;
-
-	int m_nCrabCount;				// How many headcrabs we have on our back.
-	bool m_bCrabs[MAX_CRABS];		// Which crabs in particular are on our back.
-	float m_flNextCrabThrowTime;	// The next time we are allowed to throw a headcrab.
-
-	float m_flNextPainSoundTime;
-
-	bool m_bNearEnemy;
-
-	// NOT serialized:
-	int m_nThrowCrab;				// The crab we are about to throw.
-};
 
 LINK_ENTITY_TO_CLASS( npc_poisonzombie, CNPC_PoisonZombie );
 
@@ -489,6 +391,21 @@ float CNPC_PoisonZombie::MaxYawSpeed( void )
 Class_T	CNPC_PoisonZombie::Classify( void )
 {
 	return CLASS_ZOMBIE;
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_PoisonZombie::GetBaseData()
+{
+	NPC_Basedata data;
+
+	data.iMaxHealth = cls_zombie_poison_health.GetInt();
+	data.nFaction = CLASS_ZOMBIE;
+	data.szModelName = cls_zombie_poison_model.GetString();
+
+	return data;
 }
 
 

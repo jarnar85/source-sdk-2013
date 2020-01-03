@@ -128,6 +128,12 @@ class CAI_BaseNPC;
 class CAI_ScriptedSequence;
 class CSound;
 
+struct NPC_Basedata {
+	Class_T nFaction;
+	int iMaxHealth;
+	const char *szModelName;
+};
+
 #ifdef _XBOX
 //#define FUNCTANK_AUTOUSE  We haven't made the decision to use this yet (sjb)
 #else

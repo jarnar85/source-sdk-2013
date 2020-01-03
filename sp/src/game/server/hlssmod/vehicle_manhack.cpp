@@ -1098,8 +1098,7 @@ void CPropVehicleManhack::ForcePlayerIn(CBaseEntity *pOwner)
 	if ( pPlayer->GetInVehicle( GetServerVehicle(), VEHICLE_ROLE_DRIVER ) == false )
 	{
 		// The player was unable to enter the vehicle and the output has failed
-//		int falseGetInVehicle=0;
-		Assert( 0 ); //muista vaihtaa tuohon nolla sitten kun poistat intin;
+		Assert( 0 );
 		return;
 	}
 }

@@ -2560,6 +2560,8 @@ void CHL2_Player::Event_Killed( const CTakeDamageInfo &info )
 {
 	BaseClass::Event_Killed( info );
 
+// 	CBaseEntity* cWeapon	 = info.GetWeapon();
+
 	FirePlayerProxyOutput( "PlayerDied", variant_t(), this, this );
 	NotifyScriptsOfDeath();
 }

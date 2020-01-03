@@ -69,6 +69,7 @@
 #include "dt_utlvector_send.h"
 #include "vote_controller.h"
 #include "ai_speech.h"
+#include "npc_list.h"
 
 #if defined USES_ECON_ITEMS
 #include "econ_wearable.h"
@@ -7286,30 +7287,17 @@ bool CBasePlayer::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 	classtable_t	*pTable		 = pWeapon->ClassList();
 	int				classCount	 = pWeapon->ClassListCount();
 
-	/*
-	Msg("Weapon_CanUse: "); 
-	Msg((char*) pWeapon->GetName());
-	*/
-
 	if (classCount > 1)
 	{
 		for (int i = 0; i < classCount; i++, pTable++)
 		{
 			if (pTable->cls == m_Class)
 			{
-				/*
-				Msg((m_Class == PLC_PLAYER) ? " player - " : "no player - ");
-				Msg((m_Class == PLC_METROPOLICE) ? " cop - " : "no cop - ");
-				Msg(pTable->usable?"true":"false");
-				Msg("\n");
-				*/
-
 				return pTable->usable;
 			}
 		}
 	}
 
-	// Msg(" default\n");
 	return true;
 }
 
@@ -8733,6 +8721,74 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	}
 }
 
+void CBasePlayer::SetStats(PlayerClass_T nClass)
+{
+	// TODO: retain head and gender data in player object and add functionality to fix the head
+	char m_sGender = 'm';
+	
+	NPC_Basedata data;
+	
+	// all specific NPCs (not using the default behavior) have to have their npc_xx.h files added to the npc_list.h to work properly
+	switch (nClass)
+	{
+	case PLC_CITIZEN:
+		data = CNPC_Citizen::GetBaseData(JOB_OFFICER, m_sGender, CT_DOWNTRODDEN);
+		break;
+	case PLC_REBEL:
+		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_sGender, CT_REBEL);
+		break;
+	case PLC_MANHACK:
+		data = CNPC_Manhack::GetBaseData();
+		break;
+	case PLC_METROPOLICE:
+		data = CNPC_MetroPolice::GetBaseData();
+		break;
+	case PLC_STALKER:
+		data = CNPC_Stalker::GetBaseData();
+	case PLC_COMBINE_GUARD:
+		data = CNPC_CombineS::GetBaseData(JOB_GUARD);
+		break;
+	case PLC_COMBINE_SOLDIER:
+		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER);
+		break;
+	case PLC_COMBINE_ELITE:
+		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER, true);
+		break;
+	case PLC_ZOMBIE:
+		data = CZombie::GetBaseData();
+		break;
+	case PLC_ZOMBIE_COMBINE:
+		data = CNPC_Zombine::GetBaseData();
+		break;
+	case PLC_ZOMBIE_FAST:
+		data = CFastZombie::GetBaseData();
+		break;
+	case PLC_ZOMBIE_POISON:
+		data = CNPC_PoisonZombie::GetBaseData();
+		break;
+	case PLC_PLAYER:
+	default:
+		data.szModelName	 = GetClassModel(nClass);
+		data.nFaction		 = GetClassFaction(nClass);
+		data.iMaxHealth		 = GetClassHealth(nClass);
+	}
+
+	// TODO: Change Player/Hand Model depending on class (first person is missing) + animate third person
+	SetModelCaching(data.szModelName);
+
+	Msg("\nSet faction ... ");
+	CBaseCombatCharacter::SetPlayerRelationship(data.nFaction);
+	SetFaction(data.nFaction);
+
+
+	int iHealth = GetHealth();
+	iHealth *= data.iMaxHealth;
+	iHealth /= GetMaxHealth();
+
+	SetMaxHealth(data.iMaxHealth);
+	SetHealth(iHealth);
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : &tr - 
@@ -9444,8 +9500,7 @@ void CBasePlayer::SetModelCaching(const char *szModelName)
 		m_bAllowPrecache = t_bAllowPrecache;
 	}
 
-	BaseClass::SetModel(szModelName);
-	m_nBodyPitchPoseParam = LookupPoseParameter("body_pitch");
+	SetModel(szModelName);
 }
 
 void CBasePlayer::SetModel(const char *szModelName)

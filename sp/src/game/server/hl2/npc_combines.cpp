@@ -143,6 +143,39 @@ void CNPC_CombineS::DeathSound( const CTakeDamageInfo &info )
 
 
 //-----------------------------------------------------------------------------
+// Purpose: Return the base data for this type of NPC.
+//-----------------------------------------------------------------------------
+NPC_Basedata CNPC_CombineS::GetBaseData(Job_T job, bool isElite)
+{
+	NPC_Basedata data;
+	data.nFaction = CLASS_COMBINE;
+
+	switch (job)
+	{
+	case JOB_GUARD:
+		data.iMaxHealth = cls_combine_guard_health.GetInt();
+		data.szModelName = cls_combine_guard_model.GetString();
+		break;
+	case JOB_SNIPER:
+		isElite = true;
+	case JOB_SOLDIER:
+	default:
+		if (isElite)
+		{
+			data.iMaxHealth = cls_combine_elite_health.GetInt();
+			data.szModelName = cls_combine_elite_model.GetString();
+		}
+		else
+		{
+			data.iMaxHealth = cls_combine_soldier_health.GetInt();
+			data.szModelName = cls_combine_soldier_model.GetString();
+		}
+	}
+
+	return data;
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Soldiers use CAN_RANGE_ATTACK2 to indicate whether they can throw
 //			a grenade. Because they check only every half-second or so, this
 //			condition must persist until it is updated again by the code

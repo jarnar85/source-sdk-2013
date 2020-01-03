@@ -100,6 +100,8 @@ public:
 	
 	Class_T 		Classify();
 
+	static NPC_Basedata	GetBaseData(Job_T tJob, char szGender, CitizenType_t cType);
+
 	bool 			ShouldAlwaysThink();
 
 	//---------------------------------
