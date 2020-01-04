@@ -1080,13 +1080,35 @@ void CC_Player_Set_Class(const CCommand &args)
 			pPlayer->SetClass(nClass);
 			Msg(args[1]);
 
-			pPlayer->SetStats(nClass);
+			pPlayer->SetStats();
 			Msg("\n");
 		}
 	}
 
 }
 static ConCommand npc_class("player_setclass", CC_Player_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+void CC_Player_Gender(const CCommand &args)
+{
+
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		const char* myarg = args[1];
+		
+		char gender = myarg[0];
+
+		if (gender != 'f' && gender != 'm')
+		{
+			Msg("Invalid gender: %s\n", args[1]);
+		}
+		else
+		{
+			pPlayer->SetGender(gender);
+		}
+	}
+}
+static ConCommand npc_gender("player_setgender", CC_Player_Gender, "Set the gender of the player.\n\tArguments:   	{gender}", FCVAR_CHEAT);
 
 void CC_Player_Rank(const CCommand &args)
 {

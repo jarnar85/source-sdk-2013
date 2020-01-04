@@ -1042,6 +1042,9 @@ public:
 	CNetworkVarForDerived(int, m_iCredits);
 	CNetworkVarForDerived(int, m_iMemRepl);
 
+	CNetworkHandleForDerived(Job_T, m_job);
+	CNetworkVarForDerived(char, m_gender);
+
 	CNetworkVarForDerived( char, m_lifeState );
 	CNetworkVarForDerived( char , m_takedamage );
 

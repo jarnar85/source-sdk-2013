@@ -583,6 +583,8 @@ CBasePlayer::CBasePlayer( )
 	Weapon_SetLast( NULL );
 	m_bitsDamageType = 0;
 
+	m_gender = 'm';
+
 	m_bForceOrigin = false;
 	m_hVehicle = NULL;
 	m_pCurrentCommand = NULL;
@@ -8721,21 +8723,48 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	}
 }
 
-void CBasePlayer::SetStats(PlayerClass_T nClass)
+void CBasePlayer::SetStats()
 {
-	// TODO: retain head and gender data in player object and add functionality to fix the head
-	char m_sGender = 'm';
-	
+	NPC_Basedata data = GetBaseData();
+
+	// set (and precache) model
+	SetModelCaching(data.szModelName);
+
+	// set relationships
+	CBaseCombatCharacter::SetPlayerRelationship(data.nFaction);
+	SetFaction(data.nFaction);
+
+	// set stats (health)
+	int iHealth = GetHealth();
+	iHealth *= data.iMaxHealth;
+	iHealth /= GetMaxHealth();
+
+	SetMaxHealth(data.iMaxHealth);
+	SetHealth(iHealth);
+}
+
+void CBasePlayer::SetGender(char gender)
+{
+	m_gender = gender;
+
+	NPC_Basedata data = GetBaseData();
+
+	// set (and precache) model
+	SetModelCaching(data.szModelName);
+}
+
+NPC_Basedata CBasePlayer::GetBaseData()
+{
 	NPC_Basedata data;
-	
+
 	// all specific NPCs (not using the default behavior) have to have their npc_xx.h files added to the npc_list.h to work properly
-	switch (nClass)
+	switch (m_Class)
 	{
 	case PLC_CITIZEN:
-		data = CNPC_Citizen::GetBaseData(JOB_OFFICER, m_sGender, CT_DOWNTRODDEN);
+		data = CNPC_Citizen::GetBaseData(JOB_OFFICER, m_gender, CT_DOWNTRODDEN);
 		break;
 	case PLC_REBEL:
-		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_sGender, CT_REBEL);
+		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_gender, CT_REBEL);
 		break;
 	case PLC_MANHACK:
 		data = CNPC_Manhack::GetBaseData();
@@ -8768,25 +8797,12 @@ void CBasePlayer::SetStats(PlayerClass_T nClass)
 		break;
 	case PLC_PLAYER:
 	default:
-		data.szModelName	 = GetClassModel(nClass);
-		data.nFaction		 = GetClassFaction(nClass);
-		data.iMaxHealth		 = GetClassHealth(nClass);
+		data.szModelName = GetClassModel(m_Class);
+		data.nFaction = GetClassFaction(m_Class);
+		data.iMaxHealth = GetClassHealth(m_Class);
 	}
 
-	// TODO: Change Player/Hand Model depending on class (first person is missing) + animate third person
-	SetModelCaching(data.szModelName);
-
-	Msg("\nSet faction ... ");
-	CBaseCombatCharacter::SetPlayerRelationship(data.nFaction);
-	SetFaction(data.nFaction);
-
-
-	int iHealth = GetHealth();
-	iHealth *= data.iMaxHealth;
-	iHealth /= GetMaxHealth();
-
-	SetMaxHealth(data.iMaxHealth);
-	SetHealth(iHealth);
+	return data;
 }
 
 //-----------------------------------------------------------------------------
