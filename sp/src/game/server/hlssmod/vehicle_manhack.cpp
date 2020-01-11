@@ -138,6 +138,9 @@ void CPropVehicleManhack::Spawn( void )
 
 	SetCollisionGroup( COLLISION_GROUP_VEHICLE );
 
+	// Setup vehicle as a manhack.
+	SetVehicleType(VEHICLE_TYPE_MANHACK);
+
 	BaseClass::Spawn();
 
 	SetSolid( SOLID_BBOX );
@@ -943,6 +946,7 @@ void CPropVehicleManhack::EnterVehicle( CBaseCombatCharacter *pPassenger )
 		if (pManhack!=NULL)
 		{
 			pManhack->SetControllable(true);
+			pManhack->SetDriver(pPlayer);
 
 			if (manhack_dont_draw.GetBool())
 			{
@@ -1139,7 +1143,7 @@ int CPropVehicleManhack::OnTakeDamage( const CTakeDamageInfo &inputInfo )
 	return 0;
 }
 
-void CPropVehicleManhack::TraceAttack( const CTakeDamageInfo &inputInfo, const Vector &vecDir, trace_t *ptr )
+void CPropVehicleManhack::TraceAttack(const CTakeDamageInfo &inputInfo, const Vector &vecDir, trace_t *ptr)
 {
 	if ( m_hPlayer != NULL )
 	{
@@ -1147,6 +1151,22 @@ void CPropVehicleManhack::TraceAttack( const CTakeDamageInfo &inputInfo, const V
 		ForcePlayerOut();
 	}
 
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : *pVictim - 
+//			&info - 
+//-----------------------------------------------------------------------------
+void CPropVehicleManhack::Event_KilledOther(CBaseEntity *pVictim, const CTakeDamageInfo &info)
+{
+	CBaseEntity *pDriver = GetDriver();
+	if (pDriver != NULL)
+	{
+		pDriver->Event_KilledOther(pVictim, info);
+	}
+
+	BaseClass::Event_KilledOther(pVictim, info);
 }
 
 CPropVehicleManhack *VehicleManhack_Create( const Vector &position, const QAngle &angles, CBaseEntity *pOwner  )

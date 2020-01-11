@@ -298,6 +298,7 @@ private:
 
 public:
 	void		SetControllable(bool bControllable);
+	void		SetDriver(CBasePlayer *pPlayer);
 	void		ShouldFollowPlayer(bool bFollow) { m_bShouldFollowPlayer = bFollow; }
 	void		ShowRedGlow(bool bHide);
 

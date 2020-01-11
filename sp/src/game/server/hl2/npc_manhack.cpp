@@ -1323,6 +1323,14 @@ void CNPC_Manhack::SetControllable(bool bControllable)
 	m_bControllable=bControllable;	
 }
 
+void CNPC_Manhack::SetDriver(CBasePlayer *pPlayer)
+{
+	if (pPlayer)
+	{
+		m_hPhysicsAttacker = pPlayer;
+	}
+}
+
 void CNPC_Manhack::ShowRedGlow(bool bHide)
 {
 	if (m_pLightGlow == NULL)
@@ -3481,6 +3489,12 @@ CBasePlayer *CNPC_Manhack::HasPhysicsAttacker( float dt )
 	{
 		return m_hPhysicsAttacker;
 	}
+
+	if (m_bControllable)
+	{
+		return m_hPhysicsAttacker;
+	}
+
 	return NULL;
 }
 

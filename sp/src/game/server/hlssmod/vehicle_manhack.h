@@ -43,7 +43,7 @@ protected:
 	CPropVehicleManhack *GetManhack( void );
 };
 
-class CPropVehicleManhack :  public CBaseProp, public IDrivableVehicle
+class CPropVehicleManhack : public CPropVehicle, public IDrivableVehicle
 {
 	DECLARE_CLASS( CPropVehicleManhack, CBaseProp );
 public:
@@ -67,7 +67,8 @@ public:
 	void			Think(void);
 
 	virtual int		ObjectCaps( void ) { return BaseClass::ObjectCaps() | FCAP_IMPULSE_USE; };
-	virtual void	TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
+	virtual void	TraceAttack(const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr);
+	virtual void	Event_KilledOther(CBaseEntity *pVictim, const CTakeDamageInfo &info);
 	virtual int		OnTakeDamage( const CTakeDamageInfo &info );
 
 	void			PlayerControlInit( CBasePlayer *pPlayer );
