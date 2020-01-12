@@ -832,7 +832,9 @@ private:
 	void				AdjustPlayerTimeBase( int simulation_ticks );
 
 public:
-	
+	bool		m_pVGUImode;
+	bool		GetVGUIMode(void) { return m_pVGUImode; }
+	void		SetVGUImode(bool newmode) { m_pVGUImode = newmode; }
 
 
 	// Used by gamemovement to check if the entity is stuck.
@@ -941,9 +943,9 @@ protected:
 	
 
 	// default values for players
-	PlayerClass_T		m_Class = PLC_PLAYER;
-	Class_T				m_Faction = CLASS_PLAYER;
-	Job_T				m_Job = JOB_NONE;
+	PlayerClass_T		m_Class		 = PLC_PLAYER;
+	Class_T				m_Faction	 = CLASS_PLAYER;
+	Job_T				m_Job		 = JOB_NONE;
 
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Class);
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Faction);

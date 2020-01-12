@@ -2892,6 +2892,9 @@ void CBasePlayer::Duck( )
 //
 Class_T  CBasePlayer::Classify ( void )
 {
+	if (m_Faction != CLASS_NONE)
+		return m_Faction;
+	
 	return CLASS_PLAYER;
 }
 
@@ -5041,6 +5044,8 @@ void CBasePlayer::Spawn( void )
 	UpdateLastKnownArea();
 
 	m_weaponFiredTimer.Invalidate();
+
+	SetVGUImode(false);
 }
 
 void CBasePlayer::Activate( void )
@@ -6572,6 +6577,16 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 		}
 		return true;
 	}
+	else if (stricmp(cmd, "vguimode_true") == 0)
+	{
+		SetVGUImode(true);
+		return true;
+	}
+	else if (stricmp(cmd, "vguimode_false") == 0)
+	{
+		SetVGUImode(false);
+		return true;
+	}
 
 	return false;
 }
@@ -7518,6 +7533,11 @@ void CBasePlayer::SetClass(PlayerClass_T nClass)
 	default:
 		break;
 	}
+
+	GlobalEntity_SetCounter("comb_credits", m_iCredits);
+	GlobalEntity_SetCounter("comb_rank", m_iRank);
+	GlobalEntity_SetCounter("mem_replacements", m_iMemRepl);
+	GlobalEntity_SetCounter("rations", m_iRation);
 
 	// CBaseCombatCharacter::SetClass(nClass); // not working - doing it right here
 	p_Class	 = m_Class;

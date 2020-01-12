@@ -278,7 +278,6 @@ public:
 	// Class factory
 	static CBaseEntity				*CreatePredictedEntityByName( const char *classname, const char *module, int line, bool persist = false );
 	Class_T GetClassStr(const char* sFaction);
-	const char* GetStrClass(Class_T nFaction);
 
 	PlayerClass_T GetPlayerClass(const char* sClass);
 

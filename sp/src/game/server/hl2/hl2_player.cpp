@@ -884,6 +884,12 @@ void CHL2_Player::PreThink(void)
 	// Update weapon's ready status
 	UpdateWeaponPosture();
 
+	// If we're in VGUI mode we should avoid shooting
+	if (GetVGUIMode())
+	{
+		m_nButtons &= ~(IN_ATTACK | IN_ATTACK2);
+	}
+
 	// Disallow shooting while zooming
 	if (sv_disallow_zoom_fire.GetBool())
 	{
@@ -1018,6 +1024,10 @@ Class_T  CHL2_Player::Classify ( void )
 		{
 			IServerVehicle *pVehicle = GetVehicle();
 			return pVehicle->ClassifyPassenger( this, CLASS_PLAYER );
+		}
+		else if (m_Faction != CLASS_NONE)
+		{
+			return m_Faction;
 		}
 		else
 		{
@@ -2550,8 +2560,11 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 			iCredits	 = 0;
 	}
 
+
 	m_iCredits += iCredits;
 
+	GlobalEntity_AddToCounter("kills", 1);
+	GlobalEntity_SetCounter("comb_credits", m_iCredits);
 }
 
 //-----------------------------------------------------------------------------
@@ -3042,6 +3055,17 @@ void CHL2_Player::UpdateWeaponPosture( void )
 		UTIL_TraceLine( EyePosition(), EyePosition() + vecAim * CHECK_FRIENDLY_RANGE, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
 
 		CBaseEntity *aimTarget = tr.m_pEnt;
+
+		if (GetVGUIMode())
+		{
+			//We're over a friendly, drop our weapon
+			if (Weapon_Lower() == false)
+			{
+				//FIXME: We couldn't lower our weapon!
+			}
+
+			return;
+		}
 
 		//If we're over something
 		if (  aimTarget && !tr.DidHitWorld() )

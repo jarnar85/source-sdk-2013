@@ -393,15 +393,19 @@ void ClientModeShared::Shutdown()
 // Input  : frametime - 
 //			*cmd - 
 //-----------------------------------------------------------------------------
-bool ClientModeShared::CreateMove( float flInputSampleTime, CUserCmd *cmd )
+bool ClientModeShared::CreateMove(float flInputSampleTime, CUserCmd *cmd, bool bVguiUpdate)
 {
 	// Let the player override the view.
 	C_BasePlayer *pPlayer = C_BasePlayer::GetLocalPlayer();
-	if(!pPlayer)
+	if (!pPlayer)
 		return true;
 
 	// Let the player at it
-	return pPlayer->CreateMove( flInputSampleTime, cmd );
+	return pPlayer->CreateMove(flInputSampleTime, cmd, bVguiUpdate);
+}
+bool ClientModeShared::CreateMove(float flInputSampleTime, CUserCmd *cmd)
+{
+	return CreateMove(flInputSampleTime, cmd, false);
 }
 
 //-----------------------------------------------------------------------------

@@ -398,11 +398,6 @@ END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( player, C_BasePlayer );
 
-//-----------------------------------------------------------------------------
-// Init static variables
-//-----------------------------------------------------------------------------
-char* C_BasePlayer::m_faction = "CLASS_PLAYER";
-
 // -------------------------------------------------------------------------------- //
 // Functions.
 // -------------------------------------------------------------------------------- //
@@ -1059,7 +1054,7 @@ void C_BasePlayer::DetermineVguiInputMode( CUserCmd *pCmd )
 
 	// If we're in vgui mode *and* we're holding down mouse buttons,
 	// stay in vgui mode even if we're outside the screen bounds
-	if (m_pCurrentVguiScreen.Get() && (pCmd->buttons & (IN_ATTACK | IN_ATTACK2)) )
+	if (m_pCurrentVguiScreen.Get() && (pCmd->buttons & (IN_ATTACK | IN_ATTACK2)))
 	{
 		SetVGuiScreenButtonState( m_pCurrentVguiScreen.Get(), pCmd->buttons );
 
@@ -1134,7 +1129,7 @@ void C_BasePlayer::DetermineVguiInputMode( CUserCmd *pCmd )
 //-----------------------------------------------------------------------------
 // Purpose: Input handling
 //-----------------------------------------------------------------------------
-bool C_BasePlayer::CreateMove( float flInputSampleTime, CUserCmd *pCmd )
+bool C_BasePlayer::CreateMove(float flInputSampleTime, CUserCmd *pCmd, bool bVguiUpdate)
 {
 	// Allow the vehicle to clamp the view angles
 	if ( IsInAVehicle() )
@@ -1187,12 +1182,34 @@ bool C_BasePlayer::CreateMove( float flInputSampleTime, CUserCmd *pCmd )
 
 	m_vecOldViewAngles = pCmd->viewangles;
 	
-	// Check to see if we're in vgui input mode...
-	DetermineVguiInputMode( pCmd );
+
+	if (bVguiUpdate)
+	{
+		bool tempvguimode = IsInVGuiInputMode();
+		
+		// Check to see if we're in vgui input mode...
+		DetermineVguiInputMode(pCmd);
+
+		if (tempvguimode == !IsInVGuiInputMode())
+		{
+			if (IsInVGuiInputMode())
+			{
+				engine->ClientCmd("vguimode_true");
+			}
+			else
+			{
+				engine->ClientCmd("vguimode_false");
+			}
+		}
+	}
 
 	return true;
 }
 
+bool C_BasePlayer::CreateMove(float flInputSampleTime, CUserCmd *pCmd)
+{
+	return CreateMove(flInputSampleTime, pCmd, false);
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Player has changed to a new team

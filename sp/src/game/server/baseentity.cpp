@@ -2925,160 +2925,77 @@ ConVar ai_debug_los("ai_debug_los", "0", FCVAR_CHEAT, "NPC Line-Of-Sight debug m
 
 
 Class_T CBaseEntity::Classify ( void )
-{ 
+{
 	return CLASS_NONE;
 }
 
 
 Class_T CBaseEntity::GetClassStr(const char* sClass)
 {
-	if (strcmp(sClass, "CLASS_PLAYER") == 0)
-		return CLASS_PLAYER;
-	else if (strcmp(sClass, "CLASS_PLAYER_ALLY") == 0)
-		return CLASS_PLAYER_ALLY;
-	else if (strcmp(sClass, "CLASS_PLAYER_ALLY_VITAL") == 0)
-		return CLASS_PLAYER_ALLY_VITAL;
-	else if (strcmp(sClass, "CLASS_ANTLION") == 0)
-		return CLASS_ANTLION;
-	else if (strcmp(sClass, "CLASS_BARNACLE") == 0)
-		return CLASS_BARNACLE;
-	else if (strcmp(sClass, "CLASS_BULLSEYE") == 0)
-		return CLASS_BULLSEYE;
-	else if (strcmp(sClass, "CLASS_CITIZEN_PASSIVE") == 0)
-		return CLASS_CITIZEN_PASSIVE;
-	else if (strcmp(sClass, "CLASS_CITIZEN_REBEL") == 0)
-		return CLASS_CITIZEN_REBEL;
-	else if (strcmp(sClass, "CLASS_COMBINE") == 0)
-		return CLASS_COMBINE;
-	else if (strcmp(sClass, "CLASS_COMBINE_GUNSHIP") == 0)
-		return CLASS_COMBINE_GUNSHIP;
-	else if (strcmp(sClass, "CLASS_COMBINE_HUNTER") == 0)
-		return CLASS_COMBINE_HUNTER;
-	else if (strcmp(sClass, "CLASS_CONSCRIPT") == 0)
-		return CLASS_CONSCRIPT;
-	else if (strcmp(sClass, "CLASS_EARTH_FAUNA") == 0)
-		return CLASS_EARTH_FAUNA;
-	else if (strcmp(sClass, "CLASS_FLARE") == 0)
-		return CLASS_FLARE;
-	else if (strcmp(sClass, "CLASS_HACKED_ROLLERMINE") == 0)
-		return CLASS_HACKED_ROLLERMINE;
-	else if (strcmp(sClass, "CLASS_HEADCRAB") == 0)
-		return CLASS_HEADCRAB;
-	else if (strcmp(sClass, "CLASS_MANHACK") == 0)
-		return CLASS_MANHACK;
-	else if (strcmp(sClass, "CLASS_METROPOLICE") == 0)
-		return CLASS_METROPOLICE;
-	else if (strcmp(sClass, "CLASS_MILITARY") == 0)
-		return CLASS_MILITARY;
-	else if (strcmp(sClass, "CLASS_MISSILE") == 0)
-		return CLASS_MISSILE;
-	else if (strcmp(sClass, "CLASS_PROTOSNIPER") == 0)
-		return CLASS_PROTOSNIPER;
-	else if (strcmp(sClass, "CLASS_SCANNER") == 0)
-		return CLASS_SCANNER;
-	else if (strcmp(sClass, "CLASS_STALKER") == 0)
-		return CLASS_STALKER;
-	else if (strcmp(sClass, "CLASS_VORTIGAUNT") == 0)
-		return CLASS_VORTIGAUNT;
-	else if (strcmp(sClass, "CLASS_ZOMBIE") == 0)
-		return CLASS_ZOMBIE;
-	else if (strcmp(sClass, "CLASS_NONE") == 0)
-		return CLASS_NONE;
-	else
-		return CLASS_NONE;
-}
+	if (strcmp(sClass, "CLASS_PLAYER") == 0)			return CLASS_PLAYER;
+	if (strcmp(sClass, "CLASS_PLAYER_ALLY") == 0)		return CLASS_PLAYER_ALLY;
+	if (strcmp(sClass, "CLASS_PLAYER_ALLY_VITAL") == 0)	return CLASS_PLAYER_ALLY_VITAL;
 
-const char* CBaseEntity::GetStrClass(Class_T nClass)
-{
-	switch (nClass)
-	{
-	case CLASS_PLAYER:
-		return "CLASS_PLAYER";
-	case CLASS_PLAYER_ALLY:
-		return "CLASS_PLAYER_ALLY";
-	case CLASS_PLAYER_ALLY_VITAL:
-		return "CLASS_PLAYER_ALLY_VITAL";
-	case CLASS_ANTLION:
-		return "CLASS_ANTLION";
-	case CLASS_BARNACLE:
-		return "CLASS_BLACK_OPS";
-	case CLASS_BULLSEYE:
-		return "CLASS_BULLSEYE";
-	case CLASS_CITIZEN_PASSIVE:
-		return "CLASS_CITIZEN_PASSIVE";
-	case CLASS_CITIZEN_REBEL:
-		return "CLASS_CITIZEN_REBEL";
-	case CLASS_COMBINE:
-		return "CLASS_COMBINE";
-	case CLASS_COMBINE_GUNSHIP:
-		return "CLASS_COMBINE_GUNSHIP";
-	case CLASS_COMBINE_HUNTER:
-		return "CLASS_COMBINE_HUNTER";
-	case CLASS_CONSCRIPT:
-		return "CLASS_CONSCRIPT";
-	case CLASS_EARTH_FAUNA:
-		return "CLASS_EARTH_FAUNA";
-	case CLASS_FLARE:
-		return "CLASS_FLARE";
-	case CLASS_HACKED_ROLLERMINE:
-		return "CLASS_HACKED_ROLLERMINE";
-	case CLASS_HEADCRAB:
-		return "CLASS_HEADCRAB";
-	case CLASS_MANHACK:
-		return "CLASS_MANHACK";
-	case CLASS_METROPOLICE:
-		return "CLASS_METROPOLICE";
-	case CLASS_MILITARY:
-		return "CLASS_MILITARY";
-	case CLASS_MISSILE:
-		return "CLASS_MISSILE";
-	case CLASS_PROTOSNIPER:
-		return "CLASS_PROTOSNIPER";
-	case CLASS_SCANNER:
-		return "CLASS_SCANNER";
-	case CLASS_STALKER:
-		return "CLASS_STALKER";
-	case CLASS_VORTIGAUNT:
-		return "CLASS_VORTIGAUNT";
-	case CLASS_ZOMBIE:
-		return "CLASS_ZOMBIE";
-	case CLASS_NONE:
-	default:
-		return "CLASS_NONE";
-	}
+	// Humans
+	if (strcmp(sClass, "CLASS_CITIZEN_PASSIVE") == 0)	return CLASS_CITIZEN_PASSIVE;
+	if (strcmp(sClass, "CLASS_CITIZEN_REBEL") == 0)		return CLASS_CITIZEN_REBEL;
+	if (strcmp(sClass, "CLASS_CONSCRIPT") == 0)			return CLASS_CONSCRIPT;
+
+	// Combine
+	if (strcmp(sClass, "CLASS_COMBINE") == 0)			return CLASS_COMBINE;
+	if (strcmp(sClass, "CLASS_COMBINE_HUNTER") == 0)	return CLASS_COMBINE_HUNTER;
+	if (strcmp(sClass, "CLASS_METROPOLICE") == 0)		return CLASS_METROPOLICE;
+	if (strcmp(sClass, "CLASS_PROTOSNIPER") == 0)		return CLASS_PROTOSNIPER;
+	if (strcmp(sClass, "CLASS_STALKER") == 0)			return CLASS_STALKER;
+	
+	// Aliens
+	if (strcmp(sClass, "CLASS_ANTLION") == 0)			return CLASS_ANTLION;
+	if (strcmp(sClass, "CLASS_BARNACLE") == 0)			return CLASS_BARNACLE;
+	if (strcmp(sClass, "CLASS_BULLSEYE") == 0)			return CLASS_BULLSEYE;
+	if (strcmp(sClass, "CLASS_EARTH_FAUNA") == 0)		return CLASS_EARTH_FAUNA;
+	if (strcmp(sClass, "CLASS_HEADCRAB") == 0)			return CLASS_HEADCRAB;
+	if (strcmp(sClass, "CLASS_VORTIGAUNT") == 0)		return CLASS_VORTIGAUNT;
+	if (strcmp(sClass, "CLASS_ZOMBIE") == 0)			return CLASS_ZOMBIE;
+
+	// Tech
+	if (strcmp(sClass, "CLASS_COMBINE_GUNSHIP") == 0)	return CLASS_COMBINE_GUNSHIP;
+	if (strcmp(sClass, "CLASS_FLARE") == 0)				return CLASS_FLARE;
+	if (strcmp(sClass, "CLASS_MANHACK") == 0)			return CLASS_MANHACK;
+	if (strcmp(sClass, "CLASS_MILITARY") == 0)			return CLASS_MILITARY;
+	if (strcmp(sClass, "CLASS_MISSILE") == 0)			return CLASS_MISSILE;
+	if (strcmp(sClass, "CLASS_SCANNER") == 0)			return CLASS_SCANNER;
+	if (strcmp(sClass, "CLASS_HACKED_ROLLERMINE") == 0)	return CLASS_HACKED_ROLLERMINE;
+
+
+	return CLASS_NONE;
 }
 
 PlayerClass_T CBaseEntity::GetPlayerClass(const char* sClass)
 {
 
-	if (strcmp(sClass, "player") == 0)
-		return PLC_PLAYER;
-	else if (strcmp(sClass, "citizen") == 0)
-		return PLC_CITIZEN;
-	else if (strcmp(sClass, "rebel") == 0)
-		return PLC_REBEL;
-	else if (strcmp(sClass, "manhack") == 0)
-		return PLC_MANHACK;
-	else if (strcmp(sClass, "metropolice") == 0)
-		return PLC_METROPOLICE;
-	else if (strcmp(sClass, "combine_guard") == 0)
-		return PLC_COMBINE_GUARD;
-	else if (strcmp(sClass, "combine_soldier") == 0)
-		return PLC_COMBINE_SOLDIER;
-	else if (strcmp(sClass, "combine_elite") == 0)
-		return PLC_COMBINE_ELITE;
-	else if (strcmp(sClass, "stalker") == 0)
-		return PLC_STALKER;
-	else if (strcmp(sClass, "zombie") == 0)
-		return PLC_ZOMBIE;
-	else if (strcmp(sClass, "zombie_poison") == 0)
-		return PLC_ZOMBIE_POISON;
-	else if (strcmp(sClass, "zombie_fast") == 0)
-		return PLC_ZOMBIE_FAST;
-	else if (strcmp(sClass, "zombie_combine") == 0)
-		return PLC_ZOMBIE_COMBINE;
-	else
-		return PLC_NONE;
+	if (strcmp(sClass, "player") == 0)			return PLC_PLAYER;
+
+	// Humans
+	if (strcmp(sClass, "citizen") == 0)			return PLC_CITIZEN;
+	if (strcmp(sClass, "rebel") == 0)			return PLC_REBEL;
+
+	// Combine
+	if (strcmp(sClass, "metropolice") == 0)		return PLC_METROPOLICE;
+	if (strcmp(sClass, "combine_guard") == 0)	return PLC_COMBINE_GUARD;
+	if (strcmp(sClass, "combine_soldier") == 0)	return PLC_COMBINE_SOLDIER;
+	if (strcmp(sClass, "combine_elite") == 0)	return PLC_COMBINE_ELITE;
+	if (strcmp(sClass, "stalker") == 0)			return PLC_STALKER;
+
+	// Aliens
+	if (strcmp(sClass, "zombie") == 0)			return PLC_ZOMBIE;
+	if (strcmp(sClass, "zombie_poison") == 0)	return PLC_ZOMBIE_POISON;
+	if (strcmp(sClass, "zombie_fast") == 0)		return PLC_ZOMBIE_FAST;
+	if (strcmp(sClass, "zombie_combine") == 0)	return PLC_ZOMBIE_COMBINE;
+
+	// Special vehicles
+	if (strcmp(sClass, "manhack") == 0)			return PLC_MANHACK;
+	
+	return PLC_NONE;
 }
 
 Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)

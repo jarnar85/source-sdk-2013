@@ -130,6 +130,7 @@ public:
 	void					SetSuitUpdate(const char *name, int fgroup, int iNoRepeat);
 
 	// Input handling
+	virtual bool	CreateMove( float flInputSampleTime, CUserCmd *pCmd, bool bVguiUpdate );
 	virtual bool	CreateMove( float flInputSampleTime, CUserCmd *pCmd );
 	virtual void	AvoidPhysicsProps( CUserCmd *pCmd );
 	
@@ -449,9 +450,6 @@ public:
 	float			m_flConstraintSpeedFactor;
 
 	// General player data
-public:
-	static char*		m_faction;
-
 protected:
 
 	void				CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );

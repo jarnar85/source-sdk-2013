@@ -1103,7 +1103,7 @@ void CInput::ExtraMouseSample( float frametime, bool active )
 }
 
 void CInput::CreateMove ( int sequence_number, float input_sample_frametime, bool active )
-{	
+{
 	CUserCmd *cmd = &m_pCommands[ sequence_number % MULTIPLAYER_BACKUP ];
 	CVerifiedUserCmd *pVerified = &m_pVerifiedCommands[ sequence_number % MULTIPLAYER_BACKUP ];
 
@@ -1219,7 +1219,7 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 	}
 
 	// Let the move manager override anything it wants to.
-	if ( g_pClientMode->CreateMove( input_sample_frametime, cmd ) )
+	if ( g_pClientMode->CreateMove( input_sample_frametime, cmd, true ) )
 	{
 		// Get current view angles after the client mode tweaks with it
 #ifdef SIXENSE

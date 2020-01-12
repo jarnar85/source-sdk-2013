@@ -46,6 +46,7 @@ public:
 	bool				IsSprinting() const { return m_fIsSprinting; }
 	
 	// Input handling
+	virtual bool	CreateMove( float flInputSampleTime, CUserCmd *pCmd, bool bVguiUpdate );
 	virtual bool	CreateMove( float flInputSampleTime, CUserCmd *pCmd );
 	void			PerformClientSideObstacleAvoidance( float flFrameTime, CUserCmd *pCmd );
 	void			PerformClientSideNPCSpeedModifiers( float flFrameTime, CUserCmd *pCmd );
