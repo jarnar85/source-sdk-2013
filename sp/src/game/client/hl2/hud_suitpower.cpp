@@ -20,7 +20,8 @@ using namespace vgui;
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-DECLARE_HUDELEMENT( CHudSuitPower );
+DECLARE_HUDELEMENT(CHudSuitPower);
+DECLARE_HUD_MESSAGE(CHudSuitPower, HudColor);
 
 #define SUITPOWER_INIT -1
 
@@ -40,6 +41,7 @@ CHudSuitPower::CHudSuitPower( const char *pElementName ) : CHudElement( pElement
 //-----------------------------------------------------------------------------
 void CHudSuitPower::Init( void )
 {
+	HOOK_HUD_MESSAGE(CHudSuitPower, HudColor);
 	m_flSuitPower = SUITPOWER_INIT;
 	m_nSuitPowerLow = -1;
 	m_iActiveSuitDevices = 0;
@@ -164,8 +166,27 @@ void CHudSuitPower::Paint()
 		}
 	}
 
+	Color AuxPowerColor = m_AuxPowerColor;
+
+	// change color scheme depending on player class
+	switch (m_HudColor)
+	{
+	case HUDCLR_RED:
+		AuxPowerColor = m_AuxPowerColorRed;
+		break;
+	case HUDCLR_GRN:
+		AuxPowerColor = m_AuxPowerColorGrn;
+		break;
+	case HUDCLR_BLU:
+		AuxPowerColor = m_AuxPowerColorBlu;
+		break;
+	default:
+		AuxPowerColor = m_AuxPowerColor;
+		break;
+	}
+
 	// draw the suit power bar
-	surface()->DrawSetColor( m_AuxPowerColor );
+	surface()->DrawSetColor(AuxPowerColor);
 	int xpos = m_flBarInsetX, ypos = m_flBarInsetY;
 	for (int i = 0; i < enabledChunks; i++)
 	{
@@ -173,7 +194,7 @@ void CHudSuitPower::Paint()
 		xpos += (m_flBarChunkWidth + m_flBarChunkGap);
 	}
 	// draw the exhausted portion of the bar.
-	surface()->DrawSetColor( Color( m_AuxPowerColor[0], m_AuxPowerColor[1], m_AuxPowerColor[2], m_iAuxPowerDisabledAlpha ) );
+	surface()->DrawSetColor(Color(AuxPowerColor[0], AuxPowerColor[1], AuxPowerColor[2], m_iAuxPowerDisabledAlpha));
 	for (int i = enabledChunks; i < chunkCount; i++)
 	{
 		surface()->DrawFilledRect( xpos, ypos, xpos + m_flBarChunkWidth, ypos + m_flBarHeight );
@@ -182,7 +203,7 @@ void CHudSuitPower::Paint()
 
 	// draw our name
 	surface()->DrawSetTextFont(m_hTextFont);
-	surface()->DrawSetTextColor(m_AuxPowerColor);
+	surface()->DrawSetTextColor(AuxPowerColor);
 	surface()->DrawSetTextPos(text_xpos, text_ypos);
 
 	wchar_t *tempString = g_pVGuiLocalize->Find("#Valve_Hud_AUX_POWER");
@@ -254,4 +275,8 @@ void CHudSuitPower::Paint()
 	}
 }
 
+void CHudSuitPower::MsgFunc_HudColor(bf_read &msg)
+{
+	m_HudColor = static_cast<hudcolors_t>(msg.ReadShort());
+}
 

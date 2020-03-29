@@ -9126,6 +9126,37 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	default:
 		m_Local.m_bWearingSuit = false;
 	}
+
+	CSingleUserRecipientFilter user(this);
+	if (usermessages->LookupUserMessage("HudColor") != -1)
+	{
+		UserMessageBegin(user, "HudColor");
+		switch (nClass)
+		{
+		case PLC_COMBINE_ELITE:
+		case PLC_STALKER:
+		case PLC_MANHACK:
+		case PLC_ZOMBIE:
+		case PLC_ZOMBIE_FAST:
+			WRITE_SHORT((int)HUDCLR_RED);
+			break;
+		case PLC_ZOMBIE_POISON:
+			WRITE_SHORT((int)HUDCLR_GRN);
+			break;
+		case PLC_COMBINE_GUARD:
+		case PLC_COMBINE_SOLDIER:
+		case PLC_METROPOLICE:
+		case PLC_ZOMBIE_COMBINE:
+			WRITE_SHORT((int)HUDCLR_BLU);
+			break;
+		case PLC_PLAYER:
+		case PLC_CITIZEN:
+		case PLC_REBEL:
+		default:
+			WRITE_SHORT((int)HUDCLR_NORMAL);
+		}
+		MessageEnd();
+	}
 }
 
 void CBasePlayer::SetStats()

@@ -31,6 +31,7 @@ typedef struct wrect_s
 	int bottom;
 } wrect_t;
 
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -122,7 +123,7 @@ public:
 	void						ProcessInput( bool bActive );
 	void						UpdateHud( bool bActive );
 
-	void						InitColors( vgui::IScheme *pScheme );
+	void						InitColors(vgui::IScheme *pScheme, hudcolors_t HudClr=HUDCLR_NORMAL);
 
 	// Hud element registration
 	void						AddHudElement( CHudElement *pHudElement );
@@ -173,6 +174,10 @@ public:
 	Color						m_clrNormal;
 	Color						m_clrCaution;
 	Color						m_clrYellowish;
+
+	Color						m_clrNormal_def;
+	Color						m_clrCaution_def;
+	Color						m_clrYellowish_def;
 
 	CUtlVector< CHudElement * >	m_HudList;
 

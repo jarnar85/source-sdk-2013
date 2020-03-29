@@ -25,19 +25,19 @@ Scheme
 	{
 		"FgColor"			"255 220 0 100"
 		"BgColor"			"0 0 0 76"
-
+		
 		"Panel.FgColor"			"255 220 0 100"
 		"Panel.BgColor"			"0 0 0 76"
 		
+		// weapon select text
 		"BrightFg"		"255 220 0 255"
-
 		"DamagedBg"			"180 0 0 200"
 		"DamagedFg"			"180 0 0 230"
 		"BrightDamagedFg"		"255 0 0 255"
 
 		// weapon selection colors
 		"SelectionNumberFg"		"255 220 0 255"
-		"SelectionTextFg"		"255 220 0 255"
+		"SelectionTextFg"		"255 220 0 255"	// weapon icon
 		"SelectionEmptyBoxBg" 	"0 0 0 80"
 		"SelectionBoxBg" 		"0 0 0 80"
 		"SelectionSelectedBoxBg" "0 0 0 80"
@@ -46,7 +46,7 @@ Scheme
 
 		// HL1-style HUD colors
 		"Yellowish"			"255 160 0 255"
-		"Normal"			"255 208 64 255"
+		"Normal"			"255 208 64 255"	// new weapon icon + flashlight
 		"Caution"			"255 48 0 255"
 
 		// Top-left corner of the "Half-Life 2" on the main screen
@@ -791,8 +791,8 @@ Scheme
 	// specifies all the custom (non-system) font files that need to be loaded to service the above described fonts
 	CustomFontFiles
 	{
-		"1"		"resource/HALFLIFE2.ttf"
-		"2"		"resource/HL2crosshairs.ttf"
+		"1"	"resource/HALFLIFE2.ttf"
+		"2"	"resource/HL2crosshairs.ttf"
 		"3"	"resource/HL2EP2.ttf"		
 	}
 

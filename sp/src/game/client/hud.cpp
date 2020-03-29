@@ -475,11 +475,35 @@ void CHud::Init( void )
 // Purpose: Init Hud global colors
 // Input  : *scheme - 
 //-----------------------------------------------------------------------------
-void CHud::InitColors( vgui::IScheme *scheme )
+void CHud::InitColors(vgui::IScheme *scheme, hudcolors_t HudClr)
 {
-	m_clrNormal = scheme->GetColor( "Normal", Color( 255, 208, 64 ,255 ) );
-	m_clrCaution = scheme->GetColor( "Caution", Color( 255, 48, 0, 255 ) );
-	m_clrYellowish = scheme->GetColor( "Yellowish", Color( 255, 160, 0, 255 ) );
+	m_clrNormal_def		 = scheme->GetColor("Normal", Color(255, 208, 64, 255));
+	m_clrCaution_def	 = scheme->GetColor("Caution", Color(255, 48, 0, 255));
+	m_clrYellowish_def	 = scheme->GetColor("Yellowish", Color(255, 160, 0, 255));
+	
+	switch (HudClr)
+	{
+	case HUDCLR_RED:
+		m_clrNormal = scheme->GetColor("Normal_RED", m_clrNormal_def);
+		m_clrCaution = scheme->GetColor("Caution_RED", m_clrCaution_def);
+		m_clrYellowish = scheme->GetColor("Yellowish_RED", m_clrYellowish_def);
+		break;
+	case HUDCLR_GRN:
+		m_clrNormal		 = scheme->GetColor("Normal_GRN", m_clrNormal_def);
+		m_clrCaution	 = scheme->GetColor("Caution_GRN", m_clrCaution_def);
+		m_clrYellowish	 = scheme->GetColor("Yellowish_GRN", m_clrYellowish_def);
+		break;
+	case HUDCLR_BLU:
+		m_clrNormal		 = scheme->GetColor("Normal_BLU", m_clrNormal_def);
+		m_clrCaution	 = scheme->GetColor("Caution_BLU", m_clrCaution_def);
+		m_clrYellowish	 = scheme->GetColor("Yellowish_BLU", m_clrYellowish_def);
+		break;
+	default:
+		m_clrNormal		 = scheme->GetColor("Normal", m_clrNormal_def);
+		m_clrCaution	 = scheme->GetColor("Caution", m_clrCaution_def);
+		m_clrYellowish	 = scheme->GetColor("Yellowish", m_clrYellowish_def);
+		break;
+	}
 }
 
 //-----------------------------------------------------------------------------

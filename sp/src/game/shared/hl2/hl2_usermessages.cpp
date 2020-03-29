@@ -22,14 +22,15 @@ void RegisterUserMessages( void )
 	usermessages->Register( "HudText", -1 );
 	usermessages->Register( "SayText", -1 );
 	usermessages->Register( "SayText2", -1 );
-	usermessages->Register( "TextMsg", -1 );
-	usermessages->Register( "HudMsg", -1 );
+	usermessages->Register( "TextMsg", -1);
+	usermessages->Register( "HudMsg", -1);
 	usermessages->Register( "ResetHUD", 1);		// called every respawn
 	usermessages->Register( "GameTitle", 0 );
 	usermessages->Register( "ItemPickup", -1 );
 	usermessages->Register( "ShowMenu", -1 );
 	usermessages->Register( "Shake", 13 );
 	usermessages->Register( "Fade", 10 );
+	usermessages->Register( "HudColor", 2);	// modify color of HUD
 	usermessages->Register( "VGUIMenu", -1 );	// Show VGUI menu
 	usermessages->Register( "Rumble", 3 );	// Send a rumble to a controller
 	usermessages->Register( "Battery", 2 );

@@ -25,14 +25,18 @@ public:
 	CHudSuitPower( const char *pElementName );
 	virtual void	Init( void );
 	virtual void	Reset( void );
-	virtual void	OnThink( void );
+	virtual void	OnThink(void);
+	void MsgFunc_HudColor(bf_read &msg);
 	bool			ShouldDraw( void );
 
 protected:
 	virtual void	Paint();
 
 private:
-	CPanelAnimationVar( Color, m_AuxPowerColor, "AuxPowerColor", "255 0 0 255" );
+	CPanelAnimationVar(Color, m_AuxPowerColor, "AuxPowerColor", "255 0 0 255");
+	CPanelAnimationVar(Color, m_AuxPowerColorRed, "AuxPowerColorRed", "255 0 0 255");
+	CPanelAnimationVar(Color, m_AuxPowerColorGrn, "AuxPowerColorGrn", "0 255 0 255");
+	CPanelAnimationVar(Color, m_AuxPowerColorBlu, "AuxPowerColorBlu", "0 0 255 255");
 	CPanelAnimationVar( int, m_iAuxPowerDisabledAlpha, "AuxPowerDisabledAlpha", "70" );
 
 	CPanelAnimationVarAliasType( float, m_flBarInsetX, "BarInsetX", "8", "proportional_float" );
@@ -52,6 +56,8 @@ private:
 	float m_flSuitPower;
 	int m_nSuitPowerLow;
 	int m_iActiveSuitDevices;
+
+	hudcolors_t m_HudColor;
 };	
 
 #endif // HUD_SUITPOWER_H
