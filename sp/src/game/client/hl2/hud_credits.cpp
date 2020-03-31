@@ -102,8 +102,8 @@ private:
 
 	void PrepareLine( vgui::HFont hFont, char const *pchLine );
 
-	CPanelAnimationVar( vgui::HFont, m_hTextFont, "TextFont", "Default" );
-	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
+	CPanelAnimationVar(vgui::HFont, m_hTextFont, "TextFont", "Default");
+	CPanelAnimationVar(Color, m_TextColor, "TextColor", "FgColor");
 
 	CUtlVector<creditname_t> m_CreditsList;
 
@@ -437,6 +437,7 @@ void CHudCredits::DrawLogo( void )
 	int iFontTall = surface()->GetFontTall ( m_hTFont );
 
 	Color cColor = m_TextColor;
+
 	cColor[3] = m_Alpha;
 				
 	surface()->DrawSetTextFont( m_hTFont );

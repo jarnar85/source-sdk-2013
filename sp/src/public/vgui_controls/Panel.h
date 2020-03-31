@@ -29,6 +29,8 @@
 #include "tier1/utlsymbol.h"
 #include "vgui_controls/BuildGroup.h"
 
+#include "bitbuf.h"
+
 // undefine windows function macros that overlap 
 #ifdef PostMessage
 #undef PostMessage
@@ -724,6 +726,8 @@ protected:
 	bool m_PassUnhandledInput;
 	NAV_DIRECTION m_LastNavDirection;
 
+	hudcolors_t		m_hudColor;
+
 private:
 	enum BuildModeFlags_t
 	{
@@ -850,8 +854,11 @@ private:
 	Dar<HPanel>		_actionSignalTargetDar;	// the panel to direct notify messages to ("Command", "TextChanged", etc.)
 
 	CUtlVector<OverridableColorEntry>	m_OverridableColorEntries;
-
-	Color			_fgColor;		// foreground color
+	// foreground colors
+	Color			_fgColor;
+	Color			_fgColorRed;
+	Color			_fgColorGrn;
+	Color			_fgColorBlu;
 	Color			_bgColor;		// background color
 
 	HBuildGroup		_buildGroup;

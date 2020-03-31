@@ -35,6 +35,7 @@ public:
 	bool ShouldDisplaySecondaryValue( void ) { return m_bDisplaySecondaryValue; }
 
 	virtual void Reset();
+			void MsgFunc_HudColor(bf_read &msg);
 
 protected:
 	// vgui overrides
@@ -52,8 +53,8 @@ protected:
 	bool m_bIndent;
 	bool m_bIsTime;
 
-	CPanelAnimationVar( float, m_flBlur, "Blur", "0" );
-	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
+	CPanelAnimationVar(float, m_flBlur, "Blur", "0");
+	CPanelAnimationVar(Color, m_TextColor, "TextColor", "FgColor");
 	CPanelAnimationVar( Color, m_Ammo2Color, "Ammo2Color", "FgColor" );
 
 	CPanelAnimationVar( vgui::HFont, m_hNumberFont, "NumberFont", "HudNumbers" );

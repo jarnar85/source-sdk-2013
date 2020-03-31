@@ -51,14 +51,6 @@ enum stepsoundtimes_t
 	STEPSOUNDTIME_WATER_FOOT,
 };
 
-enum hudcolors_t
-{
-	HUDCLR_NORMAL = 0,
-	HUDCLR_RED,
-	HUDCLR_GRN,
-	HUDCLR_BLU,
-};
-
 void CopySoundNameWithModifierToken( char *pchDest, const char *pchSource, int nMaxLenInChars, const char *pchToken );
 
 // Shared header file for players

@@ -59,8 +59,8 @@ AnimationController::AnimationController(Panel *parent) : BaseClass(parent, NULL
 
 	// get the names of common types
 	m_sPosition = g_ScriptSymbols.AddString("position");
-	m_sSize = g_ScriptSymbols.AddString("size"); 
-	m_sFgColor = g_ScriptSymbols.AddString("fgcolor"); 
+	m_sSize = g_ScriptSymbols.AddString("size");
+	m_sFgColor = g_ScriptSymbols.AddString("fgcolor");
 	m_sBgColor = g_ScriptSymbols.AddString("bgcolor");
 
 	m_sXPos = g_ScriptSymbols.AddString("xpos");
@@ -901,7 +901,18 @@ bool AnimationController::StartAnimationSequence(const char *sequenceName)
 	// We support calling an animation on elements that are not the calling 
 	// panel's children. Use the base parent to start the search.
 
-	return StartAnimationSequence( GetParent(), sequenceName );
+	return StartAnimationSequence(GetParent(), sequenceName);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: starts an animation sequence script
+//-----------------------------------------------------------------------------
+bool AnimationController::StartAnimationSequence(const char *sequenceName, const char *sequenceFallback)
+{
+	if (!StartAnimationSequence(GetParent(), sequenceName))
+		return StartAnimationSequence(GetParent(), sequenceFallback);
+
+	return true;
 }
 
 //-----------------------------------------------------------------------------

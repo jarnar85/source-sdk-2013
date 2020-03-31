@@ -49,17 +49,17 @@ public:
 	virtual void VidInit( void );
 	virtual void Reset( void );
 	virtual void OnThink();
-			void MsgFunc_Damage( bf_read &msg );
+			void MsgFunc_Damage(bf_read &msg);
 
 private:
 	// old variables
 	int		m_iHealth;
-	
 	int		m_bitsDamage;
 };	
 
-DECLARE_HUDELEMENT( CHudHealth );
-DECLARE_HUD_MESSAGE( CHudHealth, Damage );
+DECLARE_HUDELEMENT(CHudHealth);
+DECLARE_HUD_MESSAGE(CHudHealth, Damage);
+DECLARE_HUD_MESSAGE(CHudHealth, HudColor);
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -74,7 +74,8 @@ CHudHealth::CHudHealth( const char *pElementName ) : CHudElement( pElementName )
 //-----------------------------------------------------------------------------
 void CHudHealth::Init()
 {
-	HOOK_HUD_MESSAGE( CHudHealth, Damage );
+	HOOK_HUD_MESSAGE(CHudHealth, Damage);
+	HOOK_HUD_MESSAGE(CHudHealth, HudColor);
 	Reset();
 }
 
@@ -128,13 +129,42 @@ void CHudHealth::OnThink()
 
 	m_iHealth = newHealth;
 
+
 	if ( m_iHealth >= 20 )
 	{
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedAbove20");
+		switch (m_hudColor)
+		{
+		case HUDCLR_RED:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedAbove20Red", "HealthIncreasedAbove20");
+			break;
+		case HUDCLR_GRN:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedAbove20Grn", "HealthIncreasedAbove20");
+			break;
+		case HUDCLR_BLU:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedAbove20Blu", "HealthIncreasedAbove20");
+			break;
+		default:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedAbove20");
+			break;
+		}
 	}
 	else if ( m_iHealth > 0 )
 	{
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedBelow20");
+		switch (m_hudColor)
+		{
+		case HUDCLR_RED:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedBelow20Red", "HealthIncreasedBelow20");
+			break;
+		case HUDCLR_GRN:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedBelow20Grn", "HealthIncreasedBelow20");
+			break;
+		case HUDCLR_BLU:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedBelow20Blu", "HealthIncreasedBelow20");
+			break;
+		default:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthIncreasedBelow20");
+			break;
+		}
 		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthLow");
 	}
 
@@ -163,8 +193,22 @@ void CHudHealth::MsgFunc_Damage( bf_read &msg )
 	{
 		if ( damageTaken > 0 )
 		{
-			// start the animation
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTaken");
+			switch (m_hudColor)
+			{
+			case HUDCLR_RED:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTakenRed", "HealthDamageTaken");
+				break;
+			case HUDCLR_GRN:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTakenGrn", "HealthDamageTaken");
+				break;
+			case HUDCLR_BLU:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTakenBlu", "HealthDamageTaken");
+				break;
+			default:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HealthDamageTaken");
+				break;
+			}
 		}
 	}
 }
+

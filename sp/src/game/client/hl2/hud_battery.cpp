@@ -37,8 +37,8 @@ public:
 	void Init( void );
 	void Reset( void );
 	void VidInit( void );
-	void OnThink( void );
-	void MsgFunc_Battery(bf_read &msg );
+	void OnThink(void);
+	void MsgFunc_Battery(bf_read &msg);
 	bool ShouldDraw();
 	
 private:
@@ -47,7 +47,8 @@ private:
 };
 
 DECLARE_HUDELEMENT( CHudBattery );
-DECLARE_HUD_MESSAGE( CHudBattery, Battery );
+DECLARE_HUD_MESSAGE(CHudBattery, Battery);
+DECLARE_HUD_MESSAGE(CHudBattery, HudColor);
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -62,7 +63,8 @@ CHudBattery::CHudBattery( const char *pElementName ) : BaseClass(NULL, "HudSuit"
 //-----------------------------------------------------------------------------
 void CHudBattery::Init( void )
 {
-	HOOK_HUD_MESSAGE( CHudBattery, Battery);
+	HOOK_HUD_MESSAGE(CHudBattery, Battery);
+	HOOK_HUD_MESSAGE(CHudBattery, HudColor);
 	Reset();
 	m_iBat		= INIT_BAT;
 	m_iNewBat   = 0;
@@ -107,17 +109,45 @@ void CHudBattery::OnThink( void )
 
 	if ( !m_iNewBat )
 	{
-	 	g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerZero");
+		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerZero");
 	}
 	else if ( m_iNewBat < m_iBat )
 	{
 		// battery power has decreased, so play the damaged animation
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitDamageTaken");
+		switch (m_hudColor)
+		{
+		case HUDCLR_RED:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitDamageTakenRed", "SuitDamageTaken");
+			break;
+		case HUDCLR_GRN:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitDamageTakenGrn", "SuitDamageTaken");
+			break;
+		case HUDCLR_BLU:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitDamageTakenBlu", "SuitDamageTaken");
+			break;
+		default:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitDamageTaken");
+			break;
+		}
 
 		// play an extra animation if we're super low
 		if ( m_iNewBat < 20 )
 		{
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitArmorLow");
+			switch (m_hudColor)
+			{
+			case HUDCLR_RED:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitArmorLowRed", "SuitArmorLow");
+				break;
+			case HUDCLR_GRN:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitArmorLowGrn", "SuitArmorLow");
+				break;
+			case HUDCLR_BLU:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitArmorLowBlu", "SuitArmorLow");
+				break;
+			default:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitArmorLow");
+				break;
+			}
 		}
 	}
 	else
@@ -125,11 +155,39 @@ void CHudBattery::OnThink( void )
 		// battery power has increased (if we had no previous armor, or if we just loaded the game, don't use alert state)
 		if ( m_iBat == INIT_BAT || m_iBat == 0 || m_iNewBat >= 20)
 		{
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedAbove20");
+			switch (m_hudColor)
+			{
+			case HUDCLR_RED:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedAbove20Red", "SuitPowerIncreasedAbove20");
+				break;
+			case HUDCLR_GRN:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedAbove20Grn", "SuitPowerIncreasedAbove20");
+				break;
+			case HUDCLR_BLU:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedAbove20Blu", "SuitPowerIncreasedAbove20");
+				break;
+			default:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedAbove20");
+				break;
+			}
 		}
 		else
 		{
-			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedBelow20");
+			switch (m_hudColor)
+			{
+			case HUDCLR_RED:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedBelow20Red", "SuitPowerIncreasedBelow20");
+				break;
+			case HUDCLR_GRN:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedBelow20Grn", "SuitPowerIncreasedBelow20");
+				break;
+			case HUDCLR_BLU:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedBelow20Blu", "SuitPowerIncreasedBelow20");
+				break;
+			default:
+				g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("SuitPowerIncreasedBelow20");
+				break;
+			}
 		}
 	}
 
@@ -141,7 +199,7 @@ void CHudBattery::OnThink( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CHudBattery::MsgFunc_Battery( bf_read &msg )
+void CHudBattery::MsgFunc_Battery(bf_read &msg)
 {
 	m_iNewBat = msg.ReadShort();
 }

@@ -41,8 +41,8 @@ private:
 	wchar_t m_LabelText[32];
 
 	CPanelAnimationVar( float, m_flBlur, "Blur", "0" );
-	CPanelAnimationVar( float, m_flAlphaOverride, "Alpha", "255" );
-	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
+	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "255");
+	CPanelAnimationVar(Color, m_TextColor, "TextColor", "FgColor");
 	CPanelAnimationVar( Color, m_FlashColor, "SecondaryColor", "FgColor" );
 
 	CPanelAnimationVar( vgui::HFont, m_hNumberFont, "NumberFont", "HudNumbers" );

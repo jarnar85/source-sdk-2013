@@ -169,7 +169,7 @@ void CHudSuitPower::Paint()
 	Color AuxPowerColor = m_AuxPowerColor;
 
 	// change color scheme depending on player class
-	switch (m_HudColor)
+	switch (m_hudColor)
 	{
 	case HUDCLR_RED:
 		AuxPowerColor = m_AuxPowerColorRed;
@@ -277,6 +277,6 @@ void CHudSuitPower::Paint()
 
 void CHudSuitPower::MsgFunc_HudColor(bf_read &msg)
 {
-	m_HudColor = static_cast<hudcolors_t>(msg.ReadShort());
+	m_hudColor = static_cast<hudcolors_t>(msg.ReadShort());
 }
 

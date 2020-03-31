@@ -12,6 +12,15 @@
 #pragma once
 #endif
 
+
+enum hudcolors_t
+{
+	HUDCLR_NORMAL = 0,
+	HUDCLR_RED,
+	HUDCLR_GRN,
+	HUDCLR_BLU,
+};
+
 //-----------------------------------------------------------------------------
 // Purpose: Basic handler for an rgb set of colors
 //			This class is fully inline

@@ -55,13 +55,13 @@ private:
 	CPanelAnimationVarAliasType( float, m_flDmgTall1, "dmg_tall1", "300", "proportional_float" );
 	CPanelAnimationVarAliasType( float, m_flDmgTall2, "dmg_tall2", "240", "proportional_float" );
 
-	CPanelAnimationVar( Color, m_DmgColorLeft, "DmgColorLeft", "255 0 0 0" );
-	CPanelAnimationVar( Color, m_DmgColorRight, "DmgColorRight", "255 0 0 0" );
+	CPanelAnimationVar( Color, m_DmgColorLeft, "DmgColorLeft", "Dmg.Left" );
+	CPanelAnimationVar( Color, m_DmgColorRight, "DmgColorRight", "Dmg.Right" );
 
-	CPanelAnimationVar( Color, m_DmgHighColorLeft, "DmgHighColorLeft", "255 0 0 0" );
-	CPanelAnimationVar( Color, m_DmgHighColorRight, "DmgHighColorRight", "255 0 0 0" );
+	CPanelAnimationVar( Color, m_DmgHighColorLeft, "DmgHighColorLeft", "Dmg.LeftHigh" );
+	CPanelAnimationVar( Color, m_DmgHighColorRight, "DmgHighColorRight", "Dmg.RightHigh" );
 
-	CPanelAnimationVar( Color, m_DmgFullscreenColor, "DmgFullscreenColor", "255 0 0 0" );
+	CPanelAnimationVar( Color, m_DmgFullscreenColor, "DmgFullscreenColor", "Dmg.Full" );
 
 	void DrawDamageIndicator(int side);
 	void DrawFullscreenDamageIndicator();

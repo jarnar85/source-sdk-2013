@@ -697,7 +697,10 @@ void Panel::Init( int x, int y, int wide, int tall )
 	m_hKeyBindingsContext = INVALID_KEYBINDINGCONTEXT_HANDLE;
 #endif
 
-	REGISTER_COLOR_AS_OVERRIDABLE( _fgColor, "fgcolor_override" );
+	REGISTER_COLOR_AS_OVERRIDABLE(_fgColor, "fgcolor_override");
+	REGISTER_COLOR_AS_OVERRIDABLE(_fgColorRed, "fgcolorRed_override");
+	REGISTER_COLOR_AS_OVERRIDABLE(_fgColorGrn, "fgcolorGrn_override");
+	REGISTER_COLOR_AS_OVERRIDABLE(_fgColorBlu, "fgcolorBlu_override");
 	REGISTER_COLOR_AS_OVERRIDABLE( _bgColor, "bgcolor_override" );
 
 	m_bIsConsoleStylePanel = false;

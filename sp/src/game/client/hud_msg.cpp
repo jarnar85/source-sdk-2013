@@ -56,3 +56,17 @@ void CHud::MsgFunc_SendAudio( bf_read &msg )
 	CLocalPlayerFilter filter;
 	C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, szString );
 }
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CHud::MsgFunc_HudColor(bf_read &msg)
+{
+	vgui::HScheme scheme = vgui::scheme()->GetScheme("ClientScheme");
+	vgui::IScheme *pScheme = vgui::scheme()->GetIScheme(scheme);
+
+	hudcolors_t m_hudColor	 = static_cast<hudcolors_t>(msg.ReadShort());
+
+	InitColors(pScheme, m_hudColor);
+}

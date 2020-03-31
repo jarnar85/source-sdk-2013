@@ -376,6 +376,7 @@ int	CHudElement::GetRenderGroupPriority( void )
 
 CHud gHUD;  // global HUD object
 
+DECLARE_MESSAGE(gHUD, HudColor);
 DECLARE_MESSAGE(gHUD, ResetHUD);
 
 #ifdef CSTRIKE_DLL
@@ -394,7 +395,8 @@ CHud::CHud()
 //-----------------------------------------------------------------------------
 void CHud::Init( void )
 {
-	HOOK_HUD_MESSAGE( gHUD, ResetHUD );
+	HOOK_HUD_MESSAGE(gHUD, ResetHUD);
+	HOOK_HUD_MESSAGE(gHUD, HudColor);
 	
 #ifdef CSTRIKE_DLL
 	HOOK_HUD_MESSAGE( gHUD, SendAudio );

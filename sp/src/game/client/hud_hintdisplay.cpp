@@ -7,7 +7,6 @@
 #include "cbase.h"
 #include "hud.h"
 #include "hudelement.h"
-#include "hud_macros.h"
 #include "iclientmode.h"
 #include "vgui_controls/AnimationController.h"
 #include "vgui_controls/Label.h"
@@ -17,50 +16,15 @@
 #include "c_baseplayer.h"
 #include "IGameUIFuncs.h"
 #include "inputsystem/iinputsystem.h"
+#include "hud_hintdisplay.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-//-----------------------------------------------------------------------------
-// Purpose: Displays hints across the center of the screen
-//-----------------------------------------------------------------------------
-class CHudHintDisplay : public vgui::Panel, public CHudElement
-{
-	DECLARE_CLASS_SIMPLE( CHudHintDisplay, vgui::Panel );
 
-public:
-	CHudHintDisplay( const char *pElementName );
-
-	void Init();
-	void Reset();
-	void MsgFunc_HintText( bf_read &msg );
-	void FireGameEvent( IGameEvent * event);
-
-	bool SetHintText( wchar_t *text );
-	void LocalizeAndDisplay( const char *pszHudTxtMsg, const char *szRawString );
-
-	virtual void PerformLayout();
-
-protected:
-	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
-	virtual void OnThink();
-
-protected:
-	vgui::HFont m_hFont;
-	Color		m_bgColor;
-	vgui::Label *m_pLabel;
-	CUtlVector<vgui::Label *> m_Labels;
-	CPanelAnimationVarAliasType( int, m_iTextX, "text_xpos", "8", "proportional_int" );
-	CPanelAnimationVarAliasType( int, m_iTextY, "text_ypos", "8", "proportional_int" );
-	CPanelAnimationVarAliasType( int, m_iCenterX, "center_x", "0", "proportional_int" );
-	CPanelAnimationVarAliasType( int, m_iCenterY, "center_y", "0", "proportional_int" );
-
-	bool		m_bLastLabelUpdateHack;
-	CPanelAnimationVar( float, m_flLabelSizePercentage, "HintSize", "0" );
-};
-
-DECLARE_HUDELEMENT( CHudHintDisplay );
-DECLARE_HUD_MESSAGE( CHudHintDisplay, HintText );
+DECLARE_HUDELEMENT(CHudHintDisplay);
+DECLARE_HUD_MESSAGE(CHudHintDisplay, HintText);
+DECLARE_HUD_MESSAGE(CHudHintDisplay, HudColor);
 
 #define MAX_HINT_STRINGS 5
 
@@ -81,7 +45,8 @@ CHudHintDisplay::CHudHintDisplay( const char *pElementName ) : BaseClass(NULL, "
 //-----------------------------------------------------------------------------
 void CHudHintDisplay::Init()
 {
-	HOOK_HUD_MESSAGE( CHudHintDisplay, HintText );
+	HOOK_HUD_MESSAGE(CHudHintDisplay, HintText);
+	HOOK_HUD_MESSAGE(CHudHintDisplay, HudColor);
 
 	// listen for client side events
 	ListenForGameEvent( "player_hintmessage" );
@@ -270,6 +235,14 @@ void CHudHintDisplay::MsgFunc_HintText( bf_read &msg )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: updates the colors based on server directions
+//-----------------------------------------------------------------------------
+void CHudHintDisplay::MsgFunc_HudColor(bf_read &msg)
+{
+	m_hudColor = static_cast<hudcolors_t>(msg.ReadShort());
+}
+
+//-----------------------------------------------------------------------------
 // Purpose: Activates the hint display upon receiving a hint
 //-----------------------------------------------------------------------------
 void CHudHintDisplay::FireGameEvent( IGameEvent * event)
@@ -315,7 +288,21 @@ void CHudHintDisplay::LocalizeAndDisplay( const char *pszHudTxtMsg, const char *
 	if ( SetHintText( pszBuf ) )
 	{
 		SetVisible( true );
-		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "HintMessageShow" ); 
+		switch (m_hudColor)
+		{
+		case HUDCLR_RED:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HintMessageShowRed", "HintMessageShow");
+			break;
+		case HUDCLR_GRN:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HintMessageShowGrn", "HintMessageShow");
+			break;
+		case HUDCLR_BLU:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HintMessageShowBlu", "HintMessageShow");
+			break;
+		default:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("HintMessageShow");
+			break;
+		}
 
 		C_BasePlayer *pLocalPlayer = C_BasePlayer::GetLocalPlayer();
 		if ( pLocalPlayer )
@@ -342,40 +329,9 @@ void CHudHintDisplay::LocalizeAndDisplay( const char *pszHudTxtMsg, const char *
 
 
 
-//-----------------------------------------------------------------------------
-// Purpose: Displays small key-centric hints on the right hand side of the screen
-//-----------------------------------------------------------------------------
-class CHudHintKeyDisplay : public vgui::Panel, public CHudElement
-{
-	DECLARE_CLASS_SIMPLE( CHudHintKeyDisplay, vgui::Panel );
-
-public:
-	CHudHintKeyDisplay( const char *pElementName );
-	void Init();
-	void Reset();
-	void MsgFunc_KeyHintText( bf_read &msg );
-	bool ShouldDraw();
-
-	bool SetHintText( const char *text );
-
-protected:
-	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
-	virtual void OnThink();
-
-private:
-	CUtlVector<vgui::Label *> m_Labels;
-	vgui::HFont m_hSmallFont, m_hLargeFont;
-	int		m_iBaseY;
-
-	CPanelAnimationVarAliasType( float, m_iTextX, "text_xpos", "8", "proportional_float" );
-	CPanelAnimationVarAliasType( float, m_iTextY, "text_ypos", "8", "proportional_float" );
-	CPanelAnimationVarAliasType( float, m_iTextGapX, "text_xgap", "8", "proportional_float" );
-	CPanelAnimationVarAliasType( float, m_iTextGapY, "text_ygap", "8", "proportional_float" );
-	CPanelAnimationVarAliasType( float, m_iYOffset, "YOffset", "0", "proportional_float" );
-};
-
-DECLARE_HUDELEMENT( CHudHintKeyDisplay );
-DECLARE_HUD_MESSAGE( CHudHintKeyDisplay, KeyHintText );
+DECLARE_HUDELEMENT(CHudHintKeyDisplay);
+DECLARE_HUD_MESSAGE(CHudHintKeyDisplay, KeyHintText);
+DECLARE_HUD_MESSAGE(CHudHintKeyDisplay, HudColor);
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
@@ -393,7 +349,8 @@ CHudHintKeyDisplay::CHudHintKeyDisplay( const char *pElementName ) : BaseClass(N
 //-----------------------------------------------------------------------------
 void CHudHintKeyDisplay::Init()
 {
-	HOOK_HUD_MESSAGE( CHudHintKeyDisplay, KeyHintText );
+	HOOK_HUD_MESSAGE(CHudHintKeyDisplay, KeyHintText);
+	HOOK_HUD_MESSAGE(CHudHintKeyDisplay, HudColor);
 }
 
 //-----------------------------------------------------------------------------
@@ -780,11 +737,34 @@ void CHudHintKeyDisplay::MsgFunc_KeyHintText( bf_read &msg )
 	if ( SetHintText( szString ) )
 	{
 		SetVisible( true );
- 		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "KeyHintMessageShow" ); 
+
+		switch (m_hudColor)
+		{
+		case HUDCLR_RED:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("KeyHintMessageShowRed", "KeyHintMessageShow");
+			break;
+		case HUDCLR_GRN:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("KeyHintMessageShowGrn", "KeyHintMessageShow");
+			break;
+		case HUDCLR_BLU:
+			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence("KeyHintMessageShowBlu", "KeyHintMessageShow");
+			break;
+		default:
+ 			g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "KeyHintMessageShow" );
+			break;
+		}
 	}
 	else
 	{
 		// it's being cleared, hide the panel
 		g_pClientMode->GetViewportAnimationController()->StartAnimationSequence( "KeyHintMessageHide" ); 
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: updates the colors based on server directions
+//-----------------------------------------------------------------------------
+void CHudHintKeyDisplay::MsgFunc_HudColor(bf_read &msg)
+{
+	m_hudColor = static_cast<hudcolors_t>(msg.ReadShort());
 }

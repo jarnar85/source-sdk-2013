@@ -57,7 +57,7 @@ private:
 	int m_nSuitPowerLow;
 	int m_iActiveSuitDevices;
 
-	hudcolors_t m_HudColor;
+	hudcolors_t m_hudColor;
 };	
 
 #endif // HUD_SUITPOWER_H

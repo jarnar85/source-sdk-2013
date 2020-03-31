@@ -64,5 +64,5 @@ void CIconPanel::ApplySchemeSettings( vgui::IScheme *pScheme )
 		m_icon = gHUD.GetIcon( m_szIcon );
 	}
 
-	SetFgColor( pScheme->GetColor( "FgColor", Color( 255, 255, 255, 255 ) ) );
+	SetFgColor(pScheme->GetColor("FgColor", Color(255, 255, 255, 255)));
 }

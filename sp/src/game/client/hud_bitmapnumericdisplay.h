@@ -32,8 +32,8 @@ protected:
 		PaintNumbers(xpos, ypos, value, col, 1);
 	}
 
-	CPanelAnimationVar( float, m_flAlphaOverride, "Alpha", "255" );
-	CPanelAnimationVar( Color, m_TextColor, "TextColor", "FgColor" );
+	CPanelAnimationVar(float, m_flAlphaOverride, "Alpha", "255");
+	CPanelAnimationVar(Color, m_TextColor, "TextColor", "FgColor");
 	CPanelAnimationVar( float, m_flBlur, "Blur", "0" );
 
 	CPanelAnimationVarAliasType( float, digit_xpos, "digit_xpos", "0", "proportional_float" );

@@ -8,6 +8,7 @@
 #include "hud_numericdisplay.h"
 #include "iclientmode.h"
 
+#include <string>
 #include <Color.h>
 #include <KeyValues.h>
 #include <vgui/ISurface.h>
@@ -196,4 +197,11 @@ void CHudNumericDisplay::Paint()
 }
 
 
-
+//-----------------------------------------------------------------------------
+// Purpose: updates the colors based on server directions
+//-----------------------------------------------------------------------------
+void CHudNumericDisplay::MsgFunc_HudColor(bf_read &msg)
+{
+	m_hudColor = static_cast<hudcolors_t>(msg.ReadShort());
+	Reset();
+}

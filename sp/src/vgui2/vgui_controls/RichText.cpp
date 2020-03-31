@@ -261,17 +261,17 @@ void RichText::ApplySchemeSettings(IScheme *pScheme)
 //-----------------------------------------------------------------------------
 // Purpose: if the default format color isn't set then set it
 //-----------------------------------------------------------------------------
-void RichText::SetFgColor( Color color )
+void RichText::SetFgColor(Color color)
 {
 	// Replace default format color if 
 	// the stream is empty and the color is the default ( or the previous FgColor )
-	if ( m_FormatStream.Size() == 1 && 
-		( m_FormatStream[0].color == _defaultTextColor || m_FormatStream[0].color == GetFgColor() ) )
+	if (m_FormatStream.Size() == 1 &&
+		(m_FormatStream[0].color == _defaultTextColor || m_FormatStream[0].color == GetFgColor()))
 	{
 		m_FormatStream[0].color = color;
 	}
-	
-	BaseClass::SetFgColor( color );
+
+	BaseClass::SetFgColor(color);
 }
 
 //-----------------------------------------------------------------------------

@@ -50,6 +50,7 @@ public:
 
 	// starts an animation sequence script
 	bool StartAnimationSequence(const char *sequenceName);
+	bool StartAnimationSequence(const char *sequenceName, const char *sequenceFallback);
 	bool StartAnimationSequence(Panel *pWithinParent, const char *sequenceName);
 
 	// gets the length of an animation sequence, in seconds

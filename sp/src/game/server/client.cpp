@@ -1073,15 +1073,15 @@ void CC_Player_Set_Class(const CCommand &args)
 		}
 		else
 		{
-			// TODO: Change HUD depending on Class
-			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
-
 			Msg("Set class ... ");
 			pPlayer->SetClass(nClass);
 			Msg(args[1]);
 
 			pPlayer->SetStats();
 			Msg("\n");
+
+			// TODO: Change HUD depending on Class
+			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
 		}
 	}
 

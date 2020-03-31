@@ -108,7 +108,7 @@ public:
 			returns:
 				"text" - text contained in the text box
 	*/
-	virtual void SetFgColor( Color color );
+	virtual void SetFgColor(Color color);
 	virtual void SetDrawOffsets( int ofsx, int ofsy );
 	bool IsScrollbarVisible();
 

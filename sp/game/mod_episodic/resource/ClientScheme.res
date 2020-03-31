@@ -23,23 +23,51 @@ Scheme
 	// controls use these to determine their settings
 	BaseSettings
 	{
+		"Transparent"	 "0 0 0 0"
+		
 		"FgColor"			"255 220 0 100"
+		"FgColorRed"		"255 55 55 100"
+		"FgColorGrn"		"55 255 55 100"
+		"FgColorBlu"		"0 220 255 100"
 		"BgColor"			"0 0 0 76"
 		
 		"Panel.FgColor"			"255 220 0 100"
+		"Panel.FgColorRed"		"255 55 55 100"
+		"Panel.FgColorGrn"		"55 255 55 100"
+		"Panel.FgColorBlu"		"0 220 255 100"
 		"Panel.BgColor"			"0 0 0 76"
 		
+		// damage indicator
+		"Dmg.Left"		"255 0 0 0"
+		"Dmg.LeftHigh"	"255 0 0 0"
+		"Dmg.Right"		"255 0 0 0"
+		"Dmg.RightHigh"	"255 0 0 0"
+		"Dmg.Full"		"255 0 0 0"
+		
 		// weapon select text
-		"BrightFg"		"255 220 0 255"
+		"BrightFg"			"255 220 0 255"
+		"BrightFgRed"		"255 55 55 255"
+		"BrightFgGrn"		"55 255 55 255"
+		"BrightFgBlu"		"0 220 255 255"
 		"DamagedBg"			"180 0 0 200"
 		"DamagedFg"			"180 0 0 230"
-		"BrightDamagedFg"		"255 0 0 255"
+		"BrightDamagedFg"	"255 0 0 255"
 
 		// weapon selection colors
-		"SelectionNumberFg"		"255 220 0 255"
+		"SelectionNumberFg"		"255 220 0 100"
+		"SelectionNumberFgRed"	"255 55 55 100"
+		"SelectionNumberFgGrn"	"55 255 55 100"
+		"SelectionNumberFgBlu"	"0 220 255 100"
 		"SelectionTextFg"		"255 220 0 255"	// weapon icon
-		"SelectionEmptyBoxBg" 	"0 0 0 80"
+		"SelectionTextFgRed"	"255 55 55 255"
+		"SelectionTextFgGrn"	"55 255 55 255"
+		"SelectionTextFgBlu"	"0 220 255 255"
+		"SelectionBoxFg"		"255 220 0 255"
+		"SelectionBoxFgRed"	"255 55 55 255"
+		"SelectionBoxFgGrn"	"55 255 55 255"
+		"SelectionBoxFgBlu"	"0 220 255 25"
 		"SelectionBoxBg" 		"0 0 0 80"
+		"SelectionEmptyBoxBg" 	"0 0 0 80"
 		"SelectionSelectedBoxBg" "0 0 0 80"
 		
 		"ZoomReticleColor"	"255 220 0 255"
@@ -47,6 +75,7 @@ Scheme
 		// HL1-style HUD colors
 		"Yellowish"			"255 160 0 255"
 		"Normal"			"255 208 64 255"	// new weapon icon + flashlight
+		"Normal_BLU"		"64 208 255 255"
 		"Caution"			"255 48 0 255"
 
 		// Top-left corner of the "Half-Life 2" on the main screen
