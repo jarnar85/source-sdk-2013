@@ -2026,9 +2026,12 @@ void CHL2_Player::EquipByClass(PlayerClass_T nClass)
 			break;
 	case PLC_METROPOLICE:
 	case PLC_REBEL:
+	case PLC_REBEL_MEDIC:
 		sk_suit_maxarmor.SetValue(50);
 		break;
+	case PLC_COMBINE_ENGINEER:
 	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_PLAYER:
 	case PLC_ZOMBIE_COMBINE:
@@ -2539,21 +2542,23 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	
 	switch (m_Class)
 	{
-		case 	PLC_METROPOLICE:
+		case PLC_METROPOLICE:
 			iCredits *= 2;
 
 			if (iCredits < 1)
 				iCredits = 1;
 			break;
-		case 	PLC_STALKER:
+		case PLC_STALKER:
 			iCredits	 *= 2;
 			break;
-		case 	PLC_COMBINE_GUARD:
-		case 	PLC_COMBINE_SOLDIER:
+		case PLC_COMBINE_ENGINEER:
+		case PLC_COMBINE_GUARD:
+		case PLC_COMBINE_MEDIC:
+		case PLC_COMBINE_SOLDIER:
 			// multiply by 1 (= do nothing)
 			break;
-		case 	PLC_COMBINE_ELITE:
-		case 	PLC_MANHACK:
+		case PLC_COMBINE_ELITE:
+		case PLC_MANHACK:
 			iCredits = iKill;
 			break;
 		default:

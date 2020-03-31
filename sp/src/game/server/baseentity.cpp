@@ -2973,27 +2973,30 @@ Class_T CBaseEntity::GetClassStr(const char* sClass)
 PlayerClass_T CBaseEntity::GetPlayerClass(const char* sClass)
 {
 
-	if (strcmp(sClass, "player") == 0)			return PLC_PLAYER;
+	if (strcmp(sClass, "player") == 0)				return PLC_PLAYER;
 
 	// Humans
-	if (strcmp(sClass, "citizen") == 0)			return PLC_CITIZEN;
-	if (strcmp(sClass, "rebel") == 0)			return PLC_REBEL;
+	if (strcmp(sClass, "citizen") == 0)				return PLC_CITIZEN;
+	if (strcmp(sClass, "rebel") == 0)				return PLC_REBEL;
+	if (strcmp(sClass, "rebel_medic") == 0)			return PLC_REBEL_MEDIC;
 
 	// Combine
-	if (strcmp(sClass, "metropolice") == 0)		return PLC_METROPOLICE;
-	if (strcmp(sClass, "combine_guard") == 0)	return PLC_COMBINE_GUARD;
-	if (strcmp(sClass, "combine_soldier") == 0)	return PLC_COMBINE_SOLDIER;
-	if (strcmp(sClass, "combine_elite") == 0)	return PLC_COMBINE_ELITE;
-	if (strcmp(sClass, "stalker") == 0)			return PLC_STALKER;
+	if (strcmp(sClass, "metropolice") == 0)			return PLC_METROPOLICE;
+	if (strcmp(sClass, "combine_engineer") == 0)	return PLC_COMBINE_ENGINEER;
+	if (strcmp(sClass, "combine_guard") == 0)		return PLC_COMBINE_GUARD;
+	if (strcmp(sClass, "combine_medic") == 0)		return PLC_COMBINE_MEDIC;
+	if (strcmp(sClass, "combine_soldier") == 0)		return PLC_COMBINE_SOLDIER;
+	if (strcmp(sClass, "combine_elite") == 0)		return PLC_COMBINE_ELITE;
+	if (strcmp(sClass, "stalker") == 0)				return PLC_STALKER;
 
 	// Aliens
-	if (strcmp(sClass, "zombie") == 0)			return PLC_ZOMBIE;
-	if (strcmp(sClass, "zombie_poison") == 0)	return PLC_ZOMBIE_POISON;
-	if (strcmp(sClass, "zombie_fast") == 0)		return PLC_ZOMBIE_FAST;
-	if (strcmp(sClass, "zombie_combine") == 0)	return PLC_ZOMBIE_COMBINE;
+	if (strcmp(sClass, "zombie") == 0)				return PLC_ZOMBIE;
+	if (strcmp(sClass, "zombie_poison") == 0)		return PLC_ZOMBIE_POISON;
+	if (strcmp(sClass, "zombie_fast") == 0)			return PLC_ZOMBIE_FAST;
+	if (strcmp(sClass, "zombie_combine") == 0)		return PLC_ZOMBIE_COMBINE;
 
 	// Special vehicles
-	if (strcmp(sClass, "manhack") == 0)			return PLC_MANHACK;
+	if (strcmp(sClass, "manhack") == 0)				return PLC_MANHACK;
 	
 	return PLC_NONE;
 }
@@ -3007,10 +3010,13 @@ Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
 	case PLC_CITIZEN:
 		return CLASS_CITIZEN_PASSIVE;
 	case PLC_REBEL:
+	case PLC_REBEL_MEDIC:
 		return CLASS_CITIZEN_REBEL;
 	case PLC_METROPOLICE:
 		return CLASS_METROPOLICE;
+	case PLC_COMBINE_ENGINEER:
 	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_COMBINE_ELITE:
 		return CLASS_COMBINE;
@@ -3036,9 +3042,12 @@ int CBaseEntity::GetClassHealth(PlayerClass_T nClass)
 			return 25;
 	case PLC_CITIZEN:
 	case PLC_REBEL:
+	case PLC_REBEL_MEDIC:
 	case PLC_METROPOLICE:
 		return 40;
+	case PLC_COMBINE_ENGINEER:
 	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_STALKER:
 	case PLC_ZOMBIE:
@@ -3066,11 +3075,15 @@ const char* CBaseEntity::GetClassModel(PlayerClass_T nClass)
 		return "models/humans/group01/male_04.mdl";
 	case PLC_REBEL:
 		return "models/humans/group03/male_04.mdl";
+	case PLC_REBEL_MEDIC:
+		return "models/humans/group03m/male_04.mdl";
 	case PLC_METROPOLICE:
 		return "models/police.mdl";
 	case PLC_COMBINE_GUARD:
 		return "models/combine_soldier_prisonguard.mdl";
 		// return "models/soldier_stripped.mdl";
+	case PLC_COMBINE_ENGINEER:
+	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_SOLDIER:
 		return "models/combine_soldier.mdl";
 		// return "models/soldier_stripped.mdl";

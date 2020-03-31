@@ -92,11 +92,14 @@ IMPLEMENT_ACTTABLE(CWeaponAlyxGun);
 classtable_t CWeaponAlyxGun::m_classtable[] =
 {
 	{ PLC_PLAYER,			true },
-	{ PLC_CITIZEN,			false },
-	{ PLC_REBEL,			true },
+	{ PLC_CITIZEN, false },
+	{ PLC_REBEL, true },
+	{ PLC_REBEL_MEDIC, false },
 	{ PLC_MANHACK,			false },
-	{ PLC_METROPOLICE,		false },
-	{ PLC_COMBINE_GUARD,	false },
+	{ PLC_METROPOLICE, false },
+	{ PLC_COMBINE_ENGINEER, true },
+	{ PLC_COMBINE_GUARD, false },
+	{ PLC_COMBINE_MEDIC, false },
 	{ PLC_COMBINE_SOLDIER,	false },
 	{ PLC_COMBINE_ELITE,	false },
 	{ PLC_STALKER,			false },

@@ -7896,7 +7896,9 @@ void CBasePlayer::SetClass(PlayerClass_T nClass)
 	case PLC_COMBINE_ELITE:
 		m_iMemRepl = 5;
 		break;
+	case PLC_COMBINE_ENGINEER:
 	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_STALKER:
 		m_iMemRepl = 3;
@@ -7905,6 +7907,7 @@ void CBasePlayer::SetClass(PlayerClass_T nClass)
 	case PLC_CITIZEN:
 		m_iRation = 10;
 	case PLC_REBEL:
+	case PLC_REBEL_MEDIC:
 	case PLC_ZOMBIE:
 	case PLC_ZOMBIE_COMBINE:
 	case PLC_ZOMBIE_FAST:
@@ -9106,26 +9109,7 @@ void CBasePlayer::RemoveSuit( void )
 
 void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 {
-	switch (nClass)
-	{
-	case PLC_COMBINE_ELITE:
-	case PLC_COMBINE_GUARD:
-	case PLC_COMBINE_SOLDIER:
-	case PLC_MANHACK:
-	case PLC_METROPOLICE:
-	case PLC_PLAYER:
-	case PLC_STALKER:
-	case PLC_ZOMBIE_COMBINE:
-		m_Local.m_bWearingSuit = true;
-		break;
-	case PLC_CITIZEN:
-	case PLC_REBEL:
-	case PLC_ZOMBIE:
-	case PLC_ZOMBIE_POISON:
-	case PLC_ZOMBIE_FAST:
-	default:
-		m_Local.m_bWearingSuit = false;
-	}
+	m_Local.m_bWearingSuit = false;
 
 	CSingleUserRecipientFilter user(this);
 	if (usermessages->LookupUserMessage("HudColor") != -1)
@@ -9143,7 +9127,9 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		case PLC_ZOMBIE_POISON:
 			WRITE_SHORT((int)HUDCLR_GRN);
 			break;
+		case PLC_COMBINE_ENGINEER:
 		case PLC_COMBINE_GUARD:
+		case PLC_COMBINE_MEDIC:
 		case PLC_COMBINE_SOLDIER:
 		case PLC_METROPOLICE:
 		case PLC_ZOMBIE_COMBINE:
@@ -9152,10 +9138,34 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		case PLC_PLAYER:
 		case PLC_CITIZEN:
 		case PLC_REBEL:
+		case PLC_REBEL_MEDIC:
 		default:
 			WRITE_SHORT((int)HUDCLR_NORMAL);
 		}
 		MessageEnd();
+	}
+	switch (nClass)
+	{
+	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_ENGINEER:
+	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_MANHACK:
+	case PLC_METROPOLICE:
+	case PLC_PLAYER:
+	case PLC_STALKER:
+	case PLC_ZOMBIE_COMBINE:
+		m_Local.m_bWearingSuit = true;
+		break;
+	case PLC_CITIZEN:
+	case PLC_REBEL:
+	case PLC_REBEL_MEDIC:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_POISON:
+	case PLC_ZOMBIE_FAST:
+	default:
+		m_Local.m_bWearingSuit = false;
 	}
 }
 
@@ -9175,8 +9185,8 @@ void CBasePlayer::SetStats()
 	iHealth *= data.iMaxHealth;
 	iHealth /= GetMaxHealth();
 
-	SetMaxHealth(data.iMaxHealth);
 	SetHealth(iHealth);
+	SetMaxHealth(data.iMaxHealth);
 }
 
 void CBasePlayer::SetGender(char gender)
@@ -9202,6 +9212,9 @@ NPC_Basedata CBasePlayer::GetBaseData()
 	case PLC_REBEL:
 		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_gender, CT_REBEL);
 		break;
+	case PLC_REBEL_MEDIC:
+		data = CNPC_Citizen::GetBaseData(JOB_MEDIC, m_gender, CT_REBEL);
+		break;
 	case PLC_MANHACK:
 		data = CNPC_Manhack::GetBaseData();
 		break;
@@ -9210,14 +9223,21 @@ NPC_Basedata CBasePlayer::GetBaseData()
 		break;
 	case PLC_STALKER:
 		data = CNPC_Stalker::GetBaseData();
-	case PLC_COMBINE_GUARD:
-		data = CNPC_CombineS::GetBaseData(JOB_GUARD);
-		break;
-	case PLC_COMBINE_SOLDIER:
-		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER);
 		break;
 	case PLC_COMBINE_ELITE:
 		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER, true);
+		break;
+	case PLC_COMBINE_ENGINEER:
+		data = CNPC_CombineS::GetBaseData(JOB_ENGINEER);
+		break;
+	case PLC_COMBINE_GUARD:
+		data = CNPC_CombineS::GetBaseData(JOB_GUARD);
+		break;
+	case PLC_COMBINE_MEDIC:
+		data = CNPC_CombineS::GetBaseData(JOB_MEDIC);
+		break;
+	case PLC_COMBINE_SOLDIER:
+		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER);
 		break;
 	case PLC_ZOMBIE:
 		data = CZombie::GetBaseData();
