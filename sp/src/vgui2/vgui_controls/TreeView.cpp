@@ -446,8 +446,20 @@ public:
 	virtual void SetVisible(bool state);
     virtual void Paint();
     virtual void ApplySchemeSettings(IScheme *pScheme);
-	virtual void SetBgColor( Color color );
-	virtual void SetFgColor( Color color );
+	virtual void SetBgColor(Color color);
+	void SetBgColor(const char *color);
+	void SetBgColor(const char *color, IScheme *pScheme);
+	void SetBgColor(const char *color, Color defaultColor);
+	void SetBgColor(const char *color, const char *defaultColor);
+	void SetBgColor(const char *color, Color defaultColor, IScheme *pScheme);
+	void SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme);
+	virtual void SetFgColor(Color color);
+	void SetFgColor(const char *color);
+	void SetFgColor(const char *color, IScheme *pScheme);
+	void SetFgColor(const char *color, Color defaultColor);
+	void SetFgColor(const char *color, const char *defaultColor);
+	void SetFgColor(const char *color, Color defaultColor, IScheme *pScheme);
+	void SetFgColor(const char *color, const char *defaultColor, IScheme *pScheme);
     virtual void OnSetFocus();
     void SelectPrevChild(TreeNode *pCurrentChild);
     void SelectNextChild(TreeNode *pCurrentChild);
@@ -1072,13 +1084,73 @@ void TreeNode::SetBgColor( Color color )
 
 }
 
-void TreeNode::SetFgColor( Color color )
+void TreeNode::SetBgColor(const char *color)
 {
-	BaseClass::SetFgColor( color );
-	if ( m_pText )
+	SetBgColor(GetSchemeColor(color));
+}
+
+void TreeNode::SetBgColor(const char *color, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, pScheme));
+}
+
+void TreeNode::SetBgColor(const char *color, Color defaultColor)
+{
+	SetBgColor(GetSchemeColor(color, defaultColor));
+}
+
+void TreeNode::SetBgColor(const char *color, const char *defaultColor)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor)));
+}
+
+void TreeNode::SetBgColor(const char *color, Color defaultColor, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, defaultColor, pScheme));
+}
+
+void TreeNode::SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor, pScheme), pScheme));
+}
+
+void TreeNode::SetFgColor(Color color)
+{
+	BaseClass::SetFgColor(color);
+	if (m_pText)
 	{
-		m_pText->SetFgColor( color );
+		m_pText->SetFgColor(color);
 	}
+}
+
+void TreeNode::SetFgColor(const char *color)
+{
+	SetFgColor(GetSchemeColor(color));
+}
+
+void TreeNode::SetFgColor(const char *color, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, pScheme));
+}
+
+void TreeNode::SetFgColor(const char *color, Color defaultColor)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor));
+}
+
+void TreeNode::SetFgColor(const char *color, const char *defaultColor)
+{
+	SetFgColor(GetSchemeColor(color, GetSchemeColor(defaultColor)));
+}
+
+void TreeNode::SetFgColor(const char *color, Color defaultColor, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor, pScheme));
+}
+
+void TreeNode::SetFgColor(const char *color, const char *defaultColor, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, GetSchemeColor(defaultColor), pScheme));
 }
 
 void TreeNode::OnSetFocus()
@@ -2441,7 +2513,7 @@ void TreeView::ApplySchemeSettings(IScheme *pScheme)
 	BaseClass::ApplySchemeSettings(pScheme);
 
 	SetBorder(pScheme->GetBorder("ButtonDepressedBorder"));
-	SetBgColor(GetSchemeColor("TreeView.BgColor", GetSchemeColor("WindowDisabledBgColor", pScheme), pScheme));
+	SetBgColor("TreeView.BgColor", "WindowDisabledBgColor", pScheme);
 	SetFont( pScheme->GetFont( "Default", IsProportional() ) );
 	m_pSubPanel->SetBgColor( GetBgColor() );
 }
@@ -2454,6 +2526,26 @@ void TreeView::SetBgColor( Color color )
 {
 	BaseClass::SetBgColor( color );
 	m_pSubPanel->SetBgColor( color );
+}
+
+void TreeView::SetBgColor(const char *color)
+{
+	SetBgColor(GetSchemeColor(color));
+}
+
+void TreeView::SetBgColor(const char *color, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, pScheme));
+}
+
+void TreeView::SetBgColor(const char *color, const char *defaultColor)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor)));
+}
+
+void TreeView::SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor, pScheme), pScheme));
 }
 
 //-----------------------------------------------------------------------------

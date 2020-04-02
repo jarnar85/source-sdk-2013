@@ -305,8 +305,21 @@ public:
 
 	// colors
 	virtual void SetBgColor(Color color);
-	virtual void SetFgColor(Color color);
+	virtual void SetBgColor(const char *color);
+	virtual void SetBgColor(const char *color, IScheme *pScheme);
+	virtual void SetBgColor(const char *color, Color defaultColor);
+	virtual void SetBgColor(const char *color, const char *defaultColor);
+	virtual void SetBgColor(const char *color, Color defaultColor, IScheme *pScheme);
+	virtual void SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme);
 	virtual Color GetBgColor();
+
+	virtual void SetFgColor(Color color);
+	virtual void SetFgColor(const char *color);
+	virtual void SetFgColor(const char *color, IScheme *pScheme);
+	virtual void SetFgColor(const char *color, Color defaultColor);
+	virtual void SetFgColor(const char *color, const char *defaultColor);
+	virtual void SetFgColor(const char *color, Color defaultColor, IScheme *pScheme);
+	virtual void SetFgColor(const char *color, const char *defaultColor, IScheme *pScheme);
 	virtual Color GetFgColor();
 
 	virtual void SetCursor(HCursor cursor);
@@ -343,10 +356,13 @@ public:
 
 	// scheme access functions
 	virtual HScheme GetScheme();
+	virtual IScheme* GetIScheme();
 	virtual void SetScheme(const char *tag);
 	virtual void SetScheme(HScheme scheme);
-	virtual Color GetSchemeColor(const char *keyName,IScheme *pScheme);
-	virtual Color GetSchemeColor(const char *keyName, Color defaultColor,IScheme *pScheme);
+	virtual Color GetSchemeColor(const char *keyName);
+	virtual Color GetSchemeColor(const char *keyName, IScheme *pScheme);
+	virtual Color GetSchemeColor(const char *keyName, Color defaultColor);
+	virtual Color GetSchemeColor(const char *keyName, Color defaultColor, IScheme *pScheme);
 
 	// called when scheme settings need to be applied; called the first time before the panel is painted
 	virtual void ApplySchemeSettings(IScheme *pScheme);
@@ -876,6 +892,7 @@ private:
 
 	unsigned char	_tabPosition;		// the panel's place in the tab ordering
 	HScheme			 m_iScheme; // handle to the scheme to use
+	IScheme			*m_pScheme; // handle to the scheme to use
 
 	bool			m_bIsDMXSerialized : 1; // Is this a DMX panel?
 	bool			m_bUseSchemeColors : 1; // Should we use colors from the scheme?

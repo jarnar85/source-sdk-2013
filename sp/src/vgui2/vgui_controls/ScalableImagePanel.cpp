@@ -36,7 +36,7 @@ ScalableImagePanel::ScalableImagePanel(Panel *parent, const char *name) : Panel(
 	m_pszImageName = NULL;
 	m_pszDrawColorName = NULL;
 
-	m_DrawColor = Color(255,255,255,255);
+	m_DrawColor = GetSchemeColor("ScalableImagePanel.DrawColor");
 
 	m_flCornerWidthPercent = 0;
 	m_flCornerHeightPercent = 0;

@@ -103,10 +103,10 @@ public:
 		GetSize(wide, tall);
 
 		// Draw a white rectangle around that cell
-		vgui::surface()->DrawSetColor( 63, 63, 63, 255 );
+		vgui::surface()->DrawSetColor(GetSchemeColor("InlineEditPanel.FilledColor", Color(63, 63, 63, 255)));
 		vgui::surface()->DrawFilledRect( 0, 0, wide, tall );
 
-		vgui::surface()->DrawSetColor( 0, 255, 0, 255 );
+		vgui::surface()->DrawSetColor(GetSchemeColor("InlineEditPanel.OutlinedColor", Color(0, 255, 0, 255)));
 		vgui::surface()->DrawOutlinedRect( 0, 0, wide, tall );
 	}
 

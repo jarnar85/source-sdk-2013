@@ -530,7 +530,7 @@ public:
 		// Debugging code to show column widths
 		int wide, tall;
 		GetSize(wide, tall);
-		surface()->DrawSetColor( 255,255,255,255 );
+		surface()->DrawSetColor(GetSchemeColor("Debug.ColorFg"));
 		surface()->DrawOutlinedRect(0, 0, wide, tall);
 
 		int colCount = m_pListPanel->GetColumnCountBySection(m_iSectionID);

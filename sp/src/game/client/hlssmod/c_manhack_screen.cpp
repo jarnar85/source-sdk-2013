@@ -89,7 +89,7 @@ void CManhackScreen::OnTick()
     if ( !pWeapon || pWeapon->GetSecondaryAmmoType() != GetAmmoDef()->Index( "ManhacksOnline" ) )
         return;
 
-    // Our RPG isn't clip-based, so we need to check the player's arsenal of rockets
+    // Manhacks aren't clip-based, so we need to check the player's arsenal of manhacks
     int manhacks = pPlayer->GetAmmoCount( pWeapon->GetSecondaryAmmoType() );
 
 	if (m_pManhackOnline)
@@ -97,12 +97,12 @@ void CManhackScreen::OnTick()
 		if (manhacks>0)
 		{
 			m_pManhackOnline->SetText("ONLINE");
-			m_pManhackOnline->SetFgColor(Color(0,255,0,255));
+			m_pManhackOnline->SetFgColor("Manhack.OnlineFgColor", Color(0, 255, 0, 255));
 		}
 		else
 		{
 			m_pManhackOnline->SetText("OFFLINE");
-			m_pManhackOnline->SetFgColor(Color(255,0,0,255));
+			m_pManhackOnline->SetFgColor("Manhack.OfflineFgColor", Color(255, 0, 0, 255));
 		}
 	}
 
@@ -111,16 +111,16 @@ void CManhackScreen::OnTick()
     {
         char buf[32];
         Q_snprintf( buf, sizeof( buf ), "%d", manhacks );
-        // Set the Labels text to the number of missiles we have left.
+        // Set the Labels text to the number of manhacks we have left.
         m_pManhackCount->SetText( buf );
-		m_pManhackCount->SetFgColor(Color(255,255,255,255));
+		m_pManhackCount->SetFgColor("Manhack.CountFgColor", Color(255, 255, 255, 255));
     }
 
 	if ( m_pManhackDistance )
 	{
 		char buf[32];
         Q_snprintf( buf, sizeof( buf ), "%d", m_iManhackDistance );
-        // Set the Labels text to the number of missiles we have left.
+        // Set the Labels text to the distance from the manhack controller.
 
 		int xpos, ypos;
 		m_pManhackDistance->GetPos(xpos,ypos);
@@ -138,7 +138,7 @@ void CManhackScreen::OnTick()
 		m_pManhackDistance->SetPos(xpos,ypos);
 
         m_pManhackDistance->SetText( buf );
-		m_pManhackDistance->SetFgColor(Color(255,255,255,255));
+		m_pManhackDistance->SetFgColor("Manhack.DistanceFgColor", Color(255, 255, 255, 255));
 	}
 }
 

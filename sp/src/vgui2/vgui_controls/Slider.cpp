@@ -428,7 +428,7 @@ void Slider::DrawTicks()
 
     if (IsEnabled())
     {
-        surface()->DrawSetColor( m_TickColor ); //vgui::Color( 127, 140, 127, 255 ) );
+        surface()->DrawSetColor( m_TickColor );
     	for ( int i = 0; i <= m_nNumTicks; i++ )
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
@@ -438,13 +438,13 @@ void Slider::DrawTicks()
     }
     else
     {
-        surface()->DrawSetColor( m_DisabledTextColor1 ); //vgui::Color( 127, 140, 127, 255 ) );
+        surface()->DrawSetColor( m_DisabledTextColor1 );
     	for ( int i = 0; i <= m_nNumTicks; i++ )
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
     		surface()->DrawFilledRect( xpos+1, y+1, xpos + 2, y + tickHeight + 1 );
     	}
-        surface()->DrawSetColor( m_DisabledTextColor2 ); //vgui::Color( 127, 140, 127, 255 ) );
+        surface()->DrawSetColor( m_DisabledTextColor2 );
     	for ( int i = 0; i <= m_nNumTicks; i++ )
     	{
     		int xpos = (int)( leftpixel + i * pixelspertick );
@@ -468,9 +468,9 @@ void Slider::DrawTickLabels()
 
 	// Draw Start and end range values
     if (IsEnabled())
-	    surface()->DrawSetTextColor( m_TickColor ); //vgui::Color( 127, 140, 127, 255 ) );
+	    surface()->DrawSetTextColor( m_TickColor );
     else
-	    surface()->DrawSetTextColor( m_DisabledTextColor1 ); //vgui::Color( 127, 140, 127, 255 ) );
+	    surface()->DrawSetTextColor( m_DisabledTextColor1 );
 
 
 	if ( _leftCaption != NULL )

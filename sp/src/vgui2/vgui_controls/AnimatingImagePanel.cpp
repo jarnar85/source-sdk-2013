@@ -90,7 +90,7 @@ void AnimatingImagePanel::PaintBackground()
 	{
 		IImage *pImage = m_Frames[m_iCurrentImage];
 
-		surface()->DrawSetColor( 255, 255, 255, 255 );
+		surface()->DrawSetColor(GetSchemeColor("AnimatingImagePanel.BgColor", Color(255, 255, 255, 255)));
 		pImage->SetPos(0, 0);
 		
 		if ( m_bScaleImage )
@@ -105,7 +105,7 @@ void AnimatingImagePanel::PaintBackground()
 			GetSize( wide, tall );
 			pImage->SetSize( wide, tall );
 
-			pImage->SetColor( Color( 255,255,255,255 ) );
+			pImage->SetColor(GetSchemeColor("AnimatingImagePanel.BgColor", Color(255, 255, 255, 255)));
 			pImage->Paint();
 
 			pImage->SetSize( imageWide, imageTall );

@@ -43,7 +43,7 @@ CSubRectImage::CSubRectImage( const char *filename, bool hardwareFiltered, int s
 
 	_id = SUBRECT_INVALID_TEXTURE;
 	_uploaded = false;
-	_color = Color(255, 255, 255, 255);
+	_color = Color(255, 255, 255, 255);	// default fallback color
 	_pos[0] = _pos[1] = 0;
 	_valid = true;
 	_wide = subw;

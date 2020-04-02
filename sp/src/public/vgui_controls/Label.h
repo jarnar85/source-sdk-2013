@@ -72,6 +72,10 @@ public:
 
 	// Text colors
 	virtual void SetFgColor(Color color);
+	virtual void SetFgColor(char *color);
+	virtual void SetFgColor(char *color, IScheme *pScheme);
+	virtual void SetFgColor(char *color, Color defaultColor);
+	virtual void SetFgColor(char *color, Color defaultColor, IScheme *pScheme);
 	virtual Color GetFgColor();
 
 	// colors to use when the label is disabled

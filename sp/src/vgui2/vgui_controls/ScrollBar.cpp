@@ -614,7 +614,7 @@ void ScrollBar::UseImages( const char *pszUpArrow, const char *pszDownArrow, con
 			{
 				m_pUpArrow->SetImage( pszUpArrow );
 				m_pUpArrow->SetShouldScaleImage( true );
-				m_pUpArrow->SetFgColor( Color( 255, 255, 255, 255 ) );
+				m_pUpArrow->SetFgColor("ScrollBar.UpArrowColor");
 				m_pUpArrow->SetAlpha( 255 );
 				m_pUpArrow->SetZPos( -1 );
 			}
@@ -637,7 +637,7 @@ void ScrollBar::UseImages( const char *pszUpArrow, const char *pszDownArrow, con
 			if ( m_pDownArrow )
 			{
 				m_pDownArrow->SetShouldScaleImage( true );
-				m_pDownArrow->SetFgColor( Color( 255, 255, 255, 255 ) );
+				m_pDownArrow->SetFgColor("ScrollBar.DownArrowColor");
 				m_pDownArrow->SetAlpha( 255 );
 				m_pDownArrow->SetZPos( -1 );
 			}

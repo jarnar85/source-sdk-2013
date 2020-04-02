@@ -156,7 +156,11 @@ protected:
 	virtual void OnSizeChanged(int wide, int tall); 
 	virtual void ApplySchemeSettings(IScheme *pScheme);
 	MESSAGE_FUNC_INT( OnSliderMoved, "ScrollBarSliderMoved", position );
-	virtual void SetBgColor( Color color );
+	virtual void SetBgColor(Color color);
+	virtual void SetBgColor(const char *color);
+	virtual void SetBgColor(const char *color, IScheme *pScheme);
+	virtual void SetBgColor(const char *color, const char *defaultColor);
+	virtual void SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme);
 
 private:
     friend class TreeNode;

@@ -97,6 +97,46 @@ Scheme
 
 		// Blank space to leave beneath the menu on the main screen
 		"Main.BottomBorder"	"32"
+		
+		// some added colors from various places in the code
+		"TreeView.BorderColor"		"255 255 255 255"
+		"TreeView.TitleBarColor"	"0 0 0 255"
+		"TreeView.TitleBarText"		"255 255 255 255"
+		
+		"TextEntry.Border"			"50 50 50 255"
+		"TextEntry.SelectedBorder"	"0 0 0 255"
+		
+		"Slider.TextColor"			"127 140 127 255"
+		"Slider.DisabledTextColor1"	"127 140 127 255"
+		"Slider.DisabledTextColor2"	"127 140 127 255"
+		
+		"ScrollBar.DownArrowColor"	"255 255 255 255"
+		"ScrollBar.UpArrowColor"	"255 255 255 255"
+		
+		"ClickPanel.DrawSetColor"	"255 0 0 255"
+		
+		"RotatingProgressBar.DrawSetColor"	"255 255 255 255"
+		
+		"ScalableImagePanel.DrawColor"	"255 255 255 255"
+		
+		"Label.TextColor"	"0 0 0 0"
+		
+		"InlineEditPanel.FilledColor"	"63 63 63 255"
+		"InlineEditPanel.OutlinedColor"	"0 255 0 255"
+		
+		"HTML.ComboBoxBgColor"	"255 255 255 255"
+		"HTML.WindowBgColor"	"255 255 255 255"
+		
+		"AnimatingImagePanel.BgColor"	 "255 255 255 255"
+		
+		"ConVar.MsgColor"	"255 100 100 255"
+		
+		"Debug.ColorFg"	"255 255 255 255"
+		
+		"Manhack.OnlineFgColor"		"0 255 0 255"
+		"Manhack.OfflineFgColor"	"255 0 0 255"
+		"Manhack.CountFgColor"		"255 255 255 255"
+		"Manhack.DistanceFgColor"	"255 255 255 255"
 	}
 
 	//////////////////////// BITMAP FONT FILES /////////////////////////////

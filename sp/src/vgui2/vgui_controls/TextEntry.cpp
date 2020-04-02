@@ -129,8 +129,8 @@ void TextEntry::ApplySchemeSettings(IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
 	
-	SetFgColor(GetSchemeColor("TextEntry.TextColor", pScheme));
-	SetBgColor(GetSchemeColor("TextEntry.BgColor", pScheme));
+	SetFgColor("TextEntry.TextColor", pScheme);
+	SetBgColor("TextEntry.BgColor", pScheme);
 	
 	_cursorColor = GetSchemeColor("TextEntry.CursorColor", pScheme);
 	_disabledFgColor = GetSchemeColor("TextEntry.DisabledTextColor", pScheme);
@@ -880,13 +880,12 @@ void TextEntry::PaintBackground()
 	}
 
 	// custom border
-	//!! need to replace this with scheme stuff (TextEntryBorder/TextEntrySelectedBorder)
-	surface()->DrawSetColor(50, 50, 50, 255);
+	surface()->DrawSetColor(Panel::GetSchemeColor("TextEntry.Border"));
 	
 	if (IsEnabled() && IsEditable() && HasFocus())
 	{
 		// set a more distinct border color
-		surface()->DrawSetColor(0, 0, 0, 255);
+		surface()->DrawSetColor(Panel::GetSchemeColor("TextEntry.SelectedBorder"));
 		
 		DrawCursor (x, y);
 

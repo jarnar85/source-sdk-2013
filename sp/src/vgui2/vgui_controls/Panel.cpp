@@ -1628,6 +1628,21 @@ HScheme Panel::GetScheme()
 	return scheme()->GetDefaultScheme();
 }
 
+IScheme* Panel::GetIScheme()
+{
+	if (m_iScheme)
+	{
+		return m_pScheme; // return our internal scheme
+	}
+
+	if (GetVParent()) // recurse down the heirarchy 
+	{
+		return vgui::scheme()->GetIScheme(ipanel()->GetScheme(GetVParent()));
+	}
+
+	return vgui::scheme()->GetIScheme(scheme()->GetDefaultScheme());
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: set the scheme to render this panel with by name
 //-----------------------------------------------------------------------------
@@ -1647,6 +1662,7 @@ void Panel::SetScheme(HScheme scheme)
 	if (scheme != m_iScheme)
 	{
 		m_iScheme = scheme;
+		m_pScheme = vgui::scheme()->GetIScheme(m_iScheme);
 
 		// This will cause the new scheme to be applied at a later point
 //		InvalidateLayout( false, true );
@@ -3689,19 +3705,82 @@ bool Panel::IsBuildGroupEnabled()
 	return false;
 }
 
+
+
 void Panel::SetBgColor(Color color)
 {
 	_bgColor = color;
 }
+
+void Panel::SetBgColor(const char *color)
+{
+	SetBgColor(GetSchemeColor(color));
+}
+
+void Panel::SetBgColor(const char *color, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, pScheme));
+}
+
+void Panel::SetBgColor(const char *color, Color defaultColor)
+{
+	SetBgColor(GetSchemeColor(color, defaultColor));
+}
+
+void Panel::SetBgColor(const char *color, const char *defaultColor)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor)));
+}
+
+void Panel::SetBgColor(const char *color, Color defaultColor, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, defaultColor, pScheme));
+}
+
+void Panel::SetBgColor(const char *color, const char *defaultColor, IScheme *pScheme)
+{
+	SetBgColor(GetSchemeColor(color, GetSchemeColor(defaultColor, pScheme), pScheme));
+}
+
+Color Panel::GetBgColor()
+{
+	return _bgColor;
+}
+
 
 void Panel::SetFgColor(Color color)
 {
 	_fgColor = color;
 }
 
-Color Panel::GetBgColor()
+void Panel::SetFgColor(const char *color)
 {
-	return _bgColor;
+	SetFgColor(GetSchemeColor(color));
+}
+
+void Panel::SetFgColor(const char *color, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, pScheme));
+}
+
+void Panel::SetFgColor(const char *color, Color defaultColor)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor));
+}
+
+void Panel::SetFgColor(const char *color, const char *defaultColor)
+{
+	SetFgColor(GetSchemeColor(color, GetSchemeColor(defaultColor)));
+}
+
+void Panel::SetFgColor(const char *color, Color defaultColor, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor, pScheme));
+}
+
+void Panel::SetFgColor(const char *color, const char *defaultColor, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, GetSchemeColor(defaultColor, pScheme), pScheme));
 }
 
 Color Panel::GetFgColor()
@@ -4847,9 +4926,25 @@ void Panel::SetOverridableColor( Color *pColor, const Color &newColor )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+Color Panel::GetSchemeColor(const char *keyName)
+{
+	return GetIScheme()->GetColor(keyName, Color(255, 255, 255, 255));
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 Color Panel::GetSchemeColor(const char *keyName, IScheme *pScheme)
 {
 	return pScheme->GetColor(keyName, Color(255, 255, 255, 255));
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+Color Panel::GetSchemeColor(const char *keyName, Color defaultColor)
+{
+	return GetIScheme()->GetColor(keyName, defaultColor);
 }
 
 //-----------------------------------------------------------------------------

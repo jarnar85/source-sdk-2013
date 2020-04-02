@@ -1697,8 +1697,8 @@ void Frame::ApplySchemeSettings(IScheme *pScheme)
 	m_flTransitionEffectTime = atof(pScheme->GetResourceString("Frame.TransitionEffectTime"));
 	m_flFocusTransitionEffectTime = atof(pScheme->GetResourceString("Frame.FocusTransitionEffectTime"));
 
-	SetOverridableColor( &m_InFocusBgColor, pScheme->GetColor("Frame.BgColor", GetBgColor()) );
-	SetOverridableColor( &m_OutOfFocusBgColor, pScheme->GetColor("Frame.OutOfFocusBgColor", m_InFocusBgColor) );
+	SetOverridableColor(&m_InFocusBgColor, GetSchemeColor("Frame.BgColor", GetBgColor(), pScheme));
+	SetOverridableColor(&m_OutOfFocusBgColor, GetSchemeColor("Frame.OutOfFocusBgColor", m_InFocusBgColor, pScheme));
 
 	const char *resourceString = pScheme->GetResourceString("Frame.ClientInsetX");
 	if ( resourceString )

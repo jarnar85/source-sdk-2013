@@ -162,8 +162,8 @@ void RotatingProgressBar::Paint()
 	// desired rotation is GetProgress() ( 0.0 -> 1.0 ) mapped into
 	// ( m_flStartDegrees -> m_flEndDegrees )
 
-	vgui::surface()->DrawSetTexture( m_nTextureId );
-	vgui::surface()->DrawSetColor( Color(255,255,255,255) );
+	vgui::surface()->DrawSetTexture(m_nTextureId);
+	vgui::surface()->DrawSetColor(GetSchemeColor("RotatingProgressBar.DrawSetColor"));
 
 	int wide, tall;
 	GetSize( wide, tall );

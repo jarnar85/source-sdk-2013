@@ -42,8 +42,8 @@ public:
 	{
 		BaseClass::ApplySchemeSettings( pScheme );
 
-		SetFgColor( pScheme->GetColor( "Menu.SeparatorColor", Color( 142, 142, 142, 255 ) ) );
-		SetBgColor( pScheme->GetColor( "Menu.BgColor", Color( 0, 0, 0, 255 ) ) );
+		SetFgColor("Menu.SeparatorColor", Color(142, 142, 142, 255), pScheme);
+		SetBgColor("Menu.BgColor", Color(0, 0, 0, 255), pScheme);
 	}
 };
 

@@ -64,7 +64,7 @@ public:
 #if defined( DRAW_CLICK_PANELS )
 	virtual void Paint()
 	{
-		surface()->DrawSetColor( Color( 255, 0, 0, 255 ) );
+		surface()->DrawSetColor( GetSchemeColor("ClickPanel.DrawSetColor") );
 		surface()->DrawOutlinedRect( 0, 0, GetWide(), GetTall() );
 	}
 #endif

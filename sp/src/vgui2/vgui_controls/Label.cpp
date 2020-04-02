@@ -41,7 +41,7 @@ Label::Label(Panel *parent, const char *panelName, const char *text) : BaseClass
 	Init();
 
 	_textImage = new TextImage(text);
-	_textImage->SetColor(Color(0, 0, 0, 0));
+	_textImage->SetColor(GetSchemeColor("Label.TextColor", Color(0, 0, 0, 0)));
 	SetText(text);
 	_textImageIndex = AddImage(_textImage, 0);
 
@@ -56,7 +56,7 @@ Label::Label(Panel *parent, const char *panelName, const wchar_t *wszText) : Bas
 	Init();
 
 	_textImage = new TextImage(wszText);
-	_textImage->SetColor(Color(0, 0, 0, 0));
+	_textImage->SetColor(GetSchemeColor("Label.TextColor", Color(0,0,0,0)));
 	SetText(wszText);
 	_textImageIndex = AddImage(_textImage, 0);
 
@@ -727,6 +727,26 @@ void Label::SetFgColor(Color color)
 	}
 }
 
+void Label::SetFgColor(char *color)
+{
+	SetFgColor(GetSchemeColor(color));
+}
+
+void Label::SetFgColor(char *color, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, pScheme));
+}
+
+void Label::SetFgColor(char *color, Color defaultColor)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor));
+}
+
+void Label::SetFgColor(char *color, Color defaultColor, IScheme *pScheme)
+{
+	SetFgColor(GetSchemeColor(color, defaultColor, pScheme));
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Get the foreground color of the Label
 //-----------------------------------------------------------------------------
@@ -1030,19 +1050,19 @@ void Label::ApplySchemeSettings(IScheme *pScheme)
 
 	SetDisabledFgColor1(GetSchemeColor("Label.DisabledFgColor1", pScheme));
 	SetDisabledFgColor2(GetSchemeColor("Label.DisabledFgColor2", pScheme));
-	SetBgColor(GetSchemeColor("Label.BgColor", pScheme));
+	SetBgColor("Label.BgColor", pScheme);
 
 	switch (_textColorState)
 	{
 	case CS_DULL:
-		SetFgColor(GetSchemeColor("Label.TextDullColor", pScheme));
+		SetFgColor("Label.TextDullColor", pScheme);
 		break;
 	case CS_BRIGHT:
-		SetFgColor(GetSchemeColor("Label.TextBrightColor", pScheme));
+		SetFgColor("Label.TextBrightColor", pScheme);
 		break;
 	case CS_NORMAL:
 	default:
-		SetFgColor(GetSchemeColor("Label.TextColor", pScheme));
+		SetFgColor("Label.TextColor", pScheme);
 		break;
 	}
 

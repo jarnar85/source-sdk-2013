@@ -1517,12 +1517,12 @@ Panel *ListPanel::GetCellRenderer(int itemID, int col)
             // if one of the children of the SectionedListPanel has focus, then 'we have focus' if we're selected
             if (HasFocus() || (focus && ipanel()->HasParent(focus, GetVParent())))
             {
-                m_pLabel->SetBgColor(GetSchemeColor("ListPanel.SelectedBgColor", pScheme));
+                m_pLabel->SetBgColor("ListPanel.SelectedBgColor", pScheme);
     			// selection
             }
             else
             {
-                m_pLabel->SetBgColor(GetSchemeColor("ListPanel.SelectedOutOfFocusBgColor", pScheme));
+                m_pLabel->SetBgColor("ListPanel.SelectedOutOfFocusBgColor", pScheme);
             }
 
 			if ( item->IsEmpty("cellcolor") == false )
@@ -1593,12 +1593,12 @@ Panel *ListPanel::GetCellRenderer(int itemID, int col)
             // if one of the children of the SectionedListPanel has focus, then 'we have focus' if we're selected
             if (HasFocus() || (focus && ipanel()->HasParent(focus, GetVParent())))
             {
-                m_pLabel->SetBgColor(GetSchemeColor("ListPanel.SelectedBgColor", pScheme));
+                m_pLabel->SetBgColor("ListPanel.SelectedBgColor", pScheme);
     			// selection
             }
             else
             {
-                m_pLabel->SetBgColor(GetSchemeColor("ListPanel.SelectedOutOfFocusBgColor", pScheme));
+                m_pLabel->SetBgColor("ListPanel.SelectedOutOfFocusBgColor", pScheme);
             }
 			// selection
 			m_pLabel->SetPaintBackgroundEnabled(true);
@@ -2639,10 +2639,10 @@ void ListPanel::ApplySchemeSettings(IScheme *pScheme)
 
 	BaseClass::ApplySchemeSettings(pScheme);
 
-	SetBgColor(GetSchemeColor("ListPanel.BgColor", pScheme));
+	SetBgColor("ListPanel.BgColor", pScheme);
 	SetBorder(pScheme->GetBorder("ButtonDepressedBorder"));
 
-	m_pLabel->SetBgColor(GetSchemeColor("ListPanel.BgColor", pScheme));
+	m_pLabel->SetBgColor("ListPanel.BgColor", pScheme);
 
 	m_LabelFgColor = GetSchemeColor("ListPanel.TextColor", pScheme);
 	m_DisabledColor = GetSchemeColor("ListPanel.DisabledTextColor", m_LabelFgColor, pScheme);

@@ -708,7 +708,7 @@ void ListViewPanel::ApplySchemeSettings(IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
 
-	SetBgColor(GetSchemeColor("ListPanel.BgColor", pScheme));
+	SetBgColor("ListPanel.BgColor", pScheme);
 	SetBorder(pScheme->GetBorder("ButtonDepressedBorder"));
 
 	m_LabelFgColor = GetSchemeColor("ListPanel.TextColor", pScheme);

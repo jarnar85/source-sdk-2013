@@ -139,15 +139,15 @@ BEGIN_DATADESC( CNPC_Manhack )
 	DEFINE_FIELD( m_vForceVelocity,			FIELD_VECTOR),
 
 	DEFINE_FIELD( m_vTargetBanking,			FIELD_VECTOR),
-	DEFINE_FIELD( m_vForceMoveTarget,			FIELD_POSITION_VECTOR),
+	DEFINE_FIELD( m_vForceMoveTarget,		FIELD_POSITION_VECTOR),
 	DEFINE_FIELD( m_fForceMoveTime,			FIELD_TIME),
-	DEFINE_FIELD( m_vSwarmMoveTarget,			FIELD_POSITION_VECTOR),
+	DEFINE_FIELD( m_vSwarmMoveTarget,		FIELD_POSITION_VECTOR),
 	DEFINE_FIELD( m_fSwarmMoveTime,			FIELD_TIME),
 	DEFINE_FIELD( m_fEnginePowerScale,		FIELD_FLOAT),
 
 	DEFINE_FIELD( m_flNextEngineSoundTime,	FIELD_TIME),
 	DEFINE_FIELD( m_flEngineStallTime,		FIELD_TIME),
-	DEFINE_FIELD( m_flNextBurstTime,			FIELD_TIME ),
+	DEFINE_FIELD( m_flNextBurstTime,		FIELD_TIME ),
 	DEFINE_FIELD( m_flWaterSuspendTime,		FIELD_TIME),
 	DEFINE_FIELD( m_nLastSpinSound,			FIELD_INTEGER ),
 
@@ -166,36 +166,36 @@ BEGIN_DATADESC( CNPC_Manhack )
 	DEFINE_FIELD( m_flBumpSuppressTime,		FIELD_TIME ),
 
 	DEFINE_FIELD( m_bBladesActive,			FIELD_BOOLEAN),
-	DEFINE_FIELD( m_flBladeSpeed,				FIELD_FLOAT),
+	DEFINE_FIELD( m_flBladeSpeed,			FIELD_FLOAT),
 	DEFINE_KEYFIELD( m_bIgnoreClipbrushes,	FIELD_BOOLEAN, "ignoreclipbrushes" ),
-	DEFINE_FIELD( m_hSmokeTrail,				FIELD_EHANDLE),
+	DEFINE_FIELD( m_hSmokeTrail,			FIELD_EHANDLE),
 
-	// DEFINE_FIELD( m_pLightGlow,				FIELD_CLASSPTR ),
-	// DEFINE_FIELD( m_pEyeGlow,					FIELD_CLASSPTR ),
+	// DEFINE_FIELD( m_pLightGlow,			FIELD_CLASSPTR ),
+	// DEFINE_FIELD( m_pEyeGlow,			FIELD_CLASSPTR ),
 
-	DEFINE_FIELD( m_iPanel1, FIELD_INTEGER ),
-	DEFINE_FIELD( m_iPanel2, FIELD_INTEGER ),
-	DEFINE_FIELD( m_iPanel3, FIELD_INTEGER ),
-	DEFINE_FIELD( m_iPanel4, FIELD_INTEGER ),
+	DEFINE_FIELD( m_iPanel1,				FIELD_INTEGER ),
+	DEFINE_FIELD( m_iPanel2,				FIELD_INTEGER ),
+	DEFINE_FIELD( m_iPanel3,				FIELD_INTEGER ),
+	DEFINE_FIELD( m_iPanel4,				FIELD_INTEGER ),
 
-	DEFINE_FIELD( m_nLastWaterLevel,			FIELD_INTEGER ),
-	DEFINE_FIELD( m_bDoSwarmBehavior,			FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_nLastWaterLevel,		FIELD_INTEGER ),
+	DEFINE_FIELD( m_bDoSwarmBehavior,		FIELD_BOOLEAN ),
 
-	DEFINE_FIELD( m_nEnginePitch1,				FIELD_INTEGER ),
-	DEFINE_FIELD( m_flEnginePitch1Time,			FIELD_TIME ),
-	DEFINE_FIELD( m_nEnginePitch2,				FIELD_INTEGER ),
-	DEFINE_FIELD( m_flEnginePitch2Time,			FIELD_TIME ),
+	DEFINE_FIELD( m_nEnginePitch1,			FIELD_INTEGER ),
+	DEFINE_FIELD( m_flEnginePitch1Time,		FIELD_TIME ),
+	DEFINE_FIELD( m_nEnginePitch2,			FIELD_INTEGER ),
+	DEFINE_FIELD( m_flEnginePitch2Time,		FIELD_TIME ),
 
 	// Physics Influence
-	DEFINE_FIELD( m_hPhysicsAttacker, FIELD_EHANDLE ),
-	DEFINE_FIELD( m_flLastPhysicsInfluenceTime, FIELD_TIME ),
+	DEFINE_FIELD( m_hPhysicsAttacker,			FIELD_EHANDLE ),
+	DEFINE_FIELD( m_flLastPhysicsInfluenceTime,	FIELD_TIME ),
 
-	DEFINE_FIELD( m_flBurstDuration,	FIELD_FLOAT ),
-	DEFINE_FIELD( m_vecBurstDirection,	FIELD_VECTOR ),
-	DEFINE_FIELD( m_bShowingHostile,	FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_flBurstDuration,		FIELD_FLOAT ),
+	DEFINE_FIELD( m_vecBurstDirection,		FIELD_VECTOR ),
+	DEFINE_FIELD( m_bShowingHostile,		FIELD_BOOLEAN ),
 
 	DEFINE_FIELD( m_bControllable,			FIELD_BOOLEAN ), //TERO: Added by me
-	//DEFINE_FIELD( m_vCollisionView,			FIELD_VECTOR ),
+	//DEFINE_FIELD( m_vCollisionView,		FIELD_VECTOR ),
 	
 	// Function Pointers
 	DEFINE_INPUTFUNC( FIELD_VOID,	"DisableSwarm", InputDisableSwarm ),
@@ -256,13 +256,7 @@ CNPC_Manhack::~CNPC_Manhack()
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Manhack::Classify(void)
 {
-#ifdef EZ
 	return (m_bHeld || m_bHackedByAlyx) ? CLASS_CITIZEN_REBEL : CLASS_MANHACK; //  Breadman - Hacks are rebel class. Rebels are combine class. This inverse relationship makes them attack each other.
-#else
-	//TERO: removed m_bHeld|| from the equation, used to be (m_bHeld||m_bHackedByAlyx)
-	return (m_bHackedByAlyx) ? CLASS_CITIZEN_REBEL : CLASS_MANHACK;
-#endif
-
 }
 
 //-----------------------------------------------------------------------------
@@ -447,11 +441,10 @@ void CNPC_Manhack::Event_Killed( const CTakeDamageInfo &info )
 	else
 	{
 		m_bGib = false;
-#ifndef EZ		
+
 		//FIXME: These don't stay with the ragdolls currently -- jdw
 		// Long fadeout on the sprites!!
 		KillSprites( 0.0f );
-#endif
 	}
 
 	BaseClass::Event_Killed( info );
@@ -725,17 +718,23 @@ int	CNPC_Manhack::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		tdInfo.SetDamage( m_iMaxHealth>>1 );
 	}
 
-
 	//TERO: So that silly player wont try to kill vorties with the hack so much
-	if (info.GetAttacker() &&
-		(info.GetAttacker()->Classify() == CLASS_VORTIGAUNT)) /* || 
-		 info.GetAttacker()->Classify() == CLASS_ALIENGRUNT || 
-		 info.GetAttacker()->Classify() == CLASS_ALIENCONTROLLER ||
-		 info.GetAttacker()->Classify() == CLASS_BEE ))*/
+	if (info.GetAttacker())
 	{
-		//if (info.GetDamageType() & DMG_SLASH )
-		tdInfo.ScaleDamage( 4.0 );
+		switch (info.GetAttacker()->Classify())
+		{
+		case CLASS_VORTIGAUNT:
+		// case CLASS_ALIENGRUNT:
+		// case CLASS_ALIENCONTROLLER:
+		// case CLASS_BEE:
+			tdInfo.ScaleDamage(4.0);
+			break;
+		default:
+			break;
+		}
+		
 	}
+
 	if (info.GetDamageType() & DMG_PHYSGUN )
 	{
 		m_flBladeSpeed = 20.0;
@@ -2759,13 +2758,8 @@ void CNPC_Manhack::Spawn(void)
 	// don't be an NPC, we want to collide with debris stuff
 	SetCollisionGroup( COLLISION_GROUP_NONE );
 
-	m_bHeld = false;
-
-#ifdef EZ
-	m_bHackedByAlyx = true;
-#else
-	m_bHackedByAlyx = false;
-#endif
+	m_bHeld			 = false;
+	m_bHackedByAlyx	 = false;
 
 	StopLoitering();
 }

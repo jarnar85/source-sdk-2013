@@ -39,9 +39,9 @@ DECLARE_BUILD_FACTORY( CTreeViewListControl );
 CTreeViewListControl::CTreeViewListControl( vgui::Panel *pParent, const char *pName ) :
 	BaseClass( pParent, pName )
 {
-	m_pTree = NULL;
-	m_BorderColor.SetColor( 255, 255, 255, 255 );
-	m_TitleBarFont = NULL;
+	m_pTree			 = NULL;
+	m_BorderColor	 = Panel::GetSchemeColor("TreeView.BorderColor");
+	m_TitleBarFont	 = NULL;
 	m_TitleBarHeight = 20;
 	SetPostChildPaintEnabled( true );
 }
@@ -270,6 +270,9 @@ void CTreeViewListControl::Paint()
 void CTreeViewListControl::DrawTitleBars()
 {
 	int rightEdge = GetWide();
+	
+	Color BgColor	 = Panel::GetSchemeColor("TreeView.TitleBarColor");
+	Color TextColor	 = Panel::GetSchemeColor("TreeView.TitleBarText");
 
 	for ( int i=0; i < m_Columns.Count(); i++ )
 	{
@@ -279,10 +282,9 @@ void CTreeViewListControl::DrawTitleBars()
 		if ( left >= rightEdge )
 			continue;
 
-		vgui::surface()->DrawSetColor( 0, 0, 0, 255 );
+		vgui::surface()->DrawSetColor(BgColor);
 		vgui::surface()->DrawFilledRect( left, top, right, bottom );
-
-		vgui::surface()->DrawSetTextColor( 255, 255, 255, 255 );
+		vgui::surface()->DrawSetTextColor(TextColor);
 
 		const char *pTitleString = m_Columns[i].m_Title.String();
 
