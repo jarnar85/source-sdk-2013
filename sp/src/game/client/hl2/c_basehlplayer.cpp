@@ -639,6 +639,7 @@ bool C_BaseHLPlayer::CreateMove(float flInputSampleTime, CUserCmd *pCmd, bool bV
 
 	return bResult;
 }
+
 bool C_BaseHLPlayer::CreateMove(float flInputSampleTime, CUserCmd *cmd)
 {
 	return CreateMove(flInputSampleTime, cmd, false);

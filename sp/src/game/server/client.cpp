@@ -1064,7 +1064,14 @@ void CC_Player_Set_Class(const CCommand &args)
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (pPlayer)
 	{
-		PlayerClass_T nClass = pPlayer->GetPlayerClass(args[1]);
+		char sClass[32];
+
+		Q_snprintf(sClass, 32, "PLC_%s", args[1]);
+		for (size_t i = 0; i<strlen(sClass); i++){
+			sClass[i] = toupper(sClass[i]);
+		}
+
+		PlayerClass_T nClass = pPlayer->GetPlayerClass(static_cast<const char*>(sClass));
 
 		// change player relation to NPCs
 		if (nClass == PLC_NONE)
@@ -1075,7 +1082,7 @@ void CC_Player_Set_Class(const CCommand &args)
 		{
 			Msg("Set class ... ");
 			pPlayer->SetClass(nClass);
-			Msg(args[1]);
+			Msg(sClass);
 
 			pPlayer->SetStats();
 			Msg("\n");
@@ -1095,7 +1102,7 @@ void CC_Player_Gender(const CCommand &args)
 	if (pPlayer)
 	{
 		const char* myarg = args[1];
-		
+
 		char gender = myarg[0];
 
 		if (gender != 'f' && gender != 'm')
@@ -1110,12 +1117,27 @@ void CC_Player_Gender(const CCommand &args)
 }
 static ConCommand npc_gender("player_setgender", CC_Player_Gender, "Set the gender of the player.\n\tArguments:   	{gender}", FCVAR_CHEAT);
 
+void CC_Player_Bodygroup(const CCommand &args)
+{
+
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		const char* groupName	 = args[1];
+		int groupOption			 = atoi(args[2]);
+
+		static int bg = pPlayer->FindBodygroupByName(groupName);
+		pPlayer->SetBodygroup(bg, groupOption);
+	}
+}
+static ConCommand pc_body("player_bodygroup", CC_Player_Bodygroup, "Change visiblity of a bodygroup on the player.\n\tArguments:   	{group} {option}", FCVAR_CHEAT);
+
 void CC_Player_Rank(const CCommand &args)
 {
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (pPlayer)
 	{
-		Msg("You have: %d Ration Units, %d Rank Points, %d Credits and undergone %d Memory replacements\n", pPlayer->m_iRation, pPlayer->m_iRank, pPlayer->m_iCredits, pPlayer->m_iMemRepl);
+		Msg("%s has %d Ration Units, %d Rank Points, %d Credits and undergone %d Memory replacements\n%d%% of your original Memory is left.", pPlayer->GetPlayerName(), pPlayer->m_iRation, pPlayer->m_iRank, pPlayer->m_iCredits, pPlayer->m_iMemRepl, pPlayer->m_iMemory);
 	}
 	else
 	{
@@ -1123,6 +1145,41 @@ void CC_Player_Rank(const CCommand &args)
 	}
 }
 static ConCommand npc_rank("player_rank", CC_Player_Rank, "Show Rank, Credits and Rations of the player.\n", FCVAR_CHEAT);
+
+void CC_Player_Mem(const CCommand &args)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		if (pPlayer->m_iMemRepl < 5)
+			pPlayer->m_iMemRepl += 1;
+
+		if (pPlayer->m_iMemory >= 15)
+			pPlayer->m_iMemory -= 15;
+		else
+			pPlayer->m_iMemory = 0;
+	}
+	else
+	{
+		Msg("Unable to set data\n");
+	}
+}
+static ConCommand npc_mem("player_mem", CC_Player_Mem, "Get one memory replacement.\n", FCVAR_CHEAT);
+
+void CC_Player_Soda(const CCommand &args)
+{
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		if (pPlayer->m_iMemory >= 1)
+			pPlayer->m_iMemory -= 1;
+	}
+	else
+	{
+		Msg("Unable to drink soda\n");
+	}
+}
+static ConCommand npc_soda("player_soda", CC_Player_Soda, "Drink a can of Dr>Breens Private Reserve.\n", FCVAR_CHEAT);
 
 //------------------------------------------------------------------------------
 // A small wrapper around SV_Move that never clips against the supplied entity.

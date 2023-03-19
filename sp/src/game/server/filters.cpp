@@ -266,7 +266,7 @@ BEGIN_DATADESC( CFilterName )
 	// Keyfields
 	DEFINE_KEYFIELD( m_iFilterName,	FIELD_STRING,	"filtername" ),
 
-END_DATADESC()
+	END_DATADESC()
 
 
 
@@ -275,24 +275,57 @@ END_DATADESC()
 // ###################################################################
 class CFilterClass : public CBaseFilter
 {
-	DECLARE_CLASS( CFilterClass, CBaseFilter );
+	DECLARE_CLASS(CFilterClass, CBaseFilter);
 	DECLARE_DATADESC();
 
 public:
 	string_t m_iFilterClass;
 
-	bool PassesFilterImpl( CBaseEntity *pCaller, CBaseEntity *pEntity )
+	bool PassesFilterImpl(CBaseEntity *pCaller, CBaseEntity *pEntity)
 	{
-		return pEntity->ClassMatches( STRING(m_iFilterClass) );
+		return pEntity->ClassMatches(STRING(m_iFilterClass));
 	}
 };
 
-LINK_ENTITY_TO_CLASS( filter_activator_class, CFilterClass );
+LINK_ENTITY_TO_CLASS(filter_activator_class, CFilterClass);
 
-BEGIN_DATADESC( CFilterClass )
+BEGIN_DATADESC(CFilterClass)
 
-	// Keyfields
-	DEFINE_KEYFIELD( m_iFilterClass,	FIELD_STRING,	"filterclass" ),
+// Keyfields
+DEFINE_KEYFIELD(m_iFilterClass, FIELD_STRING, "filterclass"),
+
+END_DATADESC()
+
+
+
+// ###################################################################
+//	> FilterClassT
+// ###################################################################
+class CFilterClass_T : public CBaseFilter
+{
+	DECLARE_CLASS(CFilterClass_T, CBaseFilter);
+	DECLARE_DATADESC();
+
+public:
+	string_t m_iFilterClass_T;
+
+	bool PassesFilterImpl(CBaseEntity *pCaller, CBaseEntity *pEntity)
+	{
+		Class_T filCls = CLASS_NONE;
+		Class_T entCls = pEntity->Classify();
+
+		filCls = CBaseEntity::GetClassStr(STRING(m_iFilterClass_T));
+		
+		return (entCls == filCls);
+	}
+};
+
+LINK_ENTITY_TO_CLASS(filter_activator_class_t, CFilterClass_T);
+
+BEGIN_DATADESC(CFilterClass_T)
+
+// Keyfields
+DEFINE_KEYFIELD(m_iFilterClass_T, FIELD_STRING, "filterclass_t"),
 
 END_DATADESC()
 

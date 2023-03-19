@@ -188,7 +188,7 @@ public:
 	virtual							~C_BaseEntity();
 
 	static C_BaseEntity				*CreatePredictedEntityByName( const char *classname, const char *module, int line, bool persist = false );
-	
+
 	// FireBullets uses shared code for prediction.
 	virtual void					FireBullets( const FireBulletsInfo_t &info );
 	virtual void					ModifyFireBulletsDamage( CTakeDamageInfo* dmgInfo ) {}
@@ -1337,6 +1337,7 @@ public:
 	int		m_iRank;
 	int		m_iCredits;
 	int		m_iMemRepl;
+	int		m_iMemory;
 
 	// Team Handling
 	int								m_iTeamNum;

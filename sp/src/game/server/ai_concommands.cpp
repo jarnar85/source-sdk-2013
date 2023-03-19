@@ -408,9 +408,25 @@ void CC_NPC_Create( const CCommand &args )
 		baseNPC->KeyValue( "additionalequipment", npc_create_equipment.GetString() );
 		baseNPC->Precache();
 
-		if ( args.ArgC() == 3 )
+		if ( args.ArgC() > 2 )
 		{
 			baseNPC->SetName( AllocPooledString( args[2] ) );
+		}
+
+		if (args.ArgC() > 3)
+		{
+			switch (args[3][0])
+			{
+			case 'm':
+				baseNPC->SetJob(JOB_MEDIC);
+				break;
+			case 'b':
+				baseNPC->SetJob(JOB_BRUTE);
+				break;
+			case 'h':
+				baseNPC->SetJob(JOB_HEAVY);
+				break;
+			}
 		}
 
 		DispatchSpawn(baseNPC);

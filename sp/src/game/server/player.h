@@ -261,6 +261,7 @@ public:
 	static CBasePlayer		*CreatePlayer( const char *className, edict_t *ed );
 
 	virtual void			CreateViewModel( int viewmodelindex = 0 );
+	virtual void	        CreateHandModel(int viewmodelindex = 1, int iOtherVm = 0);
 	CBaseViewModel			*GetViewModel( int viewmodelindex = 0, bool bObserverOK = true );
 	void					HideViewModels( void );
 	void					DestroyViewModels( void );
@@ -591,7 +592,7 @@ public:
 	float					GetTimeSinceLastUserCommand( void ) { return ( !IsConnected() || IsFakeClient() || IsBot() ) ? 0.f : gpGlobals->curtime - m_flLastUserCommandTime; }
 
 	// Class Handling
-	virtual void SetClass(PlayerClass_T nClass);
+	virtual void SetClass(PlayerClass_T nClass, bool updateCounters = true);
 	virtual void SetFaction(Class_T nFaction);
 
 	// Team Handling
@@ -703,6 +704,7 @@ public:
 	void	SetConnected( PlayerConnectedState iConnected ) { m_iConnected = iConnected; }
 	virtual void EquipSuit( bool bPlayEffects = true );
 	virtual void RemoveSuit( void );
+	void PostLevelChange();
 
 	void EquipByClass(PlayerClass_T nClass);
 	void SetStats();
@@ -880,6 +882,7 @@ public:
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iRank);
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iCredits);
 	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iMemRepl);
+	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_iMemory);
 	
 	int						m_nButtons;
 	int						m_afButtonPressed;
@@ -940,17 +943,6 @@ protected:
 
 	float					m_iRespawnFrames;	// used in PlayerDeathThink() to make sure players can always respawn
  	unsigned int			m_afPhysicsFlags;	// physics flags - set when 'normal' physics should be revisited or overriden
-	
-
-	// default values for players
-	PlayerClass_T		m_Class		 = PLC_PLAYER;
-	Class_T				m_Faction	 = CLASS_PLAYER;
-	Job_T				m_Job		 = JOB_NONE;
-
-	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Class);
-	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Faction);
-	IMPLEMENT_NETWORK_VAR_FOR_DERIVED(m_Job);
-
 
 	// Vehicles
 	CNetworkHandle( CBaseEntity, m_hVehicle );

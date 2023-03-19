@@ -198,9 +198,18 @@ float CNPC_Stalker::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 Class_T CNPC_Stalker::Classify( void )
 {
-#ifdef EZ1
-	return CLASS_CITIZEN_REBEL; // Breadman
-#endif
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+		
+		// change player relation to NPCs
+		if (nClass == CLASS_STALKER || nClass == CLASS_COMBINE)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+
 	return CLASS_STALKER;
 }
 

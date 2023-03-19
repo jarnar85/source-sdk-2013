@@ -228,34 +228,20 @@ int	CBaseCombatCharacter::GetInteractionID(void)
 // ============================================================================
 bool CBaseCombatCharacter::HasHumanGibs( void )
 {
-#if defined( HL2_DLL )
 	Class_T myClass = Classify();
-	if ( myClass == CLASS_CITIZEN_PASSIVE   ||
-		 myClass == CLASS_CITIZEN_REBEL		||
-		 myClass == CLASS_COMBINE			||
-		 myClass == CLASS_CONSCRIPT			||
-		 myClass == CLASS_METROPOLICE		||
-		 myClass == CLASS_PLAYER )	
-		 return true;
 
-#elif defined( HL1_DLL )
-	Class_T myClass = Classify();
-	if (	myClass == CLASS_HUMAN_MILITARY		||
-			myClass == CLASS_PLAYER_ALLY		||
-			myClass == CLASS_HUMAN_PASSIVE		||
-			myClass == CLASS_PLAYER )
+	if (myClass == CLASS_CITIZEN_PASSIVE	||
+		myClass == CLASS_CITIZEN_REBEL		||
+		myClass == CLASS_COMBINE			||
+		myClass == CLASS_CONSCRIPT			||
+		myClass == CLASS_METROPOLICE		||
+		myClass == CLASS_HUMAN_MILITARY		||
+		myClass == CLASS_PLAYER_ALLY		||
+		myClass == CLASS_HUMAN_PASSIVE		||
+		myClass == CLASS_PLAYER )
 	{
 		return true;
 	}
-
-#elif defined( CSPORT_DLL )
-	Class_T myClass = Classify();
-	if (	 myClass == CLASS_PLAYER )	
-	{
-		return true;
-	}
-
-#endif
 
 	return false;
 }
@@ -263,28 +249,21 @@ bool CBaseCombatCharacter::HasHumanGibs( void )
 
 bool CBaseCombatCharacter::HasAlienGibs( void )
 {
-#if defined( HL2_DLL )
 	Class_T myClass = Classify();
-	if ( myClass == CLASS_BARNACLE		 || 
-		 myClass == CLASS_STALKER		 ||
-		 myClass == CLASS_ZOMBIE		 ||
-		 myClass == CLASS_VORTIGAUNT	 ||
-		 myClass == CLASS_HEADCRAB )
-	{
-		 return true;
-	}
 
-#elif defined( HL1_DLL )
-	Class_T myClass = Classify();
-	if ( myClass == CLASS_ALIEN_MILITARY ||
-		 myClass == CLASS_ALIEN_MONSTER	||
-		 myClass == CLASS_INSECT  ||
-		 myClass == CLASS_ALIEN_PREDATOR  ||
+	if ( myClass == CLASS_BARNACLE			|| 
+		 myClass == CLASS_STALKER			||
+		 myClass == CLASS_ZOMBIE			||
+		 myClass == CLASS_VORTIGAUNT		||
+		 myClass == CLASS_HEADCRAB			||
+		 myClass == CLASS_ALIEN_MILITARY	||
+		 myClass == CLASS_ALIEN_MONSTER		|| 
+		 myClass == CLASS_INSECT			||
+		 myClass == CLASS_ALIEN_PREDATOR	||
 		 myClass == CLASS_ALIEN_PREY )
 	{
 		return true;
 	}
-#endif
 
 	return false;
 }
@@ -2791,9 +2770,20 @@ void CBaseCombatCharacter::SetFullDefaultRelationship(Class_T nClass, Class_T nC
 //-----------------------------------------------------------------------------
 Disposition_t CBaseCombatCharacter::GetDefaultRelationshipDisposition( Class_T nClassTarget )
 {
-	Assert( m_DefaultRelationship != NULL );
+	// Make sure that the m_DefaultRelationship array is valid
+	Assert(m_DefaultRelationship != NULL);
 
-	return m_DefaultRelationship[Classify()][nClassTarget].disposition;
+	// return m_DefaultRelationship[Classify()][nClassTarget].disposition;
+	// Get the classification of this character
+	Class_T nClassSelf = Classify();
+
+	// Get the default relationship data for the given target class
+	Relationship_t* pRelationship = m_DefaultRelationship[nClassSelf];
+
+	// Get the disposition value for the given target class
+	Disposition_t disposition = pRelationship[nClassTarget].disposition;
+
+	return disposition;
 }
 
 

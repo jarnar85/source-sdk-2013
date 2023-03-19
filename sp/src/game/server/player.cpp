@@ -296,7 +296,11 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD( m_iTrain, FIELD_INTEGER ),
 	DEFINE_FIELD( m_iRespawnFrames, FIELD_FLOAT ),
 	DEFINE_FIELD( m_afPhysicsFlags, FIELD_INTEGER ),
-	DEFINE_FIELD( m_hVehicle, FIELD_EHANDLE ),
+	DEFINE_FIELD(m_hVehicle, FIELD_EHANDLE),
+
+	DEFINE_FIELD(m_Class, FIELD_INTEGER),
+	DEFINE_FIELD(m_Faction, FIELD_INTEGER),
+	DEFINE_FIELD(m_Job, FIELD_INTEGER),
 
 	// recreate, don't restore
 	// DEFINE_FIELD( m_CommandContext, CUtlVector < CCommandContext > ),
@@ -511,6 +515,26 @@ void CBasePlayer::CreateViewModel( int index /*=0*/ )
 		m_hViewModel.Set( index, vm );
 	}
 }
+
+void CBasePlayer::CreateHandModel(int index, int iOtherVm)
+{
+	Assert(index >= 0 && index < MAX_VIEWMODELS && iOtherVm >= 0 && iOtherVm < MAX_VIEWMODELS);
+
+	if (GetViewModel(index))
+		return;
+
+	CBaseViewModel *vm = (CBaseViewModel *)CreateEntityByName("hand_viewmodel");
+	if (vm)
+	{
+		vm->SetAbsOrigin(GetAbsOrigin());
+		vm->SetOwner(this);
+		vm->SetIndex(index);
+		DispatchSpawn(vm);
+		vm->FollowEntity(GetViewModel(iOtherVm), true);
+		m_hViewModel.Set(index, vm);
+	}
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -849,8 +873,7 @@ void CBasePlayer::DeathSound( const CTakeDamageInfo &info )
 int CBasePlayer::TakeHealth( float flHealth, int bitsDamageType )
 {
 	// clear out any damage types we healed.
-	// UNDONE: generic health should not heal any
-	// UNDONE: time-based damage
+	// UNDONE: generic health should not heal any time-based damage
 	if (m_takedamage)
 	{
 		int bitsDmgTimeBased = g_pGameRules->Damage_GetTimeBased();
@@ -4990,6 +5013,7 @@ void CBasePlayer::Spawn( void )
 	enginesound->SetPlayerDSP( user, 0, false );
 
 	CreateViewModel();
+	CreateHandModel();
 
 	SetCollisionGroup( COLLISION_GROUP_PLAYER );
 
@@ -6336,6 +6360,8 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 {
 	const char *cmd = args[0];
 #ifdef _DEBUG
+	Warning(cmd);
+
 	if( stricmp( cmd, "test_SmokeGrenade" ) == 0 )
 	{
 		if ( sv_cheats && sv_cheats->GetBool() )
@@ -7889,52 +7915,86 @@ void CBasePlayer::PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPla
 // CLASS HANDLING
 //================================================================================
 
-void CBasePlayer::SetClass(PlayerClass_T nClass)
+void CBasePlayer::SetClass(PlayerClass_T nClass, bool updateCounters)
 {
-	switch (nClass)
+	int oldmem = m_iMemRepl;
+	
+	if (updateCounters)
 	{
-	case PLC_COMBINE_ELITE:
-		m_iMemRepl = 5;
-		break;
-	case PLC_COMBINE_ENGINEER:
-	case PLC_COMBINE_GUARD:
-	case PLC_COMBINE_MEDIC:
-	case PLC_COMBINE_SOLDIER:
-	case PLC_STALKER:
-		m_iMemRepl = 3;
-		break;
-	case PLC_PLAYER:
-	case PLC_CITIZEN:
-		m_iRation = 10;
-	case PLC_REBEL:
-	case PLC_REBEL_MEDIC:
-	case PLC_ZOMBIE:
-	case PLC_ZOMBIE_COMBINE:
-	case PLC_ZOMBIE_FAST:
-	case PLC_ZOMBIE_POISON:
-		m_iMemRepl = 0;
-		break;
-	case PLC_METROPOLICE:
-		m_iRank		 = 1;
-		m_iCredits	 = 10;
-		break;
-	default:
-		break;
+		switch (nClass)
+		{
+		case PLC_COMBINE_ELITE:
+			m_iMemRepl = 5;
+			break;
+		case PLC_COMBINE_ORDINAL:
+			m_iMemRepl = 4;
+			break;
+		case PLC_COMBINE_CHARGER:
+		case PLC_COMBINE_HEAVY:
+		case PLC_COMBINE_MEDIC:
+		case PLC_COMBINE_PRISONGUARD:
+		case PLC_COMBINE_PRISONHEAVY:
+		case PLC_COMBINE_SOLDIER:
+		case PLC_COMBINE_SUPPRESSOR:
+		case PLC_STALKER:
+			m_iMemRepl = 3;
+			break;
+		case PLC_COMBINE_GRUNT:
+		case PLC_COMBINE_WORKER:
+		case PLC_COMBINE_WORKER_HAZMAT:
+			m_iMemRepl = 2;
+			break;
+		case PLC_PLAYER:
+		case PLC_CITIZEN:
+			m_iRation = 10;
+		case PLC_CONSCRIPT:
+		case PLC_REBEL:
+		case PLC_REBEL_MEDIC:
+		case PLC_SOLDIER:
+		case PLC_MEDIC:
+		case PLC_SCIENTIST:
+		case PLC_POLICE:
+			m_iMemRepl = 0;
+			m_iMemory = 100;
+			break;
+		case PLC_ZOMBIE:
+		case PLC_ZOMBIE_COMBINE:
+		case PLC_ZOMBIE_FAST:
+		case PLC_ZOMBIE_POISON:
+			break;
+		case PLC_METROPOLICE:
+			m_iRank = 1;
+			m_iCredits = 10;
+			break;
+		default:
+			break;
+		}
+
+		if (m_iMemRepl > oldmem)
+		{
+			m_iMemory -= 15 * (m_iMemRepl - oldmem);
+		}
+		else if (m_iMemRepl < oldmem)
+		{
+			m_iMemory = 100 - 15 * m_iMemRepl;
+		}
+
+		if (m_iMemory < 0)
+			m_iMemory = 0;
+
+		GlobalEntity_SetCounter("comb_credits", m_iCredits);
+		GlobalEntity_SetCounter("comb_rank", m_iRank);
+		GlobalEntity_SetCounter("mem_repl", m_iMemRepl);
+		GlobalEntity_SetCounter("mem_lvl", m_iMemory);
+		GlobalEntity_SetCounter("rations", m_iRation);
 	}
 
-	GlobalEntity_SetCounter("comb_credits", m_iCredits);
-	GlobalEntity_SetCounter("comb_rank", m_iRank);
-	GlobalEntity_SetCounter("mem_replacements", m_iMemRepl);
-	GlobalEntity_SetCounter("rations", m_iRation);
-
-	// CBaseCombatCharacter::SetClass(nClass); // not working - doing it right here
-	p_Class	 = m_Class;
-	m_Class	 = nClass;
+	BaseClass::SetClass(nClass);
 }
 
 void CBasePlayer::SetFaction(Class_T nFaction)
 {
-	// CBaseCombatCharacter::SetFaction(nFaction); // not working - doing it right here
+	BaseClass::SetFaction(nFaction); // not working - doing it right here
 	p_Faction = m_Faction;
 	m_Faction = nFaction;
 }
@@ -8472,6 +8532,9 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropEHandle(SENDINFO(m_hVehicle)),
 		SendPropEHandle(SENDINFO(m_hUseEntity)),
+		// SendPropInt(SENDINFO(m_Class), -1, SPROP_UNSIGNED),
+		// SendPropInt(SENDINFO(m_Faction), -1, SPROP_UNSIGNED),
+		// SendPropInt(SENDINFO(m_Job), -1, SPROP_UNSIGNED),
 		SendPropInt		(SENDINFO(m_iHealth), -1, SPROP_VARINT | SPROP_CHANGES_OFTEN ),
 		SendPropInt		(SENDINFO(m_lifeState), 3, SPROP_UNSIGNED ),
 		SendPropInt		(SENDINFO(m_iBonusProgress), 15 ),
@@ -9118,6 +9181,8 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		switch (nClass)
 		{
 		case PLC_COMBINE_ELITE:
+		case PLC_COMBINE_HEAVY:
+		case PLC_COMBINE_PRISONHEAVY:
 		case PLC_STALKER:
 		case PLC_MANHACK:
 		case PLC_ZOMBIE:
@@ -9125,13 +9190,21 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 			WRITE_SHORT((int)HUDCLR_RED);
 			break;
 		case PLC_ZOMBIE_POISON:
+		case PLC_CONSCRIPT:
+		case PLC_SOLDIER:
 			WRITE_SHORT((int)HUDCLR_GRN);
 			break;
-		case PLC_COMBINE_ENGINEER:
-		case PLC_COMBINE_GUARD:
+		case PLC_COMBINE_CHARGER:
+		case PLC_COMBINE_GRUNT:
 		case PLC_COMBINE_MEDIC:
+		case PLC_COMBINE_ORDINAL:
+		case PLC_COMBINE_PRISONGUARD:
 		case PLC_COMBINE_SOLDIER:
+		case PLC_COMBINE_SUPPRESSOR:
+		case PLC_COMBINE_WORKER:
+		case PLC_COMBINE_WORKER_HAZMAT:
 		case PLC_METROPOLICE:
+		case PLC_POLICE:
 		case PLC_ZOMBIE_COMBINE:
 			WRITE_SHORT((int)HUDCLR_BLU);
 			break;
@@ -9139,6 +9212,8 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		case PLC_CITIZEN:
 		case PLC_REBEL:
 		case PLC_REBEL_MEDIC:
+		case PLC_MEDIC:
+		case PLC_SCIENTIST:
 		default:
 			WRITE_SHORT((int)HUDCLR_NORMAL);
 		}
@@ -9146,10 +9221,17 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	}
 	switch (nClass)
 	{
+	case PLC_COMBINE_CHARGER:
+	case PLC_COMBINE_GRUNT:
+	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_ELITE:
-	case PLC_COMBINE_ENGINEER:
-	case PLC_COMBINE_GUARD:
 	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_PRISONGUARD:
+	case PLC_COMBINE_PRISONHEAVY:
+	case PLC_COMBINE_ORDINAL:
+	case PLC_COMBINE_SUPPRESSOR:
+	case PLC_COMBINE_WORKER:
+	case PLC_COMBINE_WORKER_HAZMAT:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_MANHACK:
 	case PLC_METROPOLICE:
@@ -9161,9 +9243,14 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	case PLC_CITIZEN:
 	case PLC_REBEL:
 	case PLC_REBEL_MEDIC:
+	case PLC_CONSCRIPT:
+	case PLC_SOLDIER:
 	case PLC_ZOMBIE:
 	case PLC_ZOMBIE_POISON:
 	case PLC_ZOMBIE_FAST:
+	case PLC_MEDIC:
+	case PLC_SCIENTIST:
+	case PLC_POLICE:
 	default:
 		m_Local.m_bWearingSuit = false;
 	}
@@ -9174,7 +9261,11 @@ void CBasePlayer::SetStats()
 	NPC_Basedata data = GetBaseData();
 
 	// set (and precache) model
+	m_nSkin = 0;
 	SetModelCaching(data.szModelName);
+	m_nSkin = random->RandomInt(0, GetModelPtr()->numskinfamilies() - 1);
+
+	// GetViewModel(1)->SetModel(data.szModelArms);
 
 	// set relationships
 	CBaseCombatCharacter::SetPlayerRelationship(data.nFaction);
@@ -9189,6 +9280,11 @@ void CBasePlayer::SetStats()
 	SetMaxHealth(data.iMaxHealth);
 }
 
+void CBasePlayer::PostLevelChange()
+{
+	CBaseCombatCharacter::SetPlayerRelationship(m_Faction);
+}
+
 void CBasePlayer::SetGender(char gender)
 {
 	m_gender = gender;
@@ -9196,7 +9292,11 @@ void CBasePlayer::SetGender(char gender)
 	NPC_Basedata data = GetBaseData();
 
 	// set (and precache) model
+	m_nSkin = 0;
 	SetModelCaching(data.szModelName);
+	m_nSkin = random->RandomInt(0, GetModelPtr()->numskinfamilies() - 1);
+
+	// GetViewModel(1)->SetModel(data.szModelArms);
 }
 
 NPC_Basedata CBasePlayer::GetBaseData()
@@ -9207,38 +9307,60 @@ NPC_Basedata CBasePlayer::GetBaseData()
 	switch (m_Class)
 	{
 	case PLC_CITIZEN:
-		data = CNPC_Citizen::GetBaseData(JOB_OFFICER, m_gender, CT_DOWNTRODDEN);
+		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_gender, CT_DOWNTRODDEN);
+		break;
+	case PLC_CONSCRIPT:
+		data = CNPC_Citizen::GetBaseData(JOB_SOLDIER, m_gender, CT_UNIQUE);
 		break;
 	case PLC_REBEL:
-		data = CNPC_Citizen::GetBaseData(JOB_NONE, m_gender, CT_REBEL);
+	case PLC_SOLDIER:
+		data = CNPC_Citizen::GetBaseData(JOB_SOLDIER, m_gender, CT_REBEL);
+		break;
+	case PLC_SCIENTIST:
+		data = CNPC_Citizen::GetBaseData(JOB_SCIENTIST, m_gender, CT_REBEL);
+		break;
+	case PLC_POLICE:
+		data = CNPC_Citizen::GetBaseData(JOB_OFFICER, m_gender, CT_REBEL);
 		break;
 	case PLC_REBEL_MEDIC:
+	case PLC_MEDIC:
 		data = CNPC_Citizen::GetBaseData(JOB_MEDIC, m_gender, CT_REBEL);
 		break;
 	case PLC_MANHACK:
 		data = CNPC_Manhack::GetBaseData();
 		break;
-	case PLC_METROPOLICE:
+/*	case PLC_METROPOLICE:
 		data = CNPC_MetroPolice::GetBaseData();
-		break;
+		break;*/
 	case PLC_STALKER:
 		data = CNPC_Stalker::GetBaseData();
 		break;
-	case PLC_COMBINE_ELITE:
+/*	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_ORDINAL:
 		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER, true);
 		break;
-	case PLC_COMBINE_ENGINEER:
+	case PLC_COMBINE_WORKER:
 		data = CNPC_CombineS::GetBaseData(JOB_ENGINEER);
 		break;
-	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_WORKER_HAZMAT:
+		data = CNPC_CombineS::GetBaseData(JOB_DISINFECTOR);
+		break;
+	case PLC_COMBINE_PRISONGUARD:
 		data = CNPC_CombineS::GetBaseData(JOB_GUARD);
 		break;
 	case PLC_COMBINE_MEDIC:
 		data = CNPC_CombineS::GetBaseData(JOB_MEDIC);
 		break;
+	case PLC_COMBINE_CHARGER:
+	case PLC_COMBINE_HEAVY:
+	case PLC_COMBINE_PRISONHEAVY:
+	case PLC_COMBINE_SUPPRESSOR:
+		data = CNPC_CombineS::GetBaseData(JOB_HEAVY);
+		break;
+	case PLC_COMBINE_GRUNT:
 	case PLC_COMBINE_SOLDIER:
 		data = CNPC_CombineS::GetBaseData(JOB_SOLDIER);
-		break;
+		break;*/
 	case PLC_ZOMBIE:
 		data = CZombie::GetBaseData();
 		break;

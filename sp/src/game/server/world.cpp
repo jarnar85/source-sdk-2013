@@ -603,6 +603,8 @@ void CWorld::Precache( void )
 	CBaseEntity::SetAllowPrecache( true );
 	IGameSystem::LevelInitPreEntityAllSystems( STRING( GetModelName() ) );
 
+	// TODO: add loading data here
+
 	// Create the player resource
 	g_pGameRules->CreateStandardEntities();
 
@@ -610,6 +612,7 @@ void CWorld::Precache( void )
 	// =================================================
 	//	Activities
 	// =================================================
+
 	ActivityList_Free();
 	RegisterSharedActivities();
 

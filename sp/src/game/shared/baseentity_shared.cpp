@@ -64,6 +64,7 @@ ConVar hl2_episodic( "hl2_episodic", "0", FCVAR_REPLICATED );
 	extern bool ExtractKeyvalue( void *pObject, typedescription_t *pFields, int iNumFields, const char *szKeyName, char *szValue, int iMaxLen );
 #endif
 
+
 bool CBaseEntity::m_bAllowPrecache = false;
 
 // Set default max values for entities based on the existing constants from elsewhere

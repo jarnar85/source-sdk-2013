@@ -182,6 +182,18 @@ Class_T	CNPC_FloorTurret::Classify( void )
 {
 	if ( m_bEnabled ) 
 	{
+		CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			Class_T nClass = pPlayer->Classify();
+
+			// change player relation to NPCs
+			if (nClass == CLASS_COMBINE)
+			{
+				return	CLASS_PLAYER_ALLY;
+			}
+		}
+		
 		// Hacked or friendly turrets don't attack players
 		if( m_bHackedByAlyx || IsCitizenTurret() )
 			return CLASS_PLAYER_ALLY;

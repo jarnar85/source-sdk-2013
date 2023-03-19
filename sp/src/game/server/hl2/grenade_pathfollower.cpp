@@ -284,7 +284,19 @@ void CGrenadePathfollower::AimThink( void )
 //------------------------------------------------------------------------------
 Class_T	CGrenadePathfollower::Classify( void)
 { 
-	return CLASS_MISSILE; 
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (nClass == CLASS_MISSILE)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+
+	return CLASS_MISSILE;
 };
 
 CGrenadePathfollower::CGrenadePathfollower(void)

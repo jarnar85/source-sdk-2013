@@ -277,13 +277,14 @@ public:
 
 	// Class factory
 	static CBaseEntity				*CreatePredictedEntityByName( const char *classname, const char *module, int line, bool persist = false );
-	Class_T GetClassStr(const char* sFaction);
 
-	PlayerClass_T GetPlayerClass(const char* sClass);
+	static Class_T GetClassStr(const char* sFaction);
+	static PlayerClass_T GetPlayerClass(const char* sClass);
+	static Job_T GetJob(const char* sJob);
 
-	Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass);
-	int CBaseEntity::GetClassHealth(PlayerClass_T nClass);
-	const char* CBaseEntity::GetClassModel(PlayerClass_T nClass);
+	Class_T GetClassFaction(PlayerClass_T nClass);
+	int GetClassHealth(PlayerClass_T nClass);
+	const char* GetClassModel(PlayerClass_T nClass);
 
 // IHandleEntity overrides.
 public:
@@ -1040,6 +1041,7 @@ public:
 	CNetworkVarForDerived(int, m_iRank);
 	CNetworkVarForDerived(int, m_iCredits);
 	CNetworkVarForDerived(int, m_iMemRepl);
+	CNetworkVarForDerived(int, m_iMemory);
 
 	CNetworkHandleForDerived(Job_T, m_job);
 	CNetworkVarForDerived(char, m_gender);

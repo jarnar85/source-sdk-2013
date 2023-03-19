@@ -366,6 +366,18 @@ Class_T	CBaseHeadcrab::Classify( void )
 	}
 	else
 	{
+		CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			Class_T nClass = pPlayer->Classify();
+
+			// change player relation to NPCs
+			if (nClass == CLASS_HEADCRAB)
+			{
+				return	CLASS_PLAYER_ALLY;
+			}
+		}
+		
 		return( CLASS_HEADCRAB ); 
 	}
 }

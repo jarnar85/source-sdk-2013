@@ -31,21 +31,18 @@
 ConVar	sk_combine_s_health("sk_combine_s_health", "0");
 ConVar	sk_combine_s_kick("sk_combine_s_kick", "0");
 
-ConVar	cls_combine_soldier_faction("cls_combine_soldier_faction", "0");
 ConVar	cls_combine_soldier_health("cls_combine_soldier_health", "0");
 ConVar	cls_combine_soldier_model("cls_combine_soldier_model", "0");
 
 ConVar sk_combine_guard_health( "sk_combine_guard_health", "0");
 ConVar sk_combine_guard_kick("sk_combine_guard_kick", "0");
 
-ConVar	cls_combine_guard_faction("cls_combine_guard_faction", "0");
 ConVar	cls_combine_guard_health("cls_combine_guard_health", "0");
 ConVar	cls_combine_guard_model("cls_combine_guard_model", "0");
  
 // Whether or not the combine guard should spawn health on death
 ConVar combine_guard_spawn_health("combine_guard_spawn_health", "1");
 
-ConVar	cls_combine_elite_faction("cls_combine_elite_faction", "0");
 ConVar	cls_combine_elite_health("cls_combine_elite_health", "0");
 ConVar	cls_combine_elite_model("cls_combine_elite_model", "0");
 
@@ -156,8 +153,11 @@ NPC_Basedata CNPC_CombineS::GetBaseData(Job_T job, bool isElite)
 		data.iMaxHealth = cls_combine_guard_health.GetInt();
 		data.szModelName = cls_combine_guard_model.GetString();
 		break;
+	case JOB_PILOT:
 	case JOB_SNIPER:
 		isElite = true;
+	case JOB_DISINFECTOR:
+	case JOB_ENGINEER:
 	case JOB_SOLDIER:
 	default:
 		if (isElite)

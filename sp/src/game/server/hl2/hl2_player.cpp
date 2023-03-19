@@ -887,6 +887,11 @@ void CHL2_Player::PreThink(void)
 	// If we're in VGUI mode we should avoid shooting
 	if (GetVGUIMode())
 	{
+		if (m_nButtons & (IN_ATTACK | IN_ATTACK2))
+		{
+			Warning("attack\n");
+		}
+		
 		m_nButtons &= ~(IN_ATTACK | IN_ATTACK2);
 	}
 
@@ -1020,18 +1025,26 @@ Class_T  CHL2_Player::Classify ( void )
 	}
 	else
 	{
-		if(IsInAVehicle())
+		Class_T l_Faction = CLASS_NONE;
+		
+		if (m_Faction != CLASS_NONE)
 		{
-			IServerVehicle *pVehicle = GetVehicle();
-			return pVehicle->ClassifyPassenger( this, CLASS_PLAYER );
-		}
-		else if (m_Faction != CLASS_NONE)
-		{
-			return m_Faction;
+			l_Faction	 = m_Faction;
 		}
 		else
 		{
-			return CLASS_PLAYER;
+			l_Faction	 = CLASS_PLAYER;
+		}
+		
+		
+		if(IsInAVehicle())
+		{
+			IServerVehicle *pVehicle = GetVehicle();
+			return pVehicle->ClassifyPassenger(this, l_Faction);
+		}
+		else
+		{
+			return l_Faction;
 		}
 	}
 }
@@ -1141,7 +1154,8 @@ void CHL2_Player::Spawn(void)
 
 #ifndef HL2MP
 #ifndef PORTAL
-	SetModel( "models/player.mdl" );
+	SetModel("models/player.mdl");
+	// GetViewModel(1)->SetModel("models/weapons/v_hands.mdl");
 #endif
 #endif
 
@@ -2022,22 +2036,34 @@ void CHL2_Player::EquipByClass(PlayerClass_T nClass)
 	{
 	case PLC_CITIZEN:
 	case PLC_MANHACK:
+	case PLC_MEDIC:
+	case PLC_SCIENTIST:
 		sk_suit_maxarmor.SetValue(10);
 			break;
+	case PLC_COMBINE_WORKER:
+	case PLC_COMBINE_WORKER_HAZMAT:
 	case PLC_METROPOLICE:
 	case PLC_REBEL:
 	case PLC_REBEL_MEDIC:
+	case PLC_CONSCRIPT:
+	case PLC_SOLDIER:
+	case PLC_POLICE:
 		sk_suit_maxarmor.SetValue(50);
 		break;
-	case PLC_COMBINE_ENGINEER:
-	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_CHARGER:
+	case PLC_COMBINE_GRUNT:
+	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_ORDINAL:
+	case PLC_COMBINE_PRISONGUARD:
+	case PLC_COMBINE_PRISONHEAVY:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_PLAYER:
 	case PLC_ZOMBIE_COMBINE:
 		sk_suit_maxarmor.SetValue(100);
 		break;
 	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_SUPPRESSOR:
 		sk_suit_maxarmor.SetValue(200);
 		break;
 	case PLC_STALKER:
@@ -2277,6 +2303,139 @@ void CHL2_Player::InputDisableFlashlight( inputdata_t &inputdata )
 		FlashlightTurnOff();
 
 	SetFlashlightEnabled( false );
+}
+
+// Set the activity based on an event or current state
+void CHL2_Player::SetAnimation(PLAYER_ANIM playerAnim)
+{
+	int animDesired;
+
+	float speed;
+
+	speed = GetAbsVelocity().Length2D();
+
+	if (GetFlags() & (FL_FROZEN | FL_ATCONTROLS))
+	{
+		speed = 0;
+		playerAnim = PLAYER_IDLE;
+	}
+
+	Activity idealActivity = ACT_RUN;
+
+	// This could stand to be redone. Why is playerAnim abstracted from activity? (sjb)
+	if (playerAnim == PLAYER_JUMP)
+	{
+		idealActivity = ACT_JUMP;
+	}
+	else if (playerAnim == PLAYER_DIE)
+	{
+		if (m_lifeState == LIFE_ALIVE)
+		{
+			return;
+		}
+	}
+	else if (playerAnim == PLAYER_ATTACK1)
+	{
+		if (GetActivity() == ACT_HOVER ||
+			GetActivity() == ACT_SWIM ||
+			GetActivity() == ACT_HOP ||
+			GetActivity() == ACT_LEAP ||
+			GetActivity() == ACT_DIESIMPLE)
+		{
+			idealActivity = GetActivity();
+		}
+		else
+		{
+			idealActivity = ACT_GESTURE_RANGE_ATTACK1;
+		}
+	}
+	else if (playerAnim == PLAYER_RELOAD)
+	{
+		idealActivity = ACT_GESTURE_RELOAD;
+	}
+	else if (playerAnim == PLAYER_IDLE || playerAnim == PLAYER_WALK)
+	{
+		if (!(GetFlags() & FL_ONGROUND) && GetActivity() == ACT_JUMP) // Still jumping
+		{
+			idealActivity = GetActivity();
+		}
+		else
+		{
+			if (GetFlags() & FL_DUCKING)
+			{
+				if (speed > 0)
+				{
+					idealActivity = ACT_WALK_CROUCH;
+				}
+				else
+				{
+					idealActivity = ACT_COVER_LOW; //ACT_IDLE_CROUCH;
+				}
+			}
+			else
+			{
+				if (speed > 0)
+				{
+					idealActivity = m_fIsSprinting ? ACT_WALK : ACT_RUN;
+				}
+				else
+				{
+					idealActivity = ACT_IDLE;
+				}
+			}
+		}
+
+		//idealActivity = TranslateTeamActivity( idealActivity );
+	}
+
+	if (idealActivity == ACT_GESTURE_RANGE_ATTACK1)
+	{
+		RestartGesture(Weapon_TranslateActivity(idealActivity));
+
+		// FIXME: this seems a bit wacked
+		Weapon_SetActivity(Weapon_TranslateActivity(ACT_RANGE_ATTACK1), 0);
+
+		return;
+	}
+	else if (idealActivity == ACT_GESTURE_RELOAD)
+	{
+		RestartGesture(Weapon_TranslateActivity(idealActivity));
+		return;
+	}
+	else
+	{
+		SetActivity(idealActivity);
+
+		animDesired = SelectWeightedSequence(Weapon_TranslateActivity(idealActivity));
+
+		if (animDesired == -1)
+		{
+			animDesired = SelectWeightedSequence(idealActivity);
+
+			if (animDesired == -1)
+			{
+				animDesired = 0;
+			}
+		}
+
+		// Already using the desired animation?
+		if (GetSequence() == animDesired)
+			return;
+
+		m_flPlaybackRate = 1.0;
+		ResetSequence(animDesired);
+		SetCycle(0);
+		return;
+	}
+
+	// Already using the desired animation?
+	if (GetSequence() == animDesired)
+		return;
+
+	//Msg( "Set animation to %d\n", animDesired );
+	// Reset to first frame of desired animation
+	ResetSequence(animDesired);
+	SetCycle(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -2538,11 +2697,12 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	int iKill = 1;
 	// TODO: set iKill to 2 if it was a one-hit kill
 
-	int iCredits = floor(pVictim->m_iMaxHealth / 50 * iKill);
+	int iCredits = ceil(pVictim->m_iMaxHealth / 50 * iKill);
 	
 	switch (m_Class)
 	{
 		case PLC_METROPOLICE:
+		case PLC_CONSCRIPT:
 			iCredits *= 2;
 
 			if (iCredits < 1)
@@ -2551,13 +2711,20 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 		case PLC_STALKER:
 			iCredits	 *= 2;
 			break;
-		case PLC_COMBINE_ENGINEER:
-		case PLC_COMBINE_GUARD:
+		case PLC_COMBINE_CHARGER:
+		case PLC_COMBINE_GRUNT:
+		case PLC_COMBINE_HEAVY:
+		case PLC_COMBINE_SUPPRESSOR:
 		case PLC_COMBINE_MEDIC:
+		case PLC_COMBINE_PRISONGUARD:
+		case PLC_COMBINE_PRISONHEAVY:
 		case PLC_COMBINE_SOLDIER:
+		case PLC_COMBINE_WORKER:
+		case PLC_COMBINE_WORKER_HAZMAT:
 			// multiply by 1 (= do nothing)
 			break;
 		case PLC_COMBINE_ELITE:
+		case PLC_COMBINE_ORDINAL:
 		case PLC_MANHACK:
 			iCredits = iKill;
 			break;

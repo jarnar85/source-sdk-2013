@@ -1570,7 +1570,16 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 
 	m_bTouched = true;
 
-	CBaseEntity *pPlayer = (pActivator && pActivator->IsPlayer()) ? pActivator : UTIL_GetLocalPlayer();
+	CBaseEntity *pEntity = (pActivator && pActivator->IsPlayer()) ? pActivator : UTIL_GetLocalPlayer();
+	CBasePlayer *pPlayer = ToBasePlayer(pEntity);
+	Class_T pFaction	 = CLASS_PLAYER;
+	PlayerClass_T pClass = PLC_PLAYER;
+
+	if (pPlayer)
+	{
+		pFaction = pPlayer->GetFaction();
+		pClass	 = pPlayer->GetClass();
+	}
 
 	int transitionState = InTransitionVolume(pPlayer, m_szLandmarkName);
 	if ( transitionState == TRANSITION_VOLUME_SCREENED_OUT )
@@ -1647,6 +1656,13 @@ void CChangeLevel::ChangeLevelNow( CBaseEntity *pActivator )
 		}
 
 		SetTouch( NULL );
+	}
+
+	if (pPlayer)
+	{
+		pPlayer->SetFaction(pFaction);
+		pPlayer->SetClass(pClass, false);
+		pPlayer->PostLevelChange();
 	}
 }
 

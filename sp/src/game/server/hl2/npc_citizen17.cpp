@@ -882,11 +882,27 @@ Class_T	CNPC_Citizen::Classify()
 	if (GlobalEntity_GetState("citizens_passive") == GLOBAL_ON)
 		return CLASS_CITIZEN_PASSIVE;
 
-#ifdef EZ1
-	return CLASS_COMBINE; // Breadman was CLASS_PLAYER_ALLY
-#else
-	return CLASS_PLAYER_ALLY;
-#endif
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (m_Type == CT_REBEL && (
+				nClass == CLASS_CITIZEN_REBEL
+			 || nClass == CLASS_CITIZEN_PASSIVE
+			 || nClass == CLASS_PLAYER
+			)
+			)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+
+	if (m_Type == CT_REBEL)
+		return CLASS_CITIZEN_REBEL;
+
+	return CLASS_CITIZEN_PASSIVE;
 }
 
 

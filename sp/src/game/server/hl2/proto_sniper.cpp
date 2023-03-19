@@ -1180,6 +1180,18 @@ Class_T	CProtoSniper::Classify( void )
 {
 	if( m_fEnabled )
 	{
+		CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+		if (pPlayer)
+		{
+			Class_T nClass = pPlayer->Classify();
+
+			// change player relation to NPCs
+			if (nClass == CLASS_PROTOSNIPER || nClass == CLASS_COMBINE)
+			{
+				return	CLASS_PLAYER_ALLY;
+			}
+		}
+		
 		return	CLASS_PROTOSNIPER;
 	}
 	else

@@ -62,6 +62,7 @@
 #include "env_debughistory.h"
 #include "tier1/utlstring.h"
 #include "utlhashtable.h"
+#include <map>
 
 #if defined( TF_DLL )
 #include "tf_gamerules.h"
@@ -1809,6 +1810,7 @@ BEGIN_DATADESC_NO_BASE( CBaseEntity )
 	DEFINE_KEYFIELD(m_iRank, FIELD_INTEGER, "rank"),
 	DEFINE_KEYFIELD(m_iCredits, FIELD_INTEGER, "credits"),
 	DEFINE_KEYFIELD(m_iMemRepl, FIELD_INTEGER, "mem_repl"),
+	DEFINE_KEYFIELD(m_iMemory, FIELD_INTEGER, "mem_lvl"),
 
 
 	DEFINE_KEYFIELD( m_iszDamageFilterName, FIELD_STRING, "damagefilter" ),
@@ -2929,76 +2931,51 @@ Class_T CBaseEntity::Classify ( void )
 	return CLASS_NONE;
 }
 
-
 Class_T CBaseEntity::GetClassStr(const char* sClass)
 {
-	if (strcmp(sClass, "CLASS_PLAYER") == 0)			return CLASS_PLAYER;
-	if (strcmp(sClass, "CLASS_PLAYER_ALLY") == 0)		return CLASS_PLAYER_ALLY;
-	if (strcmp(sClass, "CLASS_PLAYER_ALLY_VITAL") == 0)	return CLASS_PLAYER_ALLY_VITAL;
+	auto it = Class_M.begin();
 
-	// Humans
-	if (strcmp(sClass, "CLASS_CITIZEN_PASSIVE") == 0)	return CLASS_CITIZEN_PASSIVE;
-	if (strcmp(sClass, "CLASS_CITIZEN_REBEL") == 0)		return CLASS_CITIZEN_REBEL;
-	if (strcmp(sClass, "CLASS_CONSCRIPT") == 0)			return CLASS_CONSCRIPT;
+	while (it != Class_M.end())
+	{
+		if (strcmp(sClass, it->first) == 0)
+			return it->second;
 
-	// Combine
-	if (strcmp(sClass, "CLASS_COMBINE") == 0)			return CLASS_COMBINE;
-	if (strcmp(sClass, "CLASS_COMBINE_HUNTER") == 0)	return CLASS_COMBINE_HUNTER;
-	if (strcmp(sClass, "CLASS_METROPOLICE") == 0)		return CLASS_METROPOLICE;
-	if (strcmp(sClass, "CLASS_PROTOSNIPER") == 0)		return CLASS_PROTOSNIPER;
-	if (strcmp(sClass, "CLASS_STALKER") == 0)			return CLASS_STALKER;
-	
-	// Aliens
-	if (strcmp(sClass, "CLASS_ANTLION") == 0)			return CLASS_ANTLION;
-	if (strcmp(sClass, "CLASS_BARNACLE") == 0)			return CLASS_BARNACLE;
-	if (strcmp(sClass, "CLASS_BULLSEYE") == 0)			return CLASS_BULLSEYE;
-	if (strcmp(sClass, "CLASS_EARTH_FAUNA") == 0)		return CLASS_EARTH_FAUNA;
-	if (strcmp(sClass, "CLASS_HEADCRAB") == 0)			return CLASS_HEADCRAB;
-	if (strcmp(sClass, "CLASS_VORTIGAUNT") == 0)		return CLASS_VORTIGAUNT;
-	if (strcmp(sClass, "CLASS_ZOMBIE") == 0)			return CLASS_ZOMBIE;
-
-	// Tech
-	if (strcmp(sClass, "CLASS_COMBINE_GUNSHIP") == 0)	return CLASS_COMBINE_GUNSHIP;
-	if (strcmp(sClass, "CLASS_FLARE") == 0)				return CLASS_FLARE;
-	if (strcmp(sClass, "CLASS_MANHACK") == 0)			return CLASS_MANHACK;
-	if (strcmp(sClass, "CLASS_MILITARY") == 0)			return CLASS_MILITARY;
-	if (strcmp(sClass, "CLASS_MISSILE") == 0)			return CLASS_MISSILE;
-	if (strcmp(sClass, "CLASS_SCANNER") == 0)			return CLASS_SCANNER;
-	if (strcmp(sClass, "CLASS_HACKED_ROLLERMINE") == 0)	return CLASS_HACKED_ROLLERMINE;
-
+		it++;
+	}
 
 	return CLASS_NONE;
 }
 
 PlayerClass_T CBaseEntity::GetPlayerClass(const char* sClass)
 {
+	auto it = PlayerClass_M.begin();
 
-	if (strcmp(sClass, "player") == 0)				return PLC_PLAYER;
+	while (it != PlayerClass_M.end())
+	{
+		const char* tClass = it->first;
+		
+		if (strcmp(sClass, tClass) == 0)
+			return it->second;
 
-	// Humans
-	if (strcmp(sClass, "citizen") == 0)				return PLC_CITIZEN;
-	if (strcmp(sClass, "rebel") == 0)				return PLC_REBEL;
-	if (strcmp(sClass, "rebel_medic") == 0)			return PLC_REBEL_MEDIC;
+		it++;
+	}
 
-	// Combine
-	if (strcmp(sClass, "metropolice") == 0)			return PLC_METROPOLICE;
-	if (strcmp(sClass, "combine_engineer") == 0)	return PLC_COMBINE_ENGINEER;
-	if (strcmp(sClass, "combine_guard") == 0)		return PLC_COMBINE_GUARD;
-	if (strcmp(sClass, "combine_medic") == 0)		return PLC_COMBINE_MEDIC;
-	if (strcmp(sClass, "combine_soldier") == 0)		return PLC_COMBINE_SOLDIER;
-	if (strcmp(sClass, "combine_elite") == 0)		return PLC_COMBINE_ELITE;
-	if (strcmp(sClass, "stalker") == 0)				return PLC_STALKER;
-
-	// Aliens
-	if (strcmp(sClass, "zombie") == 0)				return PLC_ZOMBIE;
-	if (strcmp(sClass, "zombie_poison") == 0)		return PLC_ZOMBIE_POISON;
-	if (strcmp(sClass, "zombie_fast") == 0)			return PLC_ZOMBIE_FAST;
-	if (strcmp(sClass, "zombie_combine") == 0)		return PLC_ZOMBIE_COMBINE;
-
-	// Special vehicles
-	if (strcmp(sClass, "manhack") == 0)				return PLC_MANHACK;
-	
 	return PLC_NONE;
+}
+
+Job_T CBaseEntity::GetJob(const char* sJob)
+{
+	auto it = Job_M.begin();
+
+	while (it != Job_M.end())
+	{
+		if (strcmp(sJob, it->first) == 0)
+			return it->second;
+
+		it++;
+	}
+
+	return JOB_NONE;
 }
 
 Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
@@ -3007,18 +2984,34 @@ Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
 	{
 	case PLC_MANHACK:
 		return CLASS_MANHACK;
+	case PLC_MEDIC:
 	case PLC_CITIZEN:
 		return CLASS_CITIZEN_PASSIVE;
+	case PLC_SCIENTIST:
+		return CLASS_SCIENTIST;
+	case PLC_POLICE:
+		return CLASS_POLICE;
+	case PLC_SOLDIER:
+		return CLASS_HUMAN_MILITARY;
 	case PLC_REBEL:
 	case PLC_REBEL_MEDIC:
 		return CLASS_CITIZEN_REBEL;
+	case PLC_CONSCRIPT:
+		return CLASS_CONSCRIPT;
 	case PLC_METROPOLICE:
 		return CLASS_METROPOLICE;
-	case PLC_COMBINE_ENGINEER:
-	case PLC_COMBINE_GUARD:
-	case PLC_COMBINE_MEDIC:
-	case PLC_COMBINE_SOLDIER:
+	case PLC_COMBINE_CHARGER:
 	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_GRUNT:
+	case PLC_COMBINE_HEAVY:
+	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_ORDINAL:
+	case PLC_COMBINE_PRISONGUARD:
+	case PLC_COMBINE_PRISONHEAVY:
+	case PLC_COMBINE_SOLDIER:
+	case PLC_COMBINE_SUPPRESSOR:
+	case PLC_COMBINE_WORKER:
+	case PLC_COMBINE_WORKER_HAZMAT:
 		return CLASS_COMBINE;
 	case PLC_STALKER:
 		return CLASS_STALKER;
@@ -3041,22 +3034,34 @@ int CBaseEntity::GetClassHealth(PlayerClass_T nClass)
 	case PLC_MANHACK:
 			return 25;
 	case PLC_CITIZEN:
+	case PLC_COMBINE_WORKER:
+	case PLC_COMBINE_WORKER_HAZMAT:
 	case PLC_REBEL:
 	case PLC_REBEL_MEDIC:
+	case PLC_MEDIC:
 	case PLC_METROPOLICE:
+	case PLC_POLICE:
+	case PLC_SCIENTIST:
 		return 40;
-	case PLC_COMBINE_ENGINEER:
-	case PLC_COMBINE_GUARD:
+	case PLC_COMBINE_GRUNT:
+	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_PRISONGUARD:
+	case PLC_COMBINE_PRISONHEAVY:
 	case PLC_COMBINE_SOLDIER:
+	case PLC_COMBINE_SUPPRESSOR:
+	case PLC_CONSCRIPT:
+	case PLC_SOLDIER:
 	case PLC_STALKER:
 	case PLC_ZOMBIE:
 	case PLC_ZOMBIE_FAST:
 		return 50;
 	case PLC_COMBINE_ELITE:
+	case PLC_COMBINE_ORDINAL:
 		return 70;
 	case PLC_PLAYER:
 	case PLC_ZOMBIE_COMBINE:
+	case PLC_COMBINE_CHARGER:
 		return 100;
 	case PLC_ZOMBIE_POISON:
 		return 175;
@@ -3072,21 +3077,54 @@ const char* CBaseEntity::GetClassModel(PlayerClass_T nClass)
 	case PLC_MANHACK:
 		return "models/manhack.mdl";
 	case PLC_CITIZEN:
+	case PLC_SCIENTIST:
 		return "models/humans/group01/male_04.mdl";
+	case PLC_CONSCRIPT:
+	case PLC_SOLDIER:
 	case PLC_REBEL:
 		return "models/humans/group03/male_04.mdl";
+	case PLC_MEDIC:
 	case PLC_REBEL_MEDIC:
 		return "models/humans/group03m/male_04.mdl";
+	case PLC_POLICE:
 	case PLC_METROPOLICE:
 		return "models/police.mdl";
-	case PLC_COMBINE_GUARD:
+		// return "models/cultist/hl_a/metropolice/metrocop.mdl";
+	case PLC_COMBINE_PRISONGUARD:
+	case PLC_COMBINE_PRISONHEAVY:
 		return "models/combine_soldier_prisonguard.mdl";
 		// return "models/soldier_stripped.mdl";
-	case PLC_COMBINE_ENGINEER:
+	case PLC_COMBINE_CHARGER:
+	case PLC_COMBINE_GRUNT:
+	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_ORDINAL:
 	case PLC_COMBINE_SOLDIER:
+	case PLC_COMBINE_SUPPRESSOR:
+	case PLC_COMBINE_WORKER:
+	case PLC_COMBINE_WORKER_HAZMAT:
 		return "models/combine_soldier.mdl";
 		// return "models/soldier_stripped.mdl";
+
+		/*
+	case PLC_COMBINE_CHARGER:
+		return "models/cultist/hl_a/combine_heavy/combine_heavy_trooper.mdl";
+	case PLC_COMBINE_GRUNT:
+		return "models/cultist/hl_a/combine_grunt/combine_grunt.mdl"; // error
+	case PLC_COMBINE_ORDINAL:
+		return "models/cultist/hl_a/combine_commander/combine_commander.mdl";
+	case PLC_COMBINE_MEDIC:
+	case PLC_COMBINE_SOLDIER:
+		return "models/cultist/hl_a/vanilla_combine/combine_soldier.mdl";
+	case PLC_COMBINE_SUPPRESSOR:
+		return "models/cultist/hl_a/combine_suppressor/combine_suppressor.mdl";
+	case PLC_COMBINE_WORKER:
+		return "models/cultist/hl_a/worker/hazmat_2/hazmat_2.mdl"; // error
+	case PLC_COMBINE_WORKER_HAZMAT:
+		return "models/cultist/hl_a/worker/hazmat_1/hazmat_1.mdl";
+		*/
+
+
 	case PLC_COMBINE_ELITE:
 		return "models/combine_super_soldier.mdl";
 		// return "models/soldier_stripped.mdl";

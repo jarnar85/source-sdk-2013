@@ -61,7 +61,7 @@ protected:
 
 	// Data for each player that's propagated to all clients
 	// Stored in individual arrays so they can be sent down via datatables
-	string_t	m_szName[MAX_PLAYERS+1];
+	string_t	m_szName[MAX_PLAYERS + 1];
 	int		m_iPing[MAX_PLAYERS+1];
 	int		m_iScore[MAX_PLAYERS+1];
 	int		m_iDeaths[MAX_PLAYERS+1];
@@ -69,6 +69,10 @@ protected:
 	int		m_iTeam[MAX_PLAYERS+1];
 	bool	m_bAlive[MAX_PLAYERS+1];
 	int		m_iHealth[MAX_PLAYERS+1];
+
+
+	string_t	m_szCitizenID[MAX_PLAYERS + 1];
+	int	m_iCitizenID[MAX_PLAYERS + 1];
 
 	PlayerClass_T		p_Class[MAX_PLAYERS + 1];
 	Class_T				p_Faction[MAX_PLAYERS + 1];

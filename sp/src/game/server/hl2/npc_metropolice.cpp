@@ -2718,6 +2718,18 @@ float CNPC_MetroPolice::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 Class_T	CNPC_MetroPolice::Classify ( void )
 {
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (nClass == CLASS_METROPOLICE)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+	
 	return CLASS_METROPOLICE;
 }
 

@@ -180,6 +180,18 @@ void CNPC_Monk::BuildScheduleTestBits( void )
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Monk::Classify( void )
 {
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (nClass != CLASS_PLAYER)
+		{
+			return	CLASS_CITIZEN_REBEL;
+		}
+	}
+
 	return CLASS_PLAYER_ALLY_VITAL;
 }
 

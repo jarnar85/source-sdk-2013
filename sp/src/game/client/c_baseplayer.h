@@ -300,10 +300,6 @@ public:
 
 	C_BaseEntity				*GetUseEntity();
 
-	// default values for players
-	PlayerClass_T		m_Class = PLC_PLAYER;
-	Class_T				m_Faction = CLASS_PLAYER;
-	Job_T				m_Job = JOB_NONE;
 
 	// Vehicles...
 	IClientVehicle			*GetVehicle();
@@ -421,6 +417,15 @@ public:
 	// Data common to all other players, too
 	CPlayerState			pl;
 
+	// default values for players
+	PlayerClass_T		m_Class;
+	Class_T				m_Faction;
+	Job_T				m_Job;
+
+
+	string_t	m_szCitizenID;
+	int	m_iCitizenID;
+
 	// Player FOV values
 	int						m_iFOV;				// field of view
 	int						m_iFOVStart;		// starting value of the FOV changing over time (client only)
@@ -499,6 +504,7 @@ private:
 	// Make sure no one calls this...
 	C_BasePlayer& operator=( const C_BasePlayer& src );
 	C_BasePlayer( const C_BasePlayer & ); // not defined, not accessible
+
 
 	// Vehicle stuff.
 	EHANDLE			m_hVehicle;

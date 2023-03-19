@@ -205,6 +205,18 @@ END_SEND_TABLE()
 //=========================================================
 Class_T	CNPC_Barnacle::Classify ( void )
 {
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (nClass == CLASS_BARNACLE)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+
 	return	CLASS_BARNACLE;
 }
 

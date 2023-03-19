@@ -1,7 +1,7 @@
 @include "base.fgd"
 @include "halflife2.fgd"
 
-@BaseClass base(Targetname, Parentname, Angles) = vgui_screen_base
+@BaseClass base(Targetname, Parentname, Angles) = vgui_screen
 [
 	panelname(string) : "Panel Name"
 	overlaymaterial(string) : "Overlay Material" : "" : "Name of a material to overlay over the top of the VGUI screen. NOTE: This material must write Z for the VGUI screen to work."
@@ -28,3 +28,85 @@
 	output Output15(void) : "Fire output 15."
 	output Output16(void) : "Fire output 16."
 ]
+
+
+//-------------------------------------------------------------------------
+//
+// Functionalities
+//
+//-------------------------------------------------------------------------
+
+@PointClass base(Targetname) = game_player_class : "Change Player Class"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 1
+		4 : "Execute when map is loaded" : 0
+	]
+	
+	target(choices) : "Target Class":"player" =
+	[
+		"player":"Player"
+		"citizen":"Citizen"
+		"rebel":"Rebel"
+		"rebel_medic":"Rebel (medic)"
+		"manhack":"Manhack"
+		"metropolice":"Metrocop"
+		"combine_prisonguard":"Combine prison guard"
+		"combine_prisonheavy":"Combine prison guard (shotgunner)"
+		"combine_soldier":"Combine soldier"
+		"combine_charger":"Combine soldier (charger)"
+		"combine_elite":"Combine soldier (elite)"
+		"combine_grunt":"Combine soldier (grunt)"
+		"combine_heavy":"Combine soldier (heavy)"
+		"combine_medic":"Combine soldier (medic)"
+		"combine_ordinal":"Combine soldier (ordinal)"
+		"combine_suppressor":"Combine soldier (suppressor)"
+		"combine_worker":"Combine worker"
+		"combine_worker_hazmat":"Combine worker (Hazmat)"
+		"conscript":"Conscript"
+		"soldier":"Human Soldier"
+		"stalker":"Stalker"
+		"zombie":"Zombie"
+		"zombie_poison":"Zombie (poison)"
+		"zombie_fast":"Zombie (fast)"
+		"zombie_combine":"Zombie (combine)"
+	]
+	
+	input Enable(void) : "Set the player class."
+]
+
+
+//-------------------------------------------------------------------------
+//
+// Filters
+//
+//-------------------------------------------------------------------------
+
+@FilterClass base(BaseFilter) iconsprite("editor/filter_class_t.vmt") = filter_activator_class_t :
+	"A filter that filters by the class of the activator."
+[
+	filterclass_t(string) : "Filter Class" : : "The class to filter by. If the filter mode is Allow, only entities whose "+
+		"class matches the given string will pass the filter. If the filter mode is Disallow, "+
+		"all entities EXCEPT those whose class matches the given string will pass the filter."
+]
+
+
+//-------------------------------------------------------------------------
+//
+// NPCs
+//
+//-------------------------------------------------------------------------
+
+@NPCClass base(BaseNPC) studio("models/bullsquid.mdl" ) = npc_bullsquid : "Bullsquid"[]
+
+
+//-------------------------------------------------------------------------
+//
+// Flaregun
+//
+//-------------------------------------------------------------------------
+
+@PointClass base(Item) studio("models/items/boxflares.mdl")= item_box_flare_rounds : "Box of Flare Rounds" []
+@PointClass base(Weapon) studio("models/weapons/w_pistol.mdl") = weapon_flaregun : "Flaregun" []
+

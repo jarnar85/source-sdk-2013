@@ -139,6 +139,7 @@ public:
 	
 	void EquipByClass(PlayerClass_T nClass);
 	void SetFlashlightEnabled( bool bState );
+	void SetAnimation(PLAYER_ANIM playerAnim);
 
 	// Apply a battery
 	bool ApplyBattery( float powerMultiplier = 1.0 );

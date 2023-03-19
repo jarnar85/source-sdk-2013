@@ -256,7 +256,24 @@ CNPC_Manhack::~CNPC_Manhack()
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Manhack::Classify(void)
 {
-	return (m_bHeld || m_bHackedByAlyx) ? CLASS_CITIZEN_REBEL : CLASS_MANHACK; //  Breadman - Hacks are rebel class. Rebels are combine class. This inverse relationship makes them attack each other.
+	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		Class_T nClass = pPlayer->Classify();
+
+		// change player relation to NPCs
+		if (nClass == CLASS_MANHACK)
+		{
+			return	CLASS_PLAYER_ALLY;
+		}
+	}
+
+	// Breadman - Hacks are rebel class. Rebels are combine class.
+	// This inverse relationship makes them attack each other.
+	if (m_bHeld || m_bHackedByAlyx)
+		return CLASS_CITIZEN_REBEL;
+
+	return CLASS_MANHACK; 
 }
 
 //-----------------------------------------------------------------------------

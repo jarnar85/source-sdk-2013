@@ -683,29 +683,29 @@ void CGamePlayerEquip::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_T
 class CGamePlayerTeam : public CRulePointEntity
 {
 public:
-	DECLARE_CLASS( CGamePlayerTeam, CRulePointEntity );
+	DECLARE_CLASS(CGamePlayerTeam, CRulePointEntity);
 
-	void		Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value );
+	void		Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value);
 
 private:
 
-	inline bool RemoveOnFire( void ) { return (m_spawnflags & SF_PTEAM_FIREONCE) ? true : false; }
-	inline bool ShouldKillPlayer( void ) { return (m_spawnflags & SF_PTEAM_KILL) ? true : false; }
-	inline bool ShouldGibPlayer( void ) { return (m_spawnflags & SF_PTEAM_GIB) ? true : false; }
-	
-	const char *TargetTeamName( const char *pszTargetName, CBaseEntity *pActivator );
+	inline bool RemoveOnFire(void) { return (m_spawnflags & SF_PTEAM_FIREONCE) ? true : false; }
+	inline bool ShouldKillPlayer(void) { return (m_spawnflags & SF_PTEAM_KILL) ? true : false; }
+	inline bool ShouldGibPlayer(void) { return (m_spawnflags & SF_PTEAM_GIB) ? true : false; }
+
+	const char *TargetTeamName(const char *pszTargetName, CBaseEntity *pActivator);
 };
 
-LINK_ENTITY_TO_CLASS( game_player_team, CGamePlayerTeam );
+LINK_ENTITY_TO_CLASS(game_player_team, CGamePlayerTeam);
 
 
-const char *CGamePlayerTeam::TargetTeamName( const char *pszTargetName, CBaseEntity *pActivator )
+const char *CGamePlayerTeam::TargetTeamName(const char *pszTargetName, CBaseEntity *pActivator)
 {
 	CBaseEntity *pTeamEntity = NULL;
 
-	while ((pTeamEntity = gEntList.FindEntityByName( pTeamEntity, pszTargetName, NULL, pActivator )) != NULL)
+	while ((pTeamEntity = gEntList.FindEntityByName(pTeamEntity, pszTargetName, NULL, pActivator)) != NULL)
 	{
-		if ( FClassnameIs( pTeamEntity, "game_team_master" ) )
+		if (FClassnameIs(pTeamEntity, "game_team_master"))
 			return pTeamEntity->TeamID();
 	}
 
@@ -713,24 +713,244 @@ const char *CGamePlayerTeam::TargetTeamName( const char *pszTargetName, CBaseEnt
 }
 
 
-void CGamePlayerTeam::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+void CGamePlayerTeam::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value)
 {
-	if ( !CanFireForActivator( pActivator ) )
+	if (!CanFireForActivator(pActivator))
 		return;
 
-	if ( pActivator->IsPlayer() )
+	if (pActivator->IsPlayer())
 	{
-		const char *pszTargetTeam = TargetTeamName( STRING(m_target), pActivator );
-		if ( pszTargetTeam )
+		const char *pszTargetTeam = TargetTeamName(STRING(m_target), pActivator);
+		if (pszTargetTeam)
 		{
 			CBasePlayer *pPlayer = (CBasePlayer *)pActivator;
-			g_pGameRules->ChangePlayerTeam( pPlayer, pszTargetTeam, ShouldKillPlayer(), ShouldGibPlayer() );
+			g_pGameRules->ChangePlayerTeam(pPlayer, pszTargetTeam, ShouldKillPlayer(), ShouldGibPlayer());
 		}
 	}
-	
-	if ( RemoveOnFire() )
+
+	if (RemoveOnFire())
 	{
-		UTIL_Remove( this );
+		UTIL_Remove(this);
+	}
+}
+
+
+//
+// CGamePlayerClass / game_player_class	-- Changes the class of the player who fired it
+// Flag: set on load
+
+#define SF_PCLASS_RUNONCE			0x0002
+#define SF_PCLASS_ONLOAD			0x0004
+
+class CGamePlayerClass : public CRulePointEntity
+{
+public:
+	DECLARE_DATADESC();
+	DECLARE_CLASS(CGamePlayerClass, CRulePointEntity);
+
+	void PostClientActive(void);
+	void InputEnable(inputdata_t &inputdata);
+
+private:
+	void Spawn(void);
+	void SetPlayerClass(CBasePlayer *pPlayer);
+
+	PlayerClass_T nClass = PLC_NONE;
+	bool FirstRun = true;
+};
+
+
+
+LINK_ENTITY_TO_CLASS(game_player_class, CGamePlayerClass);
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC(CGamePlayerClass)
+
+// Inputs	
+DEFINE_INPUTFUNC(FIELD_VOID, "Enable", InputEnable),
+
+END_DATADESC()
+
+
+void CGamePlayerClass::Spawn(void)
+{
+	char sClass[32];
+
+	Q_snprintf(sClass, 32, "PLC_%s", m_target);
+	for (size_t i = 0; i < strlen(sClass); i++){
+		sClass[i] = toupper(sClass[i]);
+	}
+
+	nClass = GetPlayerClass(static_cast<const char*>(sClass));
+
+	const char *szModelName = GetClassModel(nClass);
+	PrecacheModel(szModelName);
+	Precache();
+}
+
+void CGamePlayerClass::PostClientActive(void)
+{
+	if (HasSpawnFlags(SF_PCLASS_ONLOAD))
+	{
+		// If we're in singleplayer
+		if (gpGlobals->maxClients == 1)
+		{
+			CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+			SetPlayerClass(pPlayer);
+		}
+	}
+
+	return;
+}
+
+void CGamePlayerClass::InputEnable(inputdata_t &inputdata)
+{
+	if (!CanFireForActivator(inputdata.pActivator))
+		return;
+
+	if (inputdata.pActivator->IsPlayer())
+	{
+		CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+
+		SetPlayerClass(pPlayer);
+	}
+}
+
+void CGamePlayerClass::SetPlayerClass(CBasePlayer *pPlayer)
+{
+	if (HasSpawnFlags(SF_PCLASS_RUNONCE) && FirstRun == false)
+		return;
+
+	if (pPlayer)
+	{
+		// change player relation to NPCs
+		if (nClass == PLC_NONE)
+		{
+			Msg("Invalid class: %s\n", m_target);
+		}
+		else
+		{
+			pPlayer->SetClass(nClass);
+			pPlayer->SetStats();
+
+			// TODO: Change HUD depending on Class
+			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
+		}
+
+		FirstRun = false;
+	}
+}
+
+
+
+
+//
+// CGamePlayerStats / game_player_stats	-- Changes the stats of the player who fired it
+// Flag: set on load
+
+#define SF_PSTATS_RUNONCE			0x0002
+#define SF_PSTATS_ONLOAD			0x0004
+
+class CGamePlayerStats : public CRulePointEntity
+{
+public:
+	DECLARE_DATADESC();
+	DECLARE_CLASS(CGamePlayerStats, CRulePointEntity);
+
+	void PostClientActive(void);
+	void InputEnable(inputdata_t &inputdata);
+
+private:
+	void Spawn(void);
+	void SetPlayerClass(CBasePlayer *pPlayer);
+
+	PlayerClass_T nClass = PLC_NONE;
+	bool FirstRun = true;
+};
+
+
+
+LINK_ENTITY_TO_CLASS(game_player_stats, CGamePlayerStats);
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC(CGamePlayerStats)
+
+// Inputs	
+DEFINE_INPUTFUNC(FIELD_VOID, "Enable", InputEnable),
+
+END_DATADESC()
+
+
+void CGamePlayerStats::Spawn(void)
+{
+	char sClass[32];
+
+	Q_snprintf(sClass, 32, "PLC_%s", m_target);
+	for (size_t i = 0; i < strlen(sClass); i++){
+		sClass[i] = toupper(sClass[i]);
+	}
+
+	nClass = GetPlayerClass(static_cast<const char*>(sClass));
+
+	const char *szModelName = GetClassModel(nClass);
+	PrecacheModel(szModelName);
+	Precache();
+}
+
+void CGamePlayerStats::PostClientActive(void)
+{
+	if (HasSpawnFlags(SF_PCLASS_ONLOAD))
+	{
+		// If we're in singleplayer
+		if (gpGlobals->maxClients == 1)
+		{
+			CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+			SetPlayerClass(pPlayer);
+		}
+	}
+
+	return;
+}
+
+void CGamePlayerStats::InputEnable(inputdata_t &inputdata)
+{
+	if (!CanFireForActivator(inputdata.pActivator))
+		return;
+
+	if (inputdata.pActivator->IsPlayer())
+	{
+		CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+
+		SetPlayerClass(pPlayer);
+	}
+}
+
+void CGamePlayerStats::SetPlayerClass(CBasePlayer *pPlayer)
+{
+	if (HasSpawnFlags(SF_PCLASS_RUNONCE) && FirstRun == false)
+		return;
+
+	if (pPlayer)
+	{
+		// change player relation to NPCs
+		if (nClass == PLC_NONE)
+		{
+			Msg("Invalid class: %s\n", m_target);
+		}
+		else
+		{
+			pPlayer->SetClass(nClass);
+			pPlayer->SetStats();
+
+			// TODO: Change HUD depending on Class
+			pPlayer->EquipByClass(nClass); // only setting max armor value in CHL2_Player - missing in current version
+		}
+
+		FirstRun = false;
 	}
 }
 

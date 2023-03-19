@@ -276,7 +276,10 @@ END_RECV_TABLE()
 		RecvPropEHandle( RECVINFO(m_hVehicle) ),
 		RecvPropEHandle( RECVINFO(m_hUseEntity) ),
 
-		RecvPropInt		(RECVINFO(m_iHealth)),
+		RecvPropInt(RECVINFO(m_iHealth)),
+		// RecvPropDataTable(RECVINFO(m_Class)),
+		// RecvPropDataTable(RECVINFO(m_Faction)),
+		// RecvPropDataTable(RECVINFO(m_Job)),
 		RecvPropInt		(RECVINFO(m_lifeState)),
 
 		RecvPropInt		(RECVINFO(m_iBonusProgress)),
@@ -394,6 +397,12 @@ BEGIN_PREDICTION_DATA( C_BasePlayer )
 
 	DEFINE_FIELD( m_surfaceFriction, FIELD_FLOAT ),
 
+
+	// DEFINE_CUSTOM_FIELD(m_Class, func),
+	// DEFINE_CUSTOM_FIELD(m_Faction, func),
+	// DEFINE_CUSTOM_FIELD(m_Job, func),
+
+
 END_PREDICTION_DATA()
 
 LINK_ENTITY_TO_CLASS( player, C_BasePlayer );
@@ -467,9 +476,13 @@ void C_BasePlayer::Spawn( void )
 	int effects = GetEffects() & EF_NOSHADOW;
 	SetEffects( effects );
 
-	m_iFOV	= 0;	// init field of view.
+	m_iFOV	= 0;	// init field of view
 
     SetModel( "models/player.mdl" );
+
+	m_Class = PLC_PLAYER;
+	m_Faction = CLASS_PLAYER;
+	m_Job = JOB_NONE;
 
 	Precache();
 
