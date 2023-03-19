@@ -696,6 +696,84 @@ Scheme
 				"weight"	"900"
 			}
 		}
+		CombineScreen
+		{
+			"1"
+			{
+				"name"		"Combine"
+				"tall"		"8"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"4"
+				"yres"		"1 640"
+			}
+			"2"
+			{
+				"name"		"Combine"
+				"tall"		"12"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"4"
+				"yres"		"641 720"
+			}
+			"3"
+			{
+				"name"		"Combine"
+				"tall"		"14"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"4"
+				"yres"		"721 1080"
+			}
+			"4"
+			{
+				"name"		"Combine"
+				"tall"		"16"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"4"
+				"yres"		"1081 10000"
+			}
+		}
+		CombineScreenInitiated
+		{
+			"1"
+			{
+				"name"		"Universal Union"
+				"tall"		"8"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"5"
+				"yres"		"1 640"
+			}
+			"2"
+			{
+				"name"		"Universal Union"
+				"tall"		"12"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"5"
+				"yres"		"641 720"
+			}
+			"3"
+			{
+				"name"		"Universal Union"
+				"tall"		"14"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"5"
+				"yres"		"721 1080"
+			}
+			"4"
+			{
+				"name"		"Universal Union"
+				"tall"		"16"
+				"weight"	"700"
+				"antialias" "1"
+				"custom"	"5"
+				"yres"		"1081 10000"
+			}
+		}
 		ClientTitleFont
 		{
 			"1"
@@ -863,6 +941,8 @@ Scheme
 		"1"	"resource/HALFLIFE2.ttf"
 		"2"	"resource/HL2crosshairs.ttf"
 		"3"	"resource/HL2EP2.ttf"		
+		"4"	"resource/Combine.ttf"		
+		"5"	"resource/UniversalUnion.ttf"		
 	}
 
 }

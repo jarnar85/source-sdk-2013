@@ -28,7 +28,7 @@ BEGIN_DATADESC( CFuncBrush )
 	DEFINE_KEYFIELD( m_iSolidity, FIELD_INTEGER, "Solidity" ),
 	DEFINE_KEYFIELD( m_bSolidBsp, FIELD_BOOLEAN, "solidbsp" ),
 	DEFINE_KEYFIELD( m_iszExcludedClass, FIELD_STRING, "excludednpc" ),
-	DEFINE_KEYFIELD( m_bInvertExclusion, FIELD_BOOLEAN, "invert_exclusion" ),
+	DEFINE_KEYFIELD( m_bInvertExclusion, FIELD_BOOLEAN, "invert_exclusion"),
 
 	DEFINE_INPUTFUNC( FIELD_STRING, "SetExcluded", InputSetExcluded ),
 	DEFINE_INPUTFUNC( FIELD_BOOLEAN, "SetInvert", InputSetInvert ),

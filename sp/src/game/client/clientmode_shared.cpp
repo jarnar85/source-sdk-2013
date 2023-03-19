@@ -403,6 +403,7 @@ bool ClientModeShared::CreateMove(float flInputSampleTime, CUserCmd *cmd, bool b
 	// Let the player at it
 	return pPlayer->CreateMove(flInputSampleTime, cmd, bVguiUpdate);
 }
+
 bool ClientModeShared::CreateMove(float flInputSampleTime, CUserCmd *cmd)
 {
 	return CreateMove(flInputSampleTime, cmd, false);
