@@ -256,7 +256,7 @@ CNPC_Manhack::~CNPC_Manhack()
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Manhack::Classify(void)
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
 		Class_T nClass = pPlayer->Classify();

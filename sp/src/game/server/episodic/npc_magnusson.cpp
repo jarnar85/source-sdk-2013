@@ -48,7 +48,7 @@ LINK_ENTITY_TO_CLASS( npc_magnusson, CNPC_Magnusson );
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Magnusson::Classify ( void )
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
 		Class_T nClass = pPlayer->Classify();

@@ -334,6 +334,8 @@ protected:
 
 public:
 	
+	virtual Class_T		Classify( void );
+
 	// Vehicle queries
 	virtual bool IsInAVehicle( void ) const { return false; }
 	virtual IServerVehicle *GetVehicle( void ) { return NULL; }
@@ -371,6 +373,7 @@ public:
 	virtual void		AddClassRelationship( Class_T nClass, Disposition_t nDisposition, int nPriority );
 
 	virtual void		ChangeTeam( int iTeamNum );
+
 
 	// Nav hull type
 	Hull_t	GetHullType() const				{ return m_eHull; }

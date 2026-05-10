@@ -2782,6 +2782,20 @@ void CBaseCombatCharacter::SetFullDefaultRelationship(Class_T nClass, Class_T nC
 	CBaseCombatCharacter::SetDefaultRelationship(nClassTarget, nClass, nDispositionTarget, nPriority);
 }
 
+Class_T CBaseCombatCharacter::Classify( void )
+{
+	// CBaseEntity::Classify() returns CLASS_NONE, so the effective class source here is m_Faction.
+	Class_T nClass = m_Faction;
+
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	if ( pPlayer && pPlayer->Classify() == nClass )
+	{
+		return CLASS_PLAYER_ALLY;
+	}
+
+	return nClass;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: Fetch the default (ignore ai_relationship changes) relationship
 // Input  :

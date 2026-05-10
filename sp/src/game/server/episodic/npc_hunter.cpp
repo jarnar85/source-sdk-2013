@@ -2029,19 +2029,8 @@ void CNPC_Hunter::UpdateOnRemove()
 //-----------------------------------------------------------------------------
 Class_T CNPC_Hunter::Classify()
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (pPlayer)
-	{
-		Class_T nClass = pPlayer->Classify();
-
-		// change player relation to NPCs
-		if (nClass == CLASS_COMBINE_HUNTER)
-		{
-			return	CLASS_PLAYER_ALLY;
-		}
-	}
-	
-	return CLASS_COMBINE_HUNTER;
+	m_Faction = CLASS_COMBINE_HUNTER;
+	return BaseClass::Classify();
 }
 
 //-----------------------------------------------------------------------------

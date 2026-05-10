@@ -875,7 +875,8 @@ Class_T	CNPC_Citizen::Classify()
 	if (GlobalEntity_GetState("citizens_passive") == GLOBAL_ON)
 		return CLASS_CITIZEN_PASSIVE;
 
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	// Use the local player, not command client context, so hostility reflects the current player class/faction.
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
 		Class_T nClass = pPlayer->Classify();

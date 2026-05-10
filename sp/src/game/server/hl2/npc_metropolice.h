@@ -41,7 +41,6 @@ public:
 	void Spawn( void );
 	void Precache( void );
 
-	Class_T		Classify( void );
 	Disposition_t IRelationType(CBaseEntity *pTarget);
 
 	static NPC_Basedata	GetBaseData();

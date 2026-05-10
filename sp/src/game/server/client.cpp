@@ -1084,6 +1084,7 @@ void CC_Player_Set_Class(const CCommand &args)
 			pPlayer->SetClass(nClass);
 			Msg(sClass);
 
+
 			pPlayer->SetStats();
 			Msg("\n");
 
