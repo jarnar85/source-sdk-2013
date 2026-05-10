@@ -745,18 +745,18 @@ void CGamePlayerTeam::Use(CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYP
 class CGamePlayerClass : public CRulePointEntity
 {
 public:
-	DECLARE_DATADESC();
-	DECLARE_CLASS(CGamePlayerClass, CRulePointEntity);
+	 DECLARE_DATADESC();
+	 DECLARE_CLASS(CGamePlayerClass, CRulePointEntity);
 
-	void PostClientActive(void);
-	void InputEnable(inputdata_t &inputdata);
+	 void PostClientActive(void);
+	 void InputEnable(inputdata_t &inputdata);
 
 private:
-	void Spawn(void);
-	void SetPlayerClass(CBasePlayer *pPlayer);
+	 void Spawn(void);
+	 void SetPlayerClass(CBasePlayer *pPlayer);
 
-	PlayerClass_T nClass = PLC_NONE;
-	bool FirstRun = true;
+	 PlayerClass_T nClass = PLC_NONE;
+	 bool FirstRun = true;
 };
 
 
@@ -844,6 +844,277 @@ void CGamePlayerClass::SetPlayerClass(CBasePlayer *pPlayer)
 }
 
 
+//
+// CGamePlayerJob / game_player_job	-- Changes the job of the player who fired it
+// Flag: set on load
+
+#define SF_PJOB_RUNONCE			0x0002
+#define SF_PJOB_ONLOAD			0x0004
+
+class CGamePlayerJob : public CRulePointEntity
+{
+public:
+	 DECLARE_DATADESC();
+	 DECLARE_CLASS(CGamePlayerJob, CRulePointEntity);
+
+	 void PostClientActive(void);
+	 void InputEnable(inputdata_t &inputdata);
+
+private:
+	 void Spawn(void);
+	 void SetPlayerJob(CBasePlayer *pPlayer);
+
+	 Job_T nJob = JOB_NONE;
+	 bool FirstRun = true;
+};
+
+LINK_ENTITY_TO_CLASS(game_player_job, CGamePlayerJob);
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC(CGamePlayerJob)
+
+// Inputs	
+DEFINE_INPUTFUNC(FIELD_VOID, "Enable", InputEnable),
+
+END_DATADESC()
+
+
+void CGamePlayerJob::Spawn(void)
+{
+	 char sJob[32];
+
+	 Q_snprintf(sJob, 32, "JOB_%s", m_target);
+	 for (size_t i = 0; i < strlen(sJob); i++){
+		  sJob[i] = toupper(sJob[i]);
+	 }
+
+	 nJob = GetJob(static_cast<const char*>(sJob));
+}
+
+void CGamePlayerJob::PostClientActive(void)
+{
+	 if (HasSpawnFlags(SF_PJOB_ONLOAD))
+	 {
+		  // If we're in singleplayer
+		  if (gpGlobals->maxClients == 1)
+		  {
+				CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+				SetPlayerJob(pPlayer);
+		  }
+	 }
+
+	 return;
+}
+
+void CGamePlayerJob::InputEnable(inputdata_t &inputdata)
+{
+	 if (!CanFireForActivator(inputdata.pActivator))
+		  return;
+
+	 if (inputdata.pActivator->IsPlayer())
+	 {
+		  CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+
+		  SetPlayerJob(pPlayer);
+	 }
+}
+
+void CGamePlayerJob::SetPlayerJob(CBasePlayer *pPlayer)
+{
+	 if (HasSpawnFlags(SF_PJOB_RUNONCE) && FirstRun == false)
+		  return;
+
+	 if (pPlayer)
+	 {
+		  // change player job
+		  if (nJob == JOB_NONE)
+		  {
+				Msg("Invalid job: %s\n", m_target);
+		  }
+		  else
+		  {
+				pPlayer->SetJob(nJob);
+		  }
+
+		  FirstRun = false;
+	 }
+}
+
+
+//
+// CGamePlayerCity / game_player_city	-- Changes the city of the player who fired it
+// Flag: set on load
+
+#define SF_PCITY_RUNONCE	0x0002
+#define SF_PCITY_ONLOAD		0x0004
+
+class CGamePlayerCity : public CRulePointEntity
+{
+public:
+	 DECLARE_DATADESC();
+	 DECLARE_CLASS(CGamePlayerCity, CRulePointEntity);
+
+	 void PostClientActive(void);
+	 void InputEnable(inputdata_t &inputdata);
+
+private:
+	 void Spawn(void);
+	 void SetPlayerCity(CBasePlayer *pPlayer);
+
+	 int m_iCity	   = 17;
+	 bool FirstRun	   = true;
+};
+
+LINK_ENTITY_TO_CLASS(game_player_city, CGamePlayerCity);
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC(CGamePlayerCity)
+
+// Keys
+DEFINE_KEYFIELD(m_iCity, FIELD_INTEGER, "CityID"),
+
+// Inputs	
+DEFINE_INPUTFUNC(FIELD_VOID, "Enable", InputEnable),
+
+END_DATADESC()
+
+
+void CGamePlayerCity::Spawn(void)
+{
+}
+
+void CGamePlayerCity::PostClientActive(void)
+{
+	 if (HasSpawnFlags(SF_PCITY_ONLOAD))
+	 {
+		  // If we're in singleplayer
+		  if (gpGlobals->maxClients == 1)
+		  {
+				CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+				SetPlayerCity(pPlayer);
+		  }
+	 }
+
+	 return;
+}
+
+void CGamePlayerCity::InputEnable(inputdata_t &inputdata)
+{
+	 if (!CanFireForActivator(inputdata.pActivator))
+		  return;
+
+	 if (inputdata.pActivator->IsPlayer())
+	 {
+		  CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+
+		  SetPlayerCity(pPlayer);
+	 }
+}
+
+void CGamePlayerCity::SetPlayerCity(CBasePlayer *pPlayer)
+{
+	 if (HasSpawnFlags(SF_PCITY_RUNONCE) && FirstRun == false)
+		  return;
+
+	 if (pPlayer)
+	 {
+		  // change player city
+		  pPlayer->SetCity(m_iCity);
+
+		  FirstRun = false;
+	 }
+}
+
+
+//
+// CGamePlayerUnit / game_player_unit	-- Changes the unit of the player who fired it
+// Flag: set on load
+
+#define SF_PUNIT_RUNONCE	0x0002
+#define SF_PUNIT_ONLOAD		0x0004
+
+class CGamePlayerSquad : public CRulePointEntity
+{
+public:
+	 DECLARE_DATADESC();
+	 DECLARE_CLASS(CGamePlayerSquad, CRulePointEntity);
+
+	 void PostClientActive(void);
+	 void InputEnable(inputdata_t &inputdata);
+
+private:
+	 void Spawn(void);
+	 void SetPlayerSquad(CBasePlayer *pPlayer);
+
+	 bool FirstRun = true;
+};
+
+LINK_ENTITY_TO_CLASS(game_player_squad, CGamePlayerSquad);
+
+//---------------------------------------------------------
+// Save/Restore
+//---------------------------------------------------------
+BEGIN_DATADESC(CGamePlayerSquad)
+
+// Keys
+DEFINE_KEYFIELD(m_iSquad, FIELD_INTEGER, "Squad"),
+
+// Inputs	
+DEFINE_INPUTFUNC(FIELD_VOID, "Enable", InputEnable),
+
+END_DATADESC()
+
+
+void CGamePlayerSquad::Spawn(void)
+{
+	 
+}
+
+void CGamePlayerSquad::PostClientActive(void)
+{
+	 if (HasSpawnFlags(SF_PUNIT_ONLOAD))
+	 {
+		  // If we're in singleplayer
+		  if (gpGlobals->maxClients == 1)
+		  {
+				CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+				SetPlayerSquad(pPlayer);
+		  }
+	 }
+
+	 return;
+}
+
+void CGamePlayerSquad::InputEnable(inputdata_t &inputdata)
+{
+	 if (!CanFireForActivator(inputdata.pActivator))
+		  return;
+
+	 if (inputdata.pActivator->IsPlayer())
+	 {
+		  CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+
+		  SetPlayerSquad(pPlayer);
+	 }
+}
+
+void CGamePlayerSquad::SetPlayerSquad(CBasePlayer *pPlayer)
+{
+	 if (HasSpawnFlags(SF_PUNIT_RUNONCE) && FirstRun == false)
+		  return;
+
+	 if (pPlayer)
+	 {
+		  // change player city
+		  pPlayer->SetSquad(m_iSquad);
+
+		  FirstRun = false;
+	 }
+}
 
 
 //

@@ -170,8 +170,8 @@ BEGIN_DATADESC( CNPC_Manhack )
 	DEFINE_KEYFIELD( m_bIgnoreClipbrushes,	FIELD_BOOLEAN, "ignoreclipbrushes" ),
 	DEFINE_FIELD( m_hSmokeTrail,			FIELD_EHANDLE),
 
-	// DEFINE_FIELD( m_pLightGlow,			FIELD_CLASSPTR ),
-	// DEFINE_FIELD( m_pEyeGlow,			FIELD_CLASSPTR ),
+	DEFINE_FIELD( m_pLightGlow,			FIELD_CLASSPTR ),
+	DEFINE_FIELD( m_pEyeGlow,			FIELD_CLASSPTR ),
 
 	DEFINE_FIELD( m_iPanel1,				FIELD_INTEGER ),
 	DEFINE_FIELD( m_iPanel2,				FIELD_INTEGER ),
@@ -2781,7 +2781,6 @@ void CNPC_Manhack::Spawn(void)
 	StopLoitering();
 }
 
-#ifdef EZ
 //-----------------------------------------------------------------------------
 // Purpose: Return the pointer for a given sprite given an index
 //-----------------------------------------------------------------------------
@@ -2867,7 +2866,7 @@ EyeGlow_t * CNPC_Manhack::GetEyeGlowData(int index)
 		return NULL;
 	}
 }
-#else
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -2917,19 +2916,16 @@ void CNPC_Manhack::StartEye( void )
 		m_pLightGlow->SetAsTemporary();
 	}
 }
-#endif
 
 //-----------------------------------------------------------------------------
 
 void CNPC_Manhack::Activate()
 {
 	BaseClass::Activate();
-#ifndef EZ
 	if ( IsAlive() )
 	{
 		StartEye();
 	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -3212,9 +3208,7 @@ void CNPC_Manhack::StartTask( const Task_t *pTask )
 void CNPC_Manhack::UpdateOnRemove( void )
 {
 	DestroySmokeTrail();
-#ifndef EZ
 	KillSprites( 0.0 );
-#endif
 	BaseClass::UpdateOnRemove();
 }
 
@@ -3296,7 +3290,6 @@ void CNPC_Manhack::ClampMotorForces( Vector &linear, AngularImpulse &angular )
 	angular.z *= scale;
 }
 
-#ifndef EZ
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -3323,7 +3316,6 @@ void CNPC_Manhack::KillSprites( float flDelay )
 	}
 	*/
 }
-#endif
 
 //-----------------------------------------------------------------------------
 // Purpose: Tests whether we're above the target's feet but also below their top
@@ -3680,13 +3672,11 @@ void CNPC_Manhack::SetEyeState( int state )
 			if ( m_pEyeGlow )
 			{
 				//Toggle our state
-#ifndef EZ
 				if( m_bHackedByAlyx )
 				{
 					m_pEyeGlow->SetColor( 0, 255, 0 );
 				}
 				else
-#endif
 				{
 					m_pEyeGlow->SetColor( 255, 0, 0 );
 				}
@@ -3698,13 +3688,11 @@ void CNPC_Manhack::SetEyeState( int state )
 			
 			if ( m_pLightGlow )
 			{
-#ifndef EZ
 				if( m_bHackedByAlyx )
 				{
 					m_pLightGlow->SetColor( 0, 255, 0 );
 				}
 				else
-#endif
 				{
 					m_pLightGlow->SetColor( 255, 0, 0 );
 				}

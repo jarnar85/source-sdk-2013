@@ -29,9 +29,7 @@ public:
 	void	ItemPostFrame( void );
 	void	Precache( void );
 
-#ifdef EZ1
 	void	PrimaryAttack(void); // Breadman
-#endif	
 	void	SecondaryAttack( void );
 	void	DelayedAttack( void );
 

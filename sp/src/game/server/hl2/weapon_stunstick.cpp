@@ -7,38 +7,60 @@
 
 #include "cbase.h"
 #include "npcevent.h"
+#include "IEffects.h"
 #include "npc_metropolice.h"
 #include "weapon_stunstick.h"
-#include "IEffects.h"
+#include "in_buttons.h"
+
+// #include "basebludgeonweapon.h"
+// #include "debugoverlay_shared.h"
+// #include "te_effect_dispatch.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar    sk_plr_dmg_stunstick	( "sk_plr_dmg_stunstick","0");
-ConVar    sk_npc_dmg_stunstick	( "sk_npc_dmg_stunstick","0");
 
+ConVar    sk_plr_dmg_stunstick	( "sk_plr_dmg_stunstick","0");
+ConVar    sk_npc_dmg_stunstick	( "sk_npc_dmg_stunstick","40");
 extern ConVar metropolice_move_and_melee;
+
+#define STUNSTICK_BEAM_MATERIAL		"sprites/lgtning.vmt"
+#define STUNSTICK_GLOW_MATERIAL		"sprites/light_glow02_add"
+#define STUNSTICK_GLOW_MATERIAL2	"effects/blueflare1"
+#define STUNSTICK_GLOW_MATERIAL_NOZ	"sprites/light_glow02_add_noz"
 
 //-----------------------------------------------------------------------------
 // CWeaponStunStick
 //-----------------------------------------------------------------------------
-
-IMPLEMENT_SERVERCLASS_ST(CWeaponStunStick, DT_WeaponStunStick)
+IMPLEMENT_SERVERCLASS_ST( CWeaponStunStick, DT_WeaponStunStick )
 	SendPropInt( SENDINFO( m_bActive ), 1, SPROP_UNSIGNED ),
+	SendPropInt( SENDINFO( m_bInSwing ), 1, SPROP_UNSIGNED ),
+
 END_SEND_TABLE()
 
-#ifndef HL2MP
 LINK_ENTITY_TO_CLASS( weapon_stunstick, CWeaponStunStick );
 PRECACHE_WEAPON_REGISTER( weapon_stunstick );
-#endif
 
-acttable_t CWeaponStunStick::m_acttable[] = 
+
+#ifndef CLIENT_DLL
+
+acttable_t	CWeaponStunStick::m_acttable[] = 
 {
-	{ ACT_MELEE_ATTACK1,	ACT_MELEE_ATTACK_SWING,	true },
-	{ ACT_IDLE_ANGRY,		ACT_IDLE_ANGRY_MELEE,	true },
+	{ ACT_RANGE_ATTACK1,				ACT_RANGE_ATTACK_SLAM, true },
+	{ ACT_HL2MP_IDLE,					ACT_HL2MP_IDLE_MELEE,					false },
+	{ ACT_HL2MP_RUN,					ACT_HL2MP_RUN_MELEE,					false },
+	{ ACT_HL2MP_IDLE_CROUCH,			ACT_HL2MP_IDLE_CROUCH_MELEE,			false },
+	{ ACT_HL2MP_WALK_CROUCH,			ACT_HL2MP_WALK_CROUCH_MELEE,			false },
+	{ ACT_HL2MP_GESTURE_RANGE_ATTACK,	ACT_HL2MP_GESTURE_RANGE_ATTACK_MELEE,	false },
+	{ ACT_HL2MP_GESTURE_RELOAD,			ACT_HL2MP_GESTURE_RELOAD_MELEE,			false },
+	{ ACT_HL2MP_JUMP,					ACT_HL2MP_JUMP_MELEE,					false },
+	{ ACT_MELEE_ATTACK1,				ACT_MELEE_ATTACK_SWING,	true },
+	{ ACT_IDLE_ANGRY,					ACT_IDLE_ANGRY_MELEE,	true },
 };
 
 IMPLEMENT_ACTTABLE(CWeaponStunStick);
+
+#endif
 
 classtable_t CWeaponStunStick::m_classtable[] =
 {
@@ -48,12 +70,14 @@ classtable_t CWeaponStunStick::m_classtable[] =
 	{ PLC_REBEL_MEDIC, false },
 	{ PLC_MANHACK, false },
 	{ PLC_METROPOLICE, true },
+	{ PLC_METROPOLICE_RECRUIT, true },
 	{ PLC_COMBINE_WORKER, true },
 	{ PLC_COMBINE_PRISONGUARD, true },
 	{ PLC_COMBINE_MEDIC, true },
 	{ PLC_COMBINE_SOLDIER, false },
 	{ PLC_COMBINE_ELITE, false },
 	{ PLC_CONSCRIPT, true },
+	{ PLC_CREMATOR, false },
 	{ PLC_SOLDIER, false },
 	{ PLC_STALKER, false },
 	{ PLC_ZOMBIE, false },
@@ -65,9 +89,7 @@ classtable_t CWeaponStunStick::m_classtable[] =
 IMPLEMENT_CLASSTABLE(CWeaponStunStick);
 
 BEGIN_DATADESC( CWeaponStunStick )
-
 	DEFINE_FIELD( m_bActive, FIELD_BOOLEAN ),
-
 END_DATADESC()
 
 
@@ -80,6 +102,11 @@ CWeaponStunStick::CWeaponStunStick( void )
 	// HACK:  Don't call SetStunState because this tried to Emit a sound before
 	//  any players are connected which is a bug
 	m_bActive = false;
+
+#ifdef CLIENT_DLL
+	m_bSwungLastFrame = false;
+	m_flFadeTime = FADE_DURATION;	// Start off past the fade point
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +114,6 @@ CWeaponStunStick::CWeaponStunStick( void )
 void CWeaponStunStick::Spawn()
 {
 	Precache();
-
 
 	BaseClass::Spawn();
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
@@ -100,6 +126,10 @@ void CWeaponStunStick::Precache()
 	PrecacheScriptSound( "Weapon_StunStick.Activate" );
 	PrecacheScriptSound( "Weapon_StunStick.Deactivate" );
 
+	PrecacheModel( STUNSTICK_BEAM_MATERIAL );
+	PrecacheModel( "sprites/light_glow02_add.vmt" );
+	PrecacheModel( "effects/blueflare1.vmt" );
+	PrecacheModel( "sprites/light_glow02_add_noz.vmt" );			 
 }
 
 //-----------------------------------------------------------------------------
@@ -109,16 +139,41 @@ void CWeaponStunStick::Precache()
 //-----------------------------------------------------------------------------
 float CWeaponStunStick::GetDamageForActivity( Activity hitActivity )
 {
+#ifdef MAPBASE 
 	if ( ( GetOwner() != NULL ) && ( GetOwner()->IsPlayer() ) )
 		return sk_plr_dmg_stunstick.GetFloat();
 	
 	return sk_npc_dmg_stunstick.GetFloat();
+#else
+	return 40.0f;
+#endif  
 }
 
 //-----------------------------------------------------------------------------
 // Attempt to lead the target (needed because citizens can't hit manhacks with the crowbar!)
 //-----------------------------------------------------------------------------
 extern ConVar sk_crowbar_lead_time;
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+// void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
+// {
+// 	
+// #ifndef CLIENT_DLL
+// 	
+// 	CEffectData	data;
+// 
+// 	data.m_vNormal = traceHit.plane.normal;
+// 	data.m_vOrigin = traceHit.endpos + ( data.m_vNormal * 4.0f );
+// 
+// 	DispatchEffect( "StunstickImpact", data );
+// 
+// #endif
+// 
+// 	//FIXME: need new decals
+// 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
+// }
 
 int CWeaponStunStick::WeaponMeleeAttack1Condition( float flDot, float flDist )
 {
@@ -195,14 +250,14 @@ int CWeaponStunStick::WeaponMeleeAttack1Condition( float flDot, float flDist )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
-{
-	//Glowing spark effect for hit
-	//UTIL_DecalTrace( &m_trLineHit, "PlasmaGlowFade" );
-	
-	//FIXME: need new decals
-	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
-}
+// void CWeaponStunStick::ImpactEffect( trace_t &traceHit )
+// {
+// 	//Glowing spark effect for hit
+// 	//UTIL_DecalTrace( &m_trLineHit, "PlasmaGlowFade" );
+// 	
+// 	//FIXME: need new decals
+// 	UTIL_ImpactTrace( &traceHit, DMG_CLUB );
+// }
 
 void CWeaponStunStick::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator )
 {
@@ -325,6 +380,34 @@ void CWeaponStunStick::Operator_HandleAnimEvent( animevent_t *pEvent, CBaseComba
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: Tells us we're always a translucent entity
+//	1upD - Moved from client to server because m_iActivity is not transmitted
+//-----------------------------------------------------------------------------
+bool CWeaponStunStick::InSwing(void)
+{
+	int activity = GetActivity();
+
+	// These are the swing activities this weapon can play
+	if (activity == GetPrimaryAttackActivity() ||
+		activity == GetSecondaryAttackActivity() ||
+		activity == ACT_VM_MISSCENTER ||
+		activity == ACT_VM_MISSCENTER2)
+		return true;
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: After every frame, check and store if we are mid-swing
+//-----------------------------------------------------------------------------
+void CWeaponStunStick::ItemPostFrame(void)
+{
+	BaseClass::ItemPostFrame();
+	m_bInSwing = InSwing();
+}
+
+
+//-----------------------------------------------------------------------------											   
 // Purpose: Sets the state of the stun stick
 //-----------------------------------------------------------------------------
 void CWeaponStunStick::SetStunState( bool state )
@@ -336,8 +419,9 @@ void CWeaponStunStick::SetStunState( bool state )
 		//FIXME: START - Move to client-side
 
 		Vector vecAttachment;
+		QAngle vecAttachmentAngles;
 
-		GetAttachment( 1, vecAttachment );
+		if (GetAttachment(1, vecAttachment, vecAttachmentAngles))
 		g_pEffects->Sparks( vecAttachment );
 
 		//FIXME: END - Move to client-side
@@ -370,6 +454,7 @@ bool CWeaponStunStick::Holster( CBaseCombatWeapon *pSwitchingTo )
 		return false;
 
 	SetStunState( false );
+	SetWeaponVisible( false ); 
 
 	return true;
 }
@@ -382,7 +467,21 @@ void CWeaponStunStick::Drop( const Vector &vecVelocity )
 {
 	SetStunState( false );
 
-	BaseClass::Drop( vecVelocity );
+#ifndef CLIENT_DLL
+#ifdef MAPBASE
+#ifdef HL2MP
+	if (!GetOwner() || GetOwner()->IsNPC())
+		BaseClass::Drop(vecVelocity);
+	else
+		UTIL_Remove( this );
+#else
+	BaseClass::Drop(vecVelocity);
+#endif
+#else
+	UTIL_Remove( this );
+#endif
+#endif
+
 }
 
 //-----------------------------------------------------------------------------
@@ -393,3 +492,5 @@ bool CWeaponStunStick::GetStunState( void )
 {
 	return m_bActive;
 }
+
+			 

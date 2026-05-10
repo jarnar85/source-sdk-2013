@@ -65,7 +65,8 @@ public:
 
 	bool Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
 	void ItemPostFrame( void );
-	void PrimaryAttack( void );
+	void PrimaryAttack(void);
+	void SecondaryAttack(void);
 	bool Reload( void );
 	void Zoom( void );
 	virtual float GetFireRate( void ) { return 1; };
@@ -78,6 +79,7 @@ protected:
 
 	float m_fNextZoom;
 	int m_nZoomLevel;
+	color32 m_ZoomColor;
 };
 
 IMPLEMENT_SERVERCLASS_ST(CWeaponSniperRifle, DT_WeaponSniperRifle)
@@ -90,6 +92,7 @@ BEGIN_DATADESC( CWeaponSniperRifle )
 
 	DEFINE_FIELD( m_fNextZoom, FIELD_FLOAT ),
 	DEFINE_FIELD( m_nZoomLevel, FIELD_INTEGER ),
+	DEFINE_FIELD( m_ZoomColor, FIELD_COLOR32),
 
 END_DATADESC()
 
@@ -111,6 +114,7 @@ CWeaponSniperRifle::CWeaponSniperRifle( void )
 {
 	m_fNextZoom = gpGlobals->curtime;
 	m_nZoomLevel = 0;
+	m_ZoomColor = {248, 98, 0, 32};
 
 	m_bReloadsSingly = true;
 
@@ -146,6 +150,7 @@ bool CWeaponSniperRifle::Holster( CBaseCombatWeapon *pSwitchingTo )
 			{
 				pPlayer->ShowViewModel(true);		
 				m_nZoomLevel = 0;
+				UTIL_ScreenFade(pPlayer, m_ZoomColor, 0.2f, 0, (FFADE_IN | FFADE_PURGE));
 			}
 		}
 	}
@@ -173,11 +178,13 @@ void CWeaponSniperRifle::ItemPostFrame( void )
 
 	if (pPlayer->m_nButtons & IN_ATTACK2)
 	{
-		if (m_fNextZoom <= gpGlobals->curtime)
-		{
-			Zoom();
-			pPlayer->m_nButtons &= ~IN_ATTACK2;
-		}
+		SecondaryAttack();
+		
+		// if (m_fNextZoom <= gpGlobals->curtime)
+		// {
+		// 	Zoom();
+		// 	pPlayer->m_nButtons &= ~IN_ATTACK2;
+		// }
 	}
 	else if ((pPlayer->m_nButtons & IN_ATTACK) && (m_flNextPrimaryAttack <= gpGlobals->curtime))
 	{
@@ -244,6 +251,7 @@ void CWeaponSniperRifle::ItemPostFrame( void )
 		WeaponIdle( );
 		return;
 	}
+
 }
 
 
@@ -298,19 +306,19 @@ bool CWeaponSniperRifle::Reload( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CWeaponSniperRifle::PrimaryAttack( void )
+void CWeaponSniperRifle::PrimaryAttack(void)
 {
 	// Only the player fires this way so we can cast safely.
-	CBasePlayer *pPlayer = ToBasePlayer( GetOwner() );
+	CBasePlayer* pPlayer = ToBasePlayer(GetOwner());
 	if (!pPlayer)
 	{
 		return;
 	}
 
-	if ( gpGlobals->curtime >= m_flNextPrimaryAttack )
+	if (gpGlobals->curtime >= m_flNextPrimaryAttack)
 	{
 		// If my clip is empty (and I use clips) start reload
-		if ( !m_iClip1 ) 
+		if (!m_iClip1)
 		{
 			Reload();
 			return;
@@ -321,35 +329,60 @@ void CWeaponSniperRifle::PrimaryAttack( void )
 
 		pPlayer->DoMuzzleFlash();
 
-		SendWeaponAnim( ACT_VM_PRIMARYATTACK );
+		SendWeaponAnim(ACT_VM_PRIMARYATTACK);
 
 		// player "shoot" animation
-		pPlayer->SetAnimation( PLAYER_ATTACK1 );
+		pPlayer->SetAnimation(PLAYER_ATTACK1);
 
 		// Don't fire again until fire animation has completed
 		m_flNextPrimaryAttack = gpGlobals->curtime + SequenceDuration();
 		m_iClip1 = m_iClip1 - 1;
 
-		Vector vecSrc	 = pPlayer->Weapon_ShootPosition();
-		Vector vecAiming = pPlayer->GetAutoaimVector( AUTOAIM_5DEGREES );	
+		Vector vecSrc = pPlayer->Weapon_ShootPosition();
+		Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
 
 		// Fire the bullets
-		pPlayer->FireBullets( SNIPER_BULLET_COUNT_PLAYER, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, SNIPER_TRACER_FREQUENCY_PLAYER );
+		pPlayer->FireBullets(SNIPER_BULLET_COUNT_PLAYER, vecSrc, vecAiming, GetBulletSpread(), MAX_TRACE_LENGTH, m_iPrimaryAmmoType, SNIPER_TRACER_FREQUENCY_PLAYER);
 
-		CSoundEnt::InsertSound( SOUND_COMBAT, GetAbsOrigin(), 600, 0.2 );
+		CSoundEnt::InsertSound(SOUND_COMBAT, GetAbsOrigin(), 600, 0.2);
 
-		QAngle vecPunch(random->RandomFloat( -SNIPER_KICKBACK, SNIPER_KICKBACK ), 0, 0);
+		QAngle vecPunch(random->RandomFloat(-SNIPER_KICKBACK, SNIPER_KICKBACK), 0, 0);
 		pPlayer->ViewPunch(vecPunch);
 
 		// Indicate out of ammo condition if we run out of ammo.
 		if (!m_iClip1 && pPlayer->GetAmmoCount(m_iPrimaryAmmoType) <= 0)
 		{
-			pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0); 
+			pPlayer->SetSuitUpdate("!HEV_AMO0", FALSE, 0);
 		}
 	}
 
 	// Register a muzzleflash for the AI.
-	pPlayer->SetMuzzleFlashTime( gpGlobals->curtime + 0.5 );
+	pPlayer->SetMuzzleFlashTime(gpGlobals->curtime + 0.5);
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CWeaponSniperRifle::SecondaryAttack(void) {
+	m_flNextSecondaryAttack = gpGlobals->curtime + 0.5f;
+
+	CBasePlayer* pOwner = ToBasePlayer(GetOwner());
+
+	if (!pOwner)
+		return;
+
+	Zoom();
+
+
+	/*
+	if (m_fNextZoom <= gpGlobals->curtime)
+		{
+			Zoom();
+			pPlayer->m_nButtons &= ~IN_ATTACK2;
+		}
+	
+	*/
 }
 
 
@@ -373,6 +406,7 @@ void CWeaponSniperRifle::Zoom( void )
 			// Zoom out to the default zoom level
 			WeaponSound(SPECIAL2);	
 			m_nZoomLevel = 0;
+			UTIL_ScreenFade(pPlayer, m_ZoomColor, 0.2f, 0, (FFADE_IN | FFADE_PURGE));
 		}
 	}
 	else
@@ -387,6 +421,7 @@ void CWeaponSniperRifle::Zoom( void )
 			WeaponSound(SPECIAL1);
 			
 			m_nZoomLevel++;
+			UTIL_ScreenFade(pPlayer, m_ZoomColor, 0.2f, 0, (FFADE_OUT | FFADE_PURGE | FFADE_STAYOUT ));
 		}
 	}
 

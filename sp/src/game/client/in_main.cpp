@@ -70,10 +70,10 @@ ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_ARCHIVE|FCVAR_CHEAT );
 ConVar cl_forwardspeed( "cl_forwardspeed", "400", FCVAR_ARCHIVE|FCVAR_CHEAT );
 ConVar cl_backspeed( "cl_backspeed", "400", FCVAR_ARCHIVE|FCVAR_CHEAT );
 #else
-ConVar cl_sidespeed( "cl_sidespeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_forwardspeed( "cl_forwardspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_backspeed( "cl_backspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_sidespeed( "cl_sidespeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_forwardspeed( "cl_forwardspeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_backspeed( "cl_backspeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
 #endif // CSTRIKE_DLL
 ConVar lookspring( "lookspring", "0", FCVAR_ARCHIVE );
 ConVar lookstrafe( "lookstrafe", "0", FCVAR_ARCHIVE );
@@ -82,7 +82,7 @@ ConVar in_joystick( "joystick","0", FCVAR_ARCHIVE );
 ConVar thirdperson_platformer( "thirdperson_platformer", "0", 0, "Player will aim in the direction they are moving." );
 ConVar thirdperson_screenspace( "thirdperson_screenspace", "0", 0, "Movement will be relative to the camera, eg: left means screen-left" );
 
-ConVar sv_noclipduringpause( "sv_noclipduringpause", "0", FCVAR_REPLICATED | FCVAR_CHEAT, "If cheats are enabled, then you can noclip with the game paused (for doing screenshots, etc.)." );
+ConVar sv_noclipduringpause( "sv_noclipduringpause", "0", FCVAR_SERVER | FCVAR_CHEAT, "If cheats are enabled, then you can noclip with the game paused (for doing screenshots, etc.)." );
 
 extern ConVar cl_mouselook;
 
@@ -1217,6 +1217,8 @@ void CInput::CreateMove ( int sequence_number, float input_sample_frametime, boo
 	{
 		VectorCopy( m_angPreviousViewAngles, cmd->viewangles );
 	}
+
+	cmd->buttons |= IN_VALIDVGUIINPUT;
 
 	// Let the move manager override anything it wants to.
 	if ( g_pClientMode->CreateMove( input_sample_frametime, cmd, true ) )

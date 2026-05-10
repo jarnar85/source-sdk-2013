@@ -97,7 +97,7 @@ void CWeapon_SLAM::Precache( void )
 //------------------------------------------------------------------------------
 void CWeapon_SLAM::SetPickupTouch( void )
 {
-	SetTouch(SlamTouch);
+	SetTouch(&CWeapon_SLAM::SlamTouch);
 }
 
 //-----------------------------------------------------------------------------
@@ -363,6 +363,7 @@ void CWeapon_SLAM::TripmineAttach( void )
 			CBaseEntity *pEnt = CBaseEntity::Create( "npc_tripmine", tr.endpos + tr.plane.normal * 3, angles, NULL );
 
 			CTripmineGrenade *pMine = (CTripmineGrenade *)pEnt;
+			pMine->AttachToEntity(pEntity);
 			pMine->m_hOwner = GetOwner();
 
 			pOwner->RemoveAmmo( 1, m_iSecondaryAmmoType );
@@ -934,7 +935,7 @@ bool CWeapon_SLAM::Deploy( void )
 	m_bDetonatorArmed = AnyUndetonatedCharges();
 
 
-	SetThink( SLAMThink );
+	SetThink(&CWeapon_SLAM::SLAMThink);
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
 	SetModel( GetViewModel() );

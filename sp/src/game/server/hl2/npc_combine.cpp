@@ -730,7 +730,6 @@ void CNPC_Combine::RunTaskChaseEnemyContinuously( const Task_t *pTask )
 	m_vSavePosition = pEnemy->WorldSpaceCenter();
 }
 
-#ifdef EZ
 //-----------------------------------------------------------------------------
 // Purpose: Return the glow attributes for a given index
 //-----------------------------------------------------------------------------
@@ -805,7 +804,6 @@ EyeGlow_t * CNPC_Combine::GetEyeGlowData(int i)
 	eyeGlow->renderMode = kRenderGlow;
 	return eyeGlow;
 }
-#endif
 
 //=========================================================
 // start task

@@ -21,8 +21,11 @@ IMPLEMENT_SERVERCLASS_ST_NOBASE(CPlayerResource, DT_PlayerResource)
 	SendPropArray3( SENDINFO_ARRAY3(m_iDeaths), SendPropInt( SENDINFO_ARRAY(m_iDeaths), 12 ) ),
 	SendPropArray3( SENDINFO_ARRAY3(m_bConnected), SendPropInt( SENDINFO_ARRAY(m_bConnected), 1, SPROP_UNSIGNED ) ),
 	SendPropArray3( SENDINFO_ARRAY3(m_iTeam), SendPropInt( SENDINFO_ARRAY(m_iTeam), 4 ) ),
-	SendPropArray3( SENDINFO_ARRAY3(m_bAlive), SendPropInt( SENDINFO_ARRAY(m_bAlive), 1, SPROP_UNSIGNED ) ),
-	SendPropArray3( SENDINFO_ARRAY3(m_iHealth), SendPropInt( SENDINFO_ARRAY(m_iHealth), -1, SPROP_VARINT | SPROP_UNSIGNED ) ),
+	SendPropArray3(SENDINFO_ARRAY3(m_bAlive), SendPropInt(SENDINFO_ARRAY(m_bAlive), 1, SPROP_UNSIGNED)),
+	SendPropArray3(SENDINFO_ARRAY3(m_iHealth), SendPropInt(SENDINFO_ARRAY(m_iHealth), -1, SPROP_VARINT | SPROP_UNSIGNED)),
+
+	SendPropArray3(SENDINFO_ARRAY3(m_iCity), SendPropInt(SENDINFO_ARRAY(m_iCity), 7, SPROP_UNSIGNED)),
+	SendPropArray3(SENDINFO_ARRAY3(m_iSquad), SendPropInt(SENDINFO_ARRAY(m_iSquad), 7, SPROP_UNSIGNED)),
 END_SEND_TABLE()
 
 BEGIN_DATADESC( CPlayerResource )
@@ -102,9 +105,11 @@ void CPlayerResource::UpdatePlayerData( void )
 			m_iScore.Set( i, pPlayer->FragCount() );
 			m_iDeaths.Set( i, pPlayer->DeathCount() );
 			m_bConnected.Set( i, 1 );
-			m_iTeam.Set( i, pPlayer->GetTeamNumber() );
-			m_bAlive.Set( i, pPlayer->IsAlive()?1:0 );
-			m_iHealth.Set(i, MAX( 0, pPlayer->GetHealth() ) );
+			m_iTeam.Set(i, pPlayer->GetTeamNumber());
+			m_bAlive.Set(i, pPlayer->IsAlive() ? 1 : 0);
+			m_iHealth.Set(i, MAX(0, pPlayer->GetHealth()));
+			m_iCity.Set(i, pPlayer->GetCity());
+			m_iSquad.Set(i, pPlayer->GetSquad());
 
 
 			p_Class.Set(i, pPlayer->GetClass(false));

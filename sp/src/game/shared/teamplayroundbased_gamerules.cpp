@@ -168,42 +168,42 @@ void CTeamplayRoundBasedRulesProxy::InputSetStalemateOnTimelimit( inputdata_t &i
 }
 #endif
 
-ConVar mp_capstyle( "mp_capstyle", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Sets the style of capture points used. 0 = Fixed players required to cap. 1 = More players cap faster, but longer cap times." );
-ConVar mp_blockstyle( "mp_blockstyle", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Sets the style of capture point blocking used. 0 = Blocks break captures completely. 1 = Blocks only pause captures." );
-ConVar mp_respawnwavetime( "mp_respawnwavetime", "10.0", FCVAR_NOTIFY | FCVAR_REPLICATED, "Time between respawn waves." );
-ConVar mp_capdeteriorate_time( "mp_capdeteriorate_time", "90.0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Time it takes for a full capture point to deteriorate." );
-ConVar mp_tournament( "mp_tournament", "0", FCVAR_REPLICATED | FCVAR_NOTIFY );
+ConVar mp_capstyle( "mp_capstyle", "1", FCVAR_SERVER | FCVAR_DEVELOPMENTONLY, "Sets the style of capture points used. 0 = Fixed players required to cap. 1 = More players cap faster, but longer cap times." );
+ConVar mp_blockstyle( "mp_blockstyle", "1", FCVAR_SERVER | FCVAR_DEVELOPMENTONLY, "Sets the style of capture point blocking used. 0 = Blocks break captures completely. 1 = Blocks only pause captures." );
+ConVar mp_respawnwavetime( "mp_respawnwavetime", "10.0", FCVAR_NOTIFY | FCVAR_SERVER, "Time between respawn waves." );
+ConVar mp_capdeteriorate_time( "mp_capdeteriorate_time", "90.0", FCVAR_SERVER | FCVAR_DEVELOPMENTONLY, "Time it takes for a full capture point to deteriorate." );
+ConVar mp_tournament( "mp_tournament", "0", FCVAR_SERVER | FCVAR_NOTIFY );
 
 #if defined( TF_CLIENT_DLL ) || defined( TF_DLL )
-ConVar mp_highlander( "mp_highlander", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Allow only 1 of each player class type." );
+ConVar mp_highlander( "mp_highlander", "0", FCVAR_SERVER | FCVAR_NOTIFY, "Allow only 1 of each player class type." );
 #endif
 
 //Arena Mode
-ConVar tf_arena_preround_time( "tf_arena_preround_time", "10", FCVAR_NOTIFY | FCVAR_REPLICATED, "Length of the Pre-Round time", true, 5.0, true, 15.0 );
-ConVar tf_arena_round_time( "tf_arena_round_time", "0", FCVAR_NOTIFY | FCVAR_REPLICATED );
-ConVar tf_arena_max_streak( "tf_arena_max_streak", "3", FCVAR_NOTIFY | FCVAR_REPLICATED, "Teams will be scrambled if one team reaches this streak" );
-ConVar tf_arena_use_queue( "tf_arena_use_queue", "1", FCVAR_REPLICATED | FCVAR_NOTIFY, "Enables the spectator queue system for Arena." );
+ConVar tf_arena_preround_time( "tf_arena_preround_time", "10", FCVAR_NOTIFY | FCVAR_SERVER, "Length of the Pre-Round time", true, 5.0, true, 15.0 );
+ConVar tf_arena_round_time( "tf_arena_round_time", "0", FCVAR_NOTIFY | FCVAR_SERVER );
+ConVar tf_arena_max_streak( "tf_arena_max_streak", "3", FCVAR_NOTIFY | FCVAR_SERVER, "Teams will be scrambled if one team reaches this streak" );
+ConVar tf_arena_use_queue( "tf_arena_use_queue", "1", FCVAR_SERVER | FCVAR_NOTIFY, "Enables the spectator queue system for Arena." );
 
-ConVar mp_teams_unbalance_limit( "mp_teams_unbalance_limit", "1", FCVAR_REPLICATED | FCVAR_NOTIFY,
+ConVar mp_teams_unbalance_limit( "mp_teams_unbalance_limit", "1", FCVAR_SERVER | FCVAR_NOTIFY,
 					 "Teams are unbalanced when one team has this many more players than the other team. (0 disables check)",
 					 true, 0,	// min value
 					 true, 30	// max value
 					 );
 
-ConVar mp_maxrounds( "mp_maxrounds", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "max number of rounds to play before server changes maps", true, 0, false, 0 );
-ConVar mp_winlimit( "mp_winlimit", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Max score one team can reach before server changes maps", true, 0, false, 0 );
-ConVar mp_disable_respawn_times( "mp_disable_respawn_times", "0", FCVAR_NOTIFY | FCVAR_REPLICATED );
-ConVar mp_bonusroundtime( "mp_bonusroundtime", "15", FCVAR_REPLICATED, "Time after round win until round restarts", true, 5, true, 15 );
-ConVar mp_stalemate_meleeonly( "mp_stalemate_meleeonly", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Restrict everyone to melee weapons only while in Sudden Death." );
-ConVar mp_forceautoteam( "mp_forceautoteam", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Automatically assign players to teams when joining." );
+ConVar mp_maxrounds( "mp_maxrounds", "0", FCVAR_SERVER | FCVAR_NOTIFY, "max number of rounds to play before server changes maps", true, 0, false, 0 );
+ConVar mp_winlimit( "mp_winlimit", "0", FCVAR_SERVER | FCVAR_NOTIFY, "Max score one team can reach before server changes maps", true, 0, false, 0 );
+ConVar mp_disable_respawn_times( "mp_disable_respawn_times", "0", FCVAR_NOTIFY | FCVAR_SERVER );
+ConVar mp_bonusroundtime( "mp_bonusroundtime", "15", FCVAR_SERVER, "Time after round win until round restarts", true, 5, true, 15 );
+ConVar mp_stalemate_meleeonly( "mp_stalemate_meleeonly", "0", FCVAR_SERVER | FCVAR_NOTIFY, "Restrict everyone to melee weapons only while in Sudden Death." );
+ConVar mp_forceautoteam( "mp_forceautoteam", "0", FCVAR_SERVER | FCVAR_NOTIFY, "Automatically assign players to teams when joining." );
 
 #ifdef GAME_DLL
 ConVar mp_showroundtransitions( "mp_showroundtransitions", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Show gamestate round transitions." );
-ConVar mp_enableroundwaittime( "mp_enableroundwaittime", "1", FCVAR_REPLICATED, "Enable timers to wait between rounds." );
+ConVar mp_enableroundwaittime( "mp_enableroundwaittime", "1", FCVAR_SERVER, "Enable timers to wait between rounds." );
 ConVar mp_showcleanedupents( "mp_showcleanedupents", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Show entities that are removed on round respawn." );
 ConVar mp_restartround( "mp_restartround", "0", FCVAR_GAMEDLL, "If non-zero, the current round will restart in the specified number of seconds" );	
 
-ConVar mp_stalemate_timelimit( "mp_stalemate_timelimit", "240", FCVAR_REPLICATED, "Timelimit (in seconds) of the stalemate round." );
+ConVar mp_stalemate_timelimit( "mp_stalemate_timelimit", "240", FCVAR_SERVER, "Timelimit (in seconds) of the stalemate round." );
 ConVar mp_autoteambalance( "mp_autoteambalance", "1", FCVAR_NOTIFY );
 
 ConVar mp_stalemate_enable( "mp_stalemate_enable", "0", FCVAR_NOTIFY, "Enable/Disable stalemate mode." );

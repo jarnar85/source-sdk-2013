@@ -51,12 +51,12 @@
 REGISTER_GAMERULES_CLASS( CMultiplayRules );
 
 ConVar mp_chattime(
-		"mp_chattime", 
-		"10", 
-		FCVAR_REPLICATED,
-		"amount of time players can chat after the game is over",
-		true, 1,
-		true, 120 );
+	"mp_chattime", 
+	"10",
+	FCVAR_SERVER,
+	"amount of time players can chat after the game is over",
+	true, 1,
+	true, 120 );
 
 #ifdef GAME_DLL
 void MPTimeLimitCallback( IConVar *var, const char *pOldString, float flOldValue )
@@ -73,15 +73,15 @@ void MPTimeLimitCallback( IConVar *var, const char *pOldString, float flOldValue
 }
 #endif 
 
-ConVar mp_timelimit( "mp_timelimit", "0", FCVAR_NOTIFY|FCVAR_REPLICATED, "game time per map in minutes"
+ConVar mp_timelimit( "mp_timelimit", "0", FCVAR_NOTIFY|FCVAR_SERVER, "game time per map in minutes"
 #ifdef GAME_DLL
 					, MPTimeLimitCallback 
 #endif
 					);
 
-ConVar fraglimit( "mp_fraglimit","0", FCVAR_NOTIFY|FCVAR_REPLICATED, "The number of kills at which the map ends");
+ConVar fraglimit( "mp_fraglimit","0", FCVAR_NOTIFY|FCVAR_SERVER, "The number of kills at which the map ends");
 
-ConVar mp_show_voice_icons( "mp_show_voice_icons", "1", FCVAR_REPLICATED, "Show overhead player voice icons when players are speaking.\n" );
+ConVar mp_show_voice_icons( "mp_show_voice_icons", "1", FCVAR_SERVER, "Show overhead player voice icons when players are speaking.\n" );
 
 #ifdef GAME_DLL
 
@@ -90,7 +90,7 @@ ConVar tv_delaymapchange( "tv_delaymapchange", "0", 0, "Delays map change until 
 ConVar mp_restartgame( "mp_restartgame", "0", FCVAR_GAMEDLL, "If non-zero, game will restart in the specified number of seconds" );
 ConVar mp_restartgame_immediate( "mp_restartgame_immediate", "0", FCVAR_GAMEDLL, "If non-zero, game will restart immediately" );
 
-ConVar mp_mapcycle_empty_timeout_seconds( "mp_mapcycle_empty_timeout_seconds", "0", FCVAR_REPLICATED, "If nonzero, server will cycle to the next map if it has been empty on the current map for N seconds");
+ConVar mp_mapcycle_empty_timeout_seconds( "mp_mapcycle_empty_timeout_seconds", "0", FCVAR_SERVER, "If nonzero, server will cycle to the next map if it has been empty on the current map for N seconds");
 
 void cc_SkipNextMapInCycle()
 {

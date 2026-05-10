@@ -29,7 +29,7 @@
 #define CHalfLife2SurvivalProxy C_HalfLife2SurvivalProxy
 #endif
 
-ConVar gamerules_survival( "gamerules_survival", "0", FCVAR_REPLICATED );
+ConVar gamerules_survival( "gamerules_survival", "0", FCVAR_SERVER);
 
 class CHalfLife2SurvivalProxy : public CGameRulesProxy
 {

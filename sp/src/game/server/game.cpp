@@ -59,7 +59,7 @@ public:
 	virtual bool	RegisterConCommandBase( ConCommandBase *pCommand )
 	{
 		// Remember "unlinked" default value for replicated cvars
-		bool replicated = pCommand->IsFlagSet( FCVAR_REPLICATED );
+		bool replicated = pCommand->IsFlagSet( FCVAR_SERVER );
 		const char *defvalue = NULL;
 		if ( replicated && !pCommand->IsCommand() )
 		{

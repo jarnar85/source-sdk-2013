@@ -121,12 +121,14 @@ classtable_t CWeaponAR2::m_classtable[] =
 	{ PLC_REBEL_MEDIC, false },
 	{ PLC_MANHACK, false },
 	{ PLC_METROPOLICE, false },
+	{ PLC_METROPOLICE_RECRUIT, false },
 	{ PLC_COMBINE_WORKER, false },
 	{ PLC_COMBINE_PRISONGUARD, false },
 	{ PLC_COMBINE_MEDIC, false },
 	{ PLC_COMBINE_SOLDIER, true },
 	{ PLC_COMBINE_ELITE, true },
 	{ PLC_CONSCRIPT, false },
+	{ PLC_CREMATOR, false },
 	{ PLC_SOLDIER, false },
 	{ PLC_STALKER, false },
 	{ PLC_ZOMBIE, false },
@@ -227,7 +229,6 @@ void CWeaponAR2::DoImpactEffect( trace_t &tr, int nDamageType )
 	BaseClass::DoImpactEffect( tr, nDamageType );
 }
 
-#ifdef EZ1
 //-----------------------------------------------------------------------------
 // Purpose: BREADMAN --- This overrides the primaryfire function to suit the mod - Breadman
 // Input  : &info - 
@@ -266,7 +267,6 @@ void CWeaponAR2::PrimaryAttack( void )
 		BaseClass::ItemPostFrame();
 	}
 }
-#endif
 
 // END Breadman
 
@@ -277,7 +277,6 @@ void CWeaponAR2::PrimaryAttack( void )
 //-----------------------------------------------------------------------------
 void CWeaponAR2::DelayedAttack( void )
 {
-#ifdef EZ
 	// Debug messages because DEBUG OKAY? JEEZE.
 	//Msg("\n BURST NUMBER IS: %i", BurstMax);
 	// Clamp
@@ -291,7 +290,6 @@ void CWeaponAR2::DelayedAttack( void )
 		BurstMax = 0;
 		return; 
 	}
-#endif
 
 	m_bShotDelayed = false;
 	
@@ -362,13 +360,11 @@ void CWeaponAR2::DelayedAttack( void )
 	// Can blow up after a short delay (so have time to release mouse button)
 	m_flNextSecondaryAttack = gpGlobals->curtime + 1.0f;
 
-#ifdef EZ
 	// Add into our burst max
 	BurstMax = BurstMax + 1;
 
 	// Fire the next round
 	CWeaponAR2::DelayedAttack();
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -400,13 +396,11 @@ void CWeaponAR2::SecondaryAttack( void )
 	SendWeaponAnim( ACT_VM_FIDGET );
 	WeaponSound( SPECIAL1 );
 
-#ifdef EZ
 	CBasePlayer *pOwner = ToBasePlayer(GetOwner());
 
 	// Decrease ammo - trying this down here.
 	//Msg("\n DEDUCTING AR2 ORB \n");
 	pOwner->RemoveAmmo(1, m_iSecondaryAmmoType);
-#endif
 
 	m_iSecondaryAttacks++;
 	gamestats->Event_WeaponFired( pPlayer, false, GetClassname() );

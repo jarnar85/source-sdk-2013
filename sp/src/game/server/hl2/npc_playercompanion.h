@@ -270,9 +270,7 @@ public:
 	static bool		IsSniper( CBaseEntity *pEntity );
 	static bool		IsTurret(  CBaseEntity *pEntity );
 	static bool		IsGunship( CBaseEntity *pEntity );
-#ifdef EZ
-	virtual bool		UseAttackSquadSlots() { return !IsCommandable(); } // All non-commandable "companions" should use attack squad slots
-#endif
+	virtual bool	UseAttackSquadSlots() { return !IsCommandable(); } // All non-commandable "companions" should use attack squad slots
 	//---------------------------------
 	// Damage handling
 	//---------------------------------
@@ -294,10 +292,8 @@ public:
 	float			GetIdealSpeed() const;
 	float			GetIdealAccel() const;
 	bool			OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal, float distClear, AIMoveResult_t *pResult );
-#ifdef EZ2
 	bool			IsJumpLegal(const Vector &startPos, const Vector &apex, const Vector &endPos, float maxUp, float maxDown, float maxDist) const; // For inheritance reasons, need to pass this through to base class
 	bool			IsJumpLegal(const Vector & startPos, const Vector & apex, const Vector & endPos) const; // Added by 1upD - all 'player companions' should be able to jump
-#endif
 
 	//---------------------------------
 	// Inputs

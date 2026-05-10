@@ -23,9 +23,11 @@ IMPLEMENT_CLIENTCLASS_DT_NOBASE(C_PlayerResource, DT_PlayerResource, CPlayerReso
 	RecvPropArray3( RECVINFO_ARRAY(m_iScore), RecvPropInt( RECVINFO(m_iScore[0]))),
 	RecvPropArray3( RECVINFO_ARRAY(m_iDeaths), RecvPropInt( RECVINFO(m_iDeaths[0]))),
 	RecvPropArray3( RECVINFO_ARRAY(m_bConnected), RecvPropInt( RECVINFO(m_bConnected[0]))),
-	RecvPropArray3( RECVINFO_ARRAY(m_iTeam), RecvPropInt( RECVINFO(m_iTeam[0]))),
-	RecvPropArray3( RECVINFO_ARRAY(m_bAlive), RecvPropInt( RECVINFO(m_bAlive[0]))),
-	RecvPropArray3( RECVINFO_ARRAY(m_iHealth), RecvPropInt( RECVINFO(m_iHealth[0]))),
+	RecvPropArray3(RECVINFO_ARRAY(m_iTeam), RecvPropInt(RECVINFO(m_iTeam[0]))),
+	RecvPropArray3(RECVINFO_ARRAY(m_bAlive), RecvPropInt(RECVINFO(m_bAlive[0]))),
+	RecvPropArray3(RECVINFO_ARRAY(m_iHealth), RecvPropInt(RECVINFO(m_iHealth[0]))),
+	RecvPropArray3(RECVINFO_ARRAY(m_iCity), RecvPropInt(RECVINFO(m_iCity[0]))),
+	RecvPropArray3(RECVINFO_ARRAY(m_iSquad), RecvPropInt(RECVINFO(m_iSquad[0]))),
 END_RECV_TABLE()
 
 BEGIN_PREDICTION_DATA( C_PlayerResource )
@@ -35,9 +37,11 @@ BEGIN_PREDICTION_DATA( C_PlayerResource )
 	DEFINE_PRED_ARRAY( m_iScore, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
 	DEFINE_PRED_ARRAY( m_iDeaths, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
 	DEFINE_PRED_ARRAY( m_bConnected, FIELD_BOOLEAN, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
-	DEFINE_PRED_ARRAY( m_iTeam, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
-	DEFINE_PRED_ARRAY( m_bAlive, FIELD_BOOLEAN, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
-	DEFINE_PRED_ARRAY( m_iHealth, FIELD_INTEGER, MAX_PLAYERS+1, FTYPEDESC_PRIVATE ),
+	DEFINE_PRED_ARRAY(m_iTeam, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE),
+	DEFINE_PRED_ARRAY(m_bAlive, FIELD_BOOLEAN, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE),
+	DEFINE_PRED_ARRAY(m_iHealth, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE),
+	DEFINE_PRED_ARRAY(m_iCity, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE),
+	DEFINE_PRED_ARRAY(m_iSquad, FIELD_INTEGER, MAX_PLAYERS + 1, FTYPEDESC_PRIVATE),
 
 END_PREDICTION_DATA()	
 
@@ -56,8 +60,11 @@ C_PlayerResource::C_PlayerResource()
 	memset( m_iDeaths, 0, sizeof( m_iDeaths ) );
 	memset( m_bConnected, 0, sizeof( m_bConnected ) );
 	memset( m_iTeam, 0, sizeof( m_iTeam ) );
-	memset( m_bAlive, 0, sizeof( m_bAlive ) );
-	memset( m_iHealth, 0, sizeof( m_iHealth ) );
+	memset(m_bAlive, 0, sizeof(m_bAlive));
+	memset(m_iHealth, 0, sizeof(m_iHealth));
+
+	memset(m_iCity, 0, sizeof(m_iCity));
+	memset(m_iSquad, 0, sizeof(m_iSquad));
 
 	memset(p_Class, 0, sizeof(p_Class));
 	memset(p_Faction, 0, sizeof(p_Faction));

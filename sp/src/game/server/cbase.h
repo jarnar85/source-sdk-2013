@@ -131,7 +131,8 @@ class CSound;
 struct NPC_Basedata {
 	Class_T nFaction;
 	int iMaxHealth;
-	const char *szModelName;
+	const char* szModelName;
+	const char* szModelArms;
 };
 
 #ifdef _XBOX

@@ -47,13 +47,13 @@ ConVar xc_uncrouch_on_jump( "xc_uncrouch_on_jump", "1", FCVAR_ARCHIVE, "Uncrouch
 #endif
 
 #if defined( HL2_DLL ) || defined( HL2_CLIENT_DLL )
-ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_REPLICATED );
+ConVar player_limit_jump_speed( "player_limit_jump_speed", "1", FCVAR_SERVER );
 #endif
 
 // option_duck_method is a carrier convar. Its sole purpose is to serve an easy-to-flip
 // convar which is ONLY set by the X360 controller menu to tell us which way to bind the
 // duck controls. Its value is meaningless anytime we don't have the options window open.
-ConVar option_duck_method("option_duck_method", "1", FCVAR_REPLICATED|FCVAR_ARCHIVE );// 0 = HOLD to duck, 1 = Duck is a toggle
+ConVar option_duck_method("option_duck_method", "1", FCVAR_SERVER|FCVAR_ARCHIVE );// 0 = HOLD to duck, 1 = Duck is a toggle
 
 #ifdef STAGING_ONLY
 #ifdef CLIENT_DLL
@@ -109,7 +109,7 @@ void CMoveData::SetAbsOrigin( const Vector &vec )
 // See shareddefs.h
 #if PREDICTION_ERROR_CHECK_LEVEL > 0
 
-static ConVar diffcheck( "diffcheck", "0", FCVAR_REPLICATED );
+static ConVar diffcheck( "diffcheck", "0", FCVAR_SERVER );
 
 class IDiffMgr
 {
@@ -2841,8 +2841,8 @@ inline bool CGameMovement::OnLadder( trace_t &trace )
 // [sbodenbender] make ladders easier to climb in cstrike
 //=============================================================================
 #if defined (CSTRIKE_DLL)
-ConVar sv_ladder_dampen ( "sv_ladder_dampen", "0.2", FCVAR_REPLICATED, "Amount to dampen perpendicular movement on a ladder", true, 0.0f, true, 1.0f );
-ConVar sv_ladder_angle( "sv_ladder_angle", "-0.707", FCVAR_REPLICATED, "Cos of angle of incidence to ladder perpendicular for applying ladder_dampen", true, -1.0f, true, 1.0f );
+ConVar sv_ladder_dampen ( "sv_ladder_dampen", "0.2", FCVAR_SERVER, "Amount to dampen perpendicular movement on a ladder", true, 0.0f, true, 1.0f );
+ConVar sv_ladder_angle( "sv_ladder_angle", "-0.707", FCVAR_SERVER, "Cos of angle of incidence to ladder perpendicular for applying ladder_dampen", true, -1.0f, true, 1.0f );
 #endif
 //=============================================================================
 // HPE_END
@@ -4541,7 +4541,7 @@ void CGameMovement::Duck( void )
 	}
 }
 
-static ConVar sv_optimizedmovement( "sv_optimizedmovement", "1", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+static ConVar sv_optimizedmovement( "sv_optimizedmovement", "1", FCVAR_SERVER | FCVAR_DEVELOPMENTONLY );
 
 //-----------------------------------------------------------------------------
 // Purpose: 

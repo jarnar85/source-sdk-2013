@@ -584,9 +584,7 @@ void CAI_BaseNPC::Event_Killed( const CTakeDamageInfo &info )
 
 	Wake( false );
 
-#ifdef EZ
 	KillSprites(0.0f);
-#endif
 	
 	//Adrian: Select a death pose to extrapolate the ragdoll's velocity.
 	SelectDeathPose( info );
@@ -1620,7 +1618,6 @@ void CAI_BaseNPC::DoImpactEffect( trace_t &tr, int nDamageType )
 	BaseClass::DoImpactEffect( tr, nDamageType );
 }
 
-#ifdef EZ
 //-----------------------------------------------------------------------------
 // Purpose: Start all glow effects for this NPC.
 //		Based on Manhack eye glows
@@ -1698,7 +1695,7 @@ void CAI_BaseNPC::SetGlowSpritePtr(int i, CSprite * sprite)
 
 	m_pEyeGlow = sprite;
 }
-#endif
+
 
 //---------------------------------------------------------
 //---------------------------------------------------------
@@ -10742,7 +10739,7 @@ BEGIN_DATADESC( CAI_BaseNPC )
 	DEFINE_FIELD( m_iDesiredWeaponState,	FIELD_INTEGER ),
 	// 							m_pSquad					Saved specially in ai_saverestore.cpp
 	DEFINE_KEYFIELD(m_SquadName,				FIELD_STRING, "squadname" ),
-    DEFINE_FIELD( m_iMySquadSlot,				FIELD_INTEGER ),
+   DEFINE_FIELD( m_iMySquadSlot,				FIELD_INTEGER ),
 	DEFINE_KEYFIELD( m_strHintGroup,			FIELD_STRING, "hintgroup" ),
 	DEFINE_KEYFIELD( m_bHintGroupNavLimiting,	FIELD_BOOLEAN, "hintlimiting" ),
  	DEFINE_EMBEDDEDBYREF( m_pTacticalServices ),
@@ -10956,12 +10953,10 @@ void CAI_BaseNPC::Activate( void )
 	m_ScheduleHistory.RemoveAll();
 #endif//AI_MONITOR_FOR_OSCILLATION
 
-#ifdef EZ
 	if (IsAlive())
 	{
 		StartEye();
 	}
-#endif
 }
 
 void CAI_BaseNPC::Precache( void )
@@ -11499,9 +11494,7 @@ CAI_BaseNPC::~CAI_BaseNPC(void)
 //-----------------------------------------------------------------------------
 void CAI_BaseNPC::UpdateOnRemove(void)
 {
-#ifdef EZ
 	KillSprites(0.0f);
-#endif
 
 	if ( !m_bDidDeathCleanup )
 	{
@@ -12976,7 +12969,7 @@ float CAI_BaseNPC::LineOfSightDist( const Vector &vecDir, float zEye )
 	return (tr.startpos - tr.endpos ).Length();
 }
 
-ConVar ai_LOS_mode( "ai_LOS_mode", "0", FCVAR_REPLICATED );
+ConVar ai_LOS_mode( "ai_LOS_mode", "0", FCVAR_SERVER );
 
 //-----------------------------------------------------------------------------
 // Purpose: Use this to perform AI tracelines that are trying to determine LOS between points.

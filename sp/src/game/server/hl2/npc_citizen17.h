@@ -71,9 +71,7 @@ class CNPC_Citizen : public CNPC_PlayerCompanion
 public:
 	CNPC_Citizen()
 	 :	m_iHead( -1 )
-#ifdef EZ
 		, m_iWillpowerModifier( 0 )
-#endif
 	{
 	}
 
@@ -148,18 +146,15 @@ public:
 
 	virtual const char *SelectRandomExpressionForState( NPC_STATE state );
 
-#ifdef EZ2
 	bool	ShouldInvestigateSounds(void) { return true; } // 1upD - Rebels should investigate sounds
-#endif // EZ2
 
 	//---------------------------------
 	// Combat
 	//---------------------------------
 	bool 			OnBeginMoveAndShoot();
 	void 			OnEndMoveAndShoot();
-#ifndef EZ
+
 	virtual bool	UseAttackSquadSlots()	{ return false; }
-#endif
 
 	void 			LocateEnemySound();
 
@@ -169,7 +164,6 @@ public:
 	void 			OnChangeActiveWeapon( CBaseCombatWeapon *pOldWeapon, CBaseCombatWeapon *pNewWeapon );
 
 	bool			ShouldLookForBetterWeapon();
-#ifdef EZ
 	WeaponProficiency_t CalcWeaponProficiency(CBaseCombatWeapon *pWeapon); // Added by 1upD - Citizen proficiency should be configurable
 	bool			IsJumpLegal(const Vector & startPos, const Vector & apex, const Vector & endPos) const; // Added by 1upD - Override for jump rebels
 
@@ -184,7 +178,7 @@ public:
 	const char*		GetSquadSlotDebugName(int iSquadSlot); // Debug names for new squad slots
 
 	float			m_flLastWillpowerMsgTime;
-#endif
+
 	//---------------------------------
 	// Damage handling
 	//---------------------------------
@@ -288,11 +282,9 @@ private:
 		COND_CIT_COMMANDHEAL,
 		COND_CIT_HURTBYFIRE,
 		COND_CIT_START_INSPECTION,
-#ifdef EZ
 		COND_CIT_WILLPOWER_LOW,
 		COND_CIT_WILLPOWER_HIGH,
 		NEXT_CONDITION,
-#endif
 		
 		SCHED_CITIZEN_PLAY_INSPECT_ACTIVITY = BaseClass::NEXT_SCHEDULE,
 		SCHED_CITIZEN_HEAL,
@@ -304,11 +296,9 @@ private:
 #ifdef HL2_EPISODIC
 		SCHED_CITIZEN_HEAL_TOSS,
 #endif
-#ifdef EZ
 		SCHED_CITIZEN_RANGE_ATTACK1_ADVANCE,
 		SCHED_CITIZEN_RANGE_ATTACK1_SUPPRESS,
 		NEXT_SCHEDULE,
-#endif
 		
 		TASK_CIT_HEAL = BaseClass::NEXT_TASK,
 		TASK_CIT_RPG_AUGER,
@@ -354,10 +344,8 @@ private:
 
 	float			m_flTimePlayerStare;	// The game time at which the player started staring at me.
 	float			m_flTimeNextHealStare;	// Next time I'm allowed to heal a player who is staring at me.
-#ifdef EZ
 	int				m_iWillpowerModifier;	// 1upD - Amount of 'mental fortitude' points before panic
 	bool			m_bWillpowerDisabled;	// 1upD - Override willpower behavior
-#endif
 	//-----------------------------------------------------
 	//	Outputs
 	//-----------------------------------------------------

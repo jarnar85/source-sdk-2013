@@ -7,13 +7,17 @@
 //=============================================================================//
 
 #include "cbase.h"
-#include "grenade_satchel.h"
 #include "player.h"
 #include "soundenvelope.h"
 #include "engine/IEngineSound.h"
+#include "explode.h"
+#include "Sprite.h"
+#include "grenade_satchel.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+#define	SLAM_SPRITE	"sprites/redglow1.vmt"
 
 ConVar    sk_plr_dmg_satchel		( "sk_plr_dmg_satchel","0");
 ConVar    sk_npc_dmg_satchel		( "sk_npc_dmg_satchel","0");
@@ -21,9 +25,9 @@ ConVar    sk_satchel_radius			( "sk_satchel_radius","0");
 
 BEGIN_DATADESC( CSatchelCharge )
 
-	DEFINE_SOUNDPATCH( m_soundSlide ),
+	// DEFINE_SOUNDPATCH( m_soundSlide ),
 
-	DEFINE_FIELD( m_flSlideVolume, FIELD_FLOAT ),
+	// DEFINE_FIELD( m_flSlideVolume, FIELD_FLOAT ),
 	DEFINE_FIELD( m_flNextBounceSoundTime, FIELD_TIME ),
 	DEFINE_FIELD( m_bInAir, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_vLastPosition, FIELD_POSITION_VECTOR ),
@@ -31,9 +35,12 @@ BEGIN_DATADESC( CSatchelCharge )
 	DEFINE_FIELD( m_bIsAttached, FIELD_BOOLEAN ),
 
 	// Function Pointers
-	DEFINE_FUNCTION( SatchelTouch ),
-	DEFINE_FUNCTION( SatchelThink ),
-	DEFINE_FUNCTION( SatchelUse ),
+	// DEFINE_THINKFUNC( SatchelTouch ),
+	DEFINE_THINKFUNC( SatchelThink ),
+	// DEFINE_FUNCTION( SatchelUse ),
+
+	// Inputs
+	DEFINE_INPUTFUNC( FIELD_VOID, "Explode", InputExplode),
 
 END_DATADESC()
 
@@ -47,6 +54,12 @@ void CSatchelCharge::Deactivate( void )
 {
 	AddSolidFlags( FSOLID_NOT_SOLID );
 	UTIL_Remove( this );
+
+	if ( m_hGlowSprite != NULL )
+	{
+		UTIL_Remove( m_hGlowSprite );
+		m_hGlowSprite = NULL;
+	}
 }
 
 
@@ -54,16 +67,21 @@ void CSatchelCharge::Spawn( void )
 {
 	Precache( );
 	// motor
-	SetMoveType( MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_BOUNCE );
-	SetSolid( SOLID_BBOX ); 
-	SetCollisionGroup( COLLISION_GROUP_PROJECTILE );
+	// SetMoveType( MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_BOUNCE );
+	// SetSolid( SOLID_BBOX ); 
+	// SetCollisionGroup( COLLISION_GROUP_PROJECTILE );
 	SetModel( "models/Weapons/w_slam.mdl" );
+
+	VPhysicsInitNormal( SOLID_BBOX, GetSolidFlags() | FSOLID_TRIGGER, false );
+	SetMoveType( MOVETYPE_VPHYSICS );
+
+	SetCollisionGroup( COLLISION_GROUP_WEAPON );
 
 	UTIL_SetSize(this, Vector( -6, -6, -2), Vector(6, 6, 2));
 
-	SetTouch( SatchelTouch );
-	SetUse( SatchelUse );
-	SetThink( SatchelThink );
+	// SetTouch( SatchelTouch );
+	// SetUse( SatchelUse );
+	SetThink( &CSatchelCharge::SatchelThink );
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
 	m_flDamage		= sk_plr_dmg_satchel.GetFloat();
@@ -74,56 +92,100 @@ void CSatchelCharge::Spawn( void )
 	SetGravity( UTIL_ScaleForGravity( 560 ) );	// slightly lower gravity
 	SetFriction( 1.0 );
 	SetSequence( 1 );
+	SetDamage( 150 );
 
 	m_bIsAttached			= false;
 	m_bInAir				= true;
-	m_flSlideVolume			= -1.0;
+	// m_flSlideVolume			= -1.0;
 	m_flNextBounceSoundTime	= 0;
 
 	m_vLastPosition	= vec3_origin;
 
-	InitSlideSound();
+	// InitSlideSound();
+
+	m_hGlowSprite = NULL;
+	CreateEffects();
 }
 
 //-----------------------------------------------------------------------------
 
+
+/*
 void CSatchelCharge::InitSlideSound(void)
 {
 	CSoundEnvelopeController &controller = CSoundEnvelopeController::GetController();
 	CPASAttenuationFilter filter( this );
 	m_soundSlide = controller.SoundCreate( filter, entindex(), CHAN_STATIC, "SatchelCharge.Slide", ATTN_NORM );	
 }
+*/
+
+//-----------------------------------------------------------------------------
+// Purpose: Start up any effects for us
+//-----------------------------------------------------------------------------
+
+void CSatchelCharge::CreateEffects( void )
+{
+	// Only do this once
+	if ( m_hGlowSprite != NULL )
+		return;
+
+	// Create a blinking light to show we're an active SLAM
+	m_hGlowSprite = CSprite::SpriteCreate( SLAM_SPRITE, GetAbsOrigin(), false );
+	m_hGlowSprite->SetAttachment(this, 0);
+	m_hGlowSprite->SetTransparency( kRenderTransAdd, 255, 255, 255, 255, kRenderFxStrobeFast );
+	m_hGlowSprite->SetBrightness( 255, 1.0f );
+	m_hGlowSprite->SetScale( 0.2f, 0.5f );
+	m_hGlowSprite->TurnOn();
+}
 
 //-----------------------------------------------------------------------------
 // Purpose:
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
+/*
 void CSatchelCharge::KillSlideSound(void)
 {
 	CSoundEnvelopeController &controller = CSoundEnvelopeController::GetController();
 	controller.CommandClear( m_soundSlide );
 	controller.SoundFadeOut( m_soundSlide, 0.0 );
 }
+*/
 
 //-----------------------------------------------------------------------------
 // Purpose:
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
-void CSatchelCharge::SatchelUse( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
+/*
+void CSatchelCharge::SatchelUse(CBaseEntity* pActivator, CBaseEntity* pCaller, USE_TYPE useType, float value)
 {
 	KillSlideSound();
 	SetThink( Detonate );
 	SetNextThink( gpGlobals->curtime );
 }
+*/
 
 //-----------------------------------------------------------------------------
 // Purpose:
 // Input  :
 // Output :
 //-----------------------------------------------------------------------------
-void CSatchelCharge::SatchelTouch( CBaseEntity *pOther )
+void CSatchelCharge::InputExplode(inputdata_t& inputdata)
+{
+	ExplosionCreate(GetAbsOrigin() + Vector(0, 0, 16), GetAbsAngles(), GetThrower(), GetDamage(), 200,
+		SF_ENVEXPLOSION_NOSPARKS | SF_ENVEXPLOSION_NODLIGHTS | SF_ENVEXPLOSION_NOSMOKE, 0.0f, this);
+
+	UTIL_Remove(this);
+
+}
+//-----------------------------------------------------------------------------
+// Purpose:
+// Input  :
+// Output :
+//-----------------------------------------------------------------------------
+/*
+void CSatchelCharge::SatchelTouch(CBaseEntity* pOther)
 {
 	Assert( pOther );
 	if ( !pOther->IsSolid() )
@@ -194,8 +256,10 @@ void CSatchelCharge::SatchelTouch( CBaseEntity *pOther )
 	}
 
 }
+*/
 
-void CSatchelCharge::UpdateSlideSound( void )
+/*
+void CSatchelCharge::UpdateSlideSound(void)
 {	
 	if (!m_soundSlide)
 	{
@@ -243,6 +307,7 @@ void CSatchelCharge::UpdateSlideSound( void )
 		return;
 	}
 }
+*/
 
 void CSatchelCharge::SatchelThink( void )
 {
@@ -252,7 +317,7 @@ void CSatchelCharge::SatchelThink( void )
 		UTIL_SetSize(this, Vector( -2, -2, -6), Vector(2, 2, 6));
 	}
 
-	UpdateSlideSound();
+	// UpdateSlideSound();
 
 	// See if I can lose my owner (has dropper moved out of way?)
 	// Want do this so owner can shoot the satchel charge
@@ -282,7 +347,7 @@ void CSatchelCharge::SatchelThink( void )
 		SetLocalAngularVelocity( angVel );
 
 		// Kill any remaining sound
-		KillSlideSound();
+		// KillSlideSound();
 
 		// Clear think function
 		SetThink(NULL);
@@ -296,7 +361,7 @@ void CSatchelCharge::SatchelThink( void )
 	if (!IsInWorld())
 	{
 		// Kill any remaining sound
-		KillSlideSound();
+		// KillSlideSound();
 
 		UTIL_Remove( this );
 		return;
@@ -308,6 +373,7 @@ void CSatchelCharge::SatchelThink( void )
 		return;
 	}
 
+	/*
 	Vector vecNewVel = GetAbsVelocity();
 	if (GetWaterLevel() == 3)
 	{
@@ -325,16 +391,18 @@ void CSatchelCharge::SatchelThink( void )
 		vecNewVel.z -= 8;
 	}
 	SetAbsVelocity( vecNewVel );
+	*/
 }
 
 void CSatchelCharge::Precache( void )
 {
 	PrecacheModel("models/Weapons/w_slam.mdl");
+	PrecacheModel(SLAM_SPRITE);
 
-	PrecacheScriptSound( "SatchelCharge.Pickup" );
-	PrecacheScriptSound( "SatchelCharge.Bounce" );
-
-	PrecacheScriptSound( "SatchelCharge.Slide" );
+	// PrecacheScriptSound( "SatchelCharge.Pickup" );
+	// PrecacheScriptSound( "SatchelCharge.Bounce" );
+	
+	// PrecacheScriptSound( "SatchelCharge.Slide" );
 }
 
 void CSatchelCharge::BounceSound( void )
@@ -360,6 +428,12 @@ CSatchelCharge::CSatchelCharge(void)
 
 CSatchelCharge::~CSatchelCharge(void)
 {
-	CSoundEnvelopeController &controller = CSoundEnvelopeController::GetController();
-	controller.SoundDestroy( m_soundSlide );
+	if (m_hGlowSprite != NULL)
+	{
+		UTIL_Remove(m_hGlowSprite);
+		m_hGlowSprite = NULL;
+	}
+	
+	// CSoundEnvelopeController &controller = CSoundEnvelopeController::GetController();
+	// controller.SoundDestroy( m_soundSlide );
 }

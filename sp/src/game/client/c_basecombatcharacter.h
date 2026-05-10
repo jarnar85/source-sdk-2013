@@ -112,7 +112,22 @@ protected:
 
 	int			m_bloodColor;			// color of blood particless
 
+public:
+	 // -------------------
+	 // character data
+	 // -------------------
+	 PlayerClass_T	  m_Class;
+	 Class_T			  m_Faction;
+	 Job_T			  m_Job;
+
+	 uint	m_iCity = 17;
+	 uint	m_iSquad = 0;
+
+	 const char* GetCitizenId(uint id, uint  city, uint  unit = 0);
+	 const char* GetCitizenId(uint id = 0);
+
 private:
+	 // Visibility-related stuff
 	bool				ComputeLOS( const Vector &vecEyePosition, const Vector &vecTarget ) const;
 
 	CNetworkArray( int, m_iAmmo, MAX_AMMO_TYPES );
@@ -156,7 +171,6 @@ public:
 	int				m_iPowerups;
 	int				m_iPrevPowerups;
 #endif
-
 };
 
 inline C_BaseCombatCharacter *ToBaseCombatCharacter( C_BaseEntity *pEntity )

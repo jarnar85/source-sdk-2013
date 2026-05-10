@@ -68,120 +68,120 @@ IMPLEMENT_NETWORKCLASS_ALIASED( HalfLife2Proxy, DT_HalfLife2Proxy )
 	END_SEND_TABLE()
 #endif
 
-ConVar  physcannon_mega_enabled( "physcannon_mega_enabled", "0", FCVAR_CHEAT | FCVAR_REPLICATED );
+ConVar  physcannon_mega_enabled( "physcannon_mega_enabled", "0", FCVAR_CHEAT | FCVAR_SERVER );
 
 // Controls the application of the robus radius damage model.
-ConVar	sv_robust_explosions( "sv_robust_explosions","1", FCVAR_REPLICATED );
+ConVar	sv_robust_explosions( "sv_robust_explosions","1", FCVAR_SERVER );
 
 // Damage scale for damage inflicted by the player on each skill level.
-ConVar	sk_dmg_inflict_scale1( "sk_dmg_inflict_scale1", "1.50", FCVAR_REPLICATED );
-ConVar	sk_dmg_inflict_scale2( "sk_dmg_inflict_scale2", "1.00", FCVAR_REPLICATED );
-ConVar	sk_dmg_inflict_scale3( "sk_dmg_inflict_scale3", "0.75", FCVAR_REPLICATED );
+ConVar	sk_dmg_inflict_scale1( "sk_dmg_inflict_scale1", "1.50", FCVAR_SERVER );
+ConVar	sk_dmg_inflict_scale2( "sk_dmg_inflict_scale2", "1.00", FCVAR_SERVER );
+ConVar	sk_dmg_inflict_scale3( "sk_dmg_inflict_scale3", "0.75", FCVAR_SERVER );
 
 // Damage scale for damage taken by the player on each skill level.
-ConVar	sk_dmg_take_scale1( "sk_dmg_take_scale1", "0.50", FCVAR_REPLICATED );
-ConVar	sk_dmg_take_scale2( "sk_dmg_take_scale2", "1.00", FCVAR_REPLICATED );
+ConVar	sk_dmg_take_scale1( "sk_dmg_take_scale1", "0.50", FCVAR_SERVER );
+ConVar	sk_dmg_take_scale2( "sk_dmg_take_scale2", "1.00", FCVAR_SERVER );
 #ifdef HL2_EPISODIC
-	ConVar	sk_dmg_take_scale3( "sk_dmg_take_scale3", "2.0", FCVAR_REPLICATED );
+	ConVar	sk_dmg_take_scale3( "sk_dmg_take_scale3", "2.0", FCVAR_SERVER );
 #else
-	ConVar	sk_dmg_take_scale3( "sk_dmg_take_scale3", "1.50", FCVAR_REPLICATED );
+	ConVar	sk_dmg_take_scale3( "sk_dmg_take_scale3", "1.50", FCVAR_SERVER );
 #endif//HL2_EPISODIC
 
-ConVar	sk_allow_autoaim( "sk_allow_autoaim", "1", FCVAR_REPLICATED | FCVAR_ARCHIVE_XBOX );
+ConVar	sk_allow_autoaim( "sk_allow_autoaim", "1", FCVAR_SERVER | FCVAR_ARCHIVE_XBOX );
 
 // Autoaim scale
-ConVar	sk_autoaim_scale1( "sk_autoaim_scale1", "1.0", FCVAR_REPLICATED );
-ConVar	sk_autoaim_scale2( "sk_autoaim_scale2", "1.0", FCVAR_REPLICATED );
-//ConVar	sk_autoaim_scale3( "sk_autoaim_scale3", "0.0", FCVAR_REPLICATED ); NOT CURRENTLY OFFERED ON SKILL 3
+ConVar	sk_autoaim_scale1( "sk_autoaim_scale1", "1.0", FCVAR_SERVER );
+ConVar	sk_autoaim_scale2( "sk_autoaim_scale2", "1.0", FCVAR_SERVER );
+//ConVar	sk_autoaim_scale3( "sk_autoaim_scale3", "0.0", FCVAR_SERVER ); NOT CURRENTLY OFFERED ON SKILL 3
 
 // Quantity scale for ammo received by the player.
-ConVar	sk_ammo_qty_scale1 ( "sk_ammo_qty_scale1", "1.20", FCVAR_REPLICATED );
-ConVar	sk_ammo_qty_scale2 ( "sk_ammo_qty_scale2", "1.00", FCVAR_REPLICATED );
-ConVar	sk_ammo_qty_scale3("sk_ammo_qty_scale3", "0.60", FCVAR_REPLICATED);
+ConVar	sk_ammo_qty_scale1 ( "sk_ammo_qty_scale1", "1.20", FCVAR_SERVER );
+ConVar	sk_ammo_qty_scale2 ( "sk_ammo_qty_scale2", "1.00", FCVAR_SERVER );
+ConVar	sk_ammo_qty_scale3("sk_ammo_qty_scale3", "0.60", FCVAR_SERVER);
 
 ConVar	sk_plr_death_special("sk_plr_death_special", "0", FCVAR_SPONLY | FCVAR_PRINTABLEONLY);	// allow special deaths
 
-ConVar	sk_plr_health_drop_time("sk_plr_health_drop_time", "30", FCVAR_REPLICATED);
-ConVar	sk_plr_grenade_drop_time	( "sk_plr_grenade_drop_time", "30", FCVAR_REPLICATED );
+ConVar	sk_plr_health_drop_time("sk_plr_health_drop_time", "30", FCVAR_SERVER);
+ConVar	sk_plr_grenade_drop_time	( "sk_plr_grenade_drop_time", "30", FCVAR_SERVER );
 
-ConVar	sk_plr_dmg_ar2			( "sk_plr_dmg_ar2","0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_ar2			( "sk_npc_dmg_ar2","0", FCVAR_REPLICATED);
-ConVar	sk_max_ar2				( "sk_max_ar2","0", FCVAR_REPLICATED);
-ConVar	sk_max_ar2_altfire		( "sk_max_ar2_altfire","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_ar2			( "sk_plr_dmg_ar2","0", FCVAR_SERVER );
+ConVar	sk_npc_dmg_ar2			( "sk_npc_dmg_ar2","0", FCVAR_SERVER);
+ConVar	sk_max_ar2				( "sk_max_ar2","0", FCVAR_SERVER);
+ConVar	sk_max_ar2_altfire		( "sk_max_ar2_altfire","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_alyxgun		( "sk_plr_dmg_alyxgun","0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_alyxgun		( "sk_npc_dmg_alyxgun","0", FCVAR_REPLICATED);
-ConVar	sk_max_alyxgun			( "sk_max_alyxgun","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_alyxgun		( "sk_plr_dmg_alyxgun","0", FCVAR_SERVER );
+ConVar	sk_npc_dmg_alyxgun		( "sk_npc_dmg_alyxgun","0", FCVAR_SERVER);
+ConVar	sk_max_alyxgun			( "sk_max_alyxgun","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_pistol		( "sk_plr_dmg_pistol","0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_pistol		( "sk_npc_dmg_pistol","0", FCVAR_REPLICATED);
-ConVar	sk_max_pistol			( "sk_max_pistol","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_pistol		( "sk_plr_dmg_pistol","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_pistol		( "sk_npc_dmg_pistol","0", FCVAR_SERVER);
+ConVar	sk_max_pistol			( "sk_max_pistol","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_smg1			( "sk_plr_dmg_smg1","0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_smg1			( "sk_npc_dmg_smg1","0", FCVAR_REPLICATED);
-ConVar	sk_max_smg1				( "sk_max_smg1","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_smg1			( "sk_plr_dmg_smg1","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_smg1			( "sk_npc_dmg_smg1","0", FCVAR_SERVER);
+ConVar	sk_max_smg1				( "sk_max_smg1","0", FCVAR_SERVER);
 
 // FIXME: remove these (flare)
-ConVar	sk_plr_dmg_flare_round	( "sk_plr_dmg_flare_round","0", FCVAR_REPLICATED);
-ConVar	sk_npc_dmg_flare_round	( "sk_npc_dmg_flare_round","0", FCVAR_REPLICATED);
-ConVar	sk_max_flare_round		( "sk_max_flare_round","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_flare_round	( "sk_plr_dmg_flare_round","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_flare_round	( "sk_npc_dmg_flare_round","0", FCVAR_SERVER);
+ConVar	sk_max_flare_round		( "sk_max_flare_round","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_buckshot		( "sk_plr_dmg_buckshot","0", FCVAR_REPLICATED);	
-ConVar	sk_npc_dmg_buckshot		( "sk_npc_dmg_buckshot","0", FCVAR_REPLICATED);
-ConVar	sk_max_buckshot			( "sk_max_buckshot","0", FCVAR_REPLICATED);
-ConVar	sk_plr_num_shotgun_pellets( "sk_plr_num_shotgun_pellets","7", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_buckshot		( "sk_plr_dmg_buckshot","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_buckshot		( "sk_npc_dmg_buckshot","0", FCVAR_SERVER);
+ConVar	sk_max_buckshot			( "sk_max_buckshot","0", FCVAR_SERVER);
+ConVar	sk_plr_num_shotgun_pellets( "sk_plr_num_shotgun_pellets","7", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_rpg_round	( "sk_plr_dmg_rpg_round","0", FCVAR_REPLICATED);
-ConVar	sk_npc_dmg_rpg_round	( "sk_npc_dmg_rpg_round","0", FCVAR_REPLICATED);
-ConVar	sk_max_rpg_round		( "sk_max_rpg_round","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_rpg_round	( "sk_plr_dmg_rpg_round","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_rpg_round	( "sk_npc_dmg_rpg_round","0", FCVAR_SERVER);
+ConVar	sk_max_rpg_round		( "sk_max_rpg_round","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_sniper_round	( "sk_plr_dmg_sniper_round","0", FCVAR_REPLICATED);	
-ConVar	sk_npc_dmg_sniper_round	( "sk_npc_dmg_sniper_round","0", FCVAR_REPLICATED);
-ConVar	sk_max_sniper_round		( "sk_max_sniper_round","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_sniper_round	( "sk_plr_dmg_sniper_round","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_sniper_round	( "sk_npc_dmg_sniper_round","0", FCVAR_SERVER);
+ConVar	sk_max_sniper_round		( "sk_max_sniper_round","0", FCVAR_SERVER);
 
-//ConVar	sk_max_slam				( "sk_max_slam","0", FCVAR_REPLICATED);
-//ConVar	sk_max_tripwire			( "sk_max_tripwire","0", FCVAR_REPLICATED);
+//ConVar	sk_max_slam				( "sk_max_slam","0", FCVAR_SERVER);
+//ConVar	sk_max_tripwire			( "sk_max_tripwire","0", FCVAR_SERVER);
 
-//ConVar	sk_plr_dmg_molotov		( "sk_plr_dmg_molotov","0", FCVAR_REPLICATED);
-//ConVar	sk_npc_dmg_molotov		( "sk_npc_dmg_molotov","0", FCVAR_REPLICATED);
-//ConVar	sk_max_molotov			( "sk_max_molotov","0", FCVAR_REPLICATED);
+//ConVar	sk_plr_dmg_molotov		( "sk_plr_dmg_molotov","0", FCVAR_SERVER);
+//ConVar	sk_npc_dmg_molotov		( "sk_npc_dmg_molotov","0", FCVAR_SERVER);
+//ConVar	sk_max_molotov			( "sk_max_molotov","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_grenade		( "sk_plr_dmg_grenade","0", FCVAR_REPLICATED);
-ConVar	sk_npc_dmg_grenade		( "sk_npc_dmg_grenade","0", FCVAR_REPLICATED);
-ConVar	sk_max_grenade			( "sk_max_grenade","0", FCVAR_REPLICATED);
+ConVar	sk_plr_dmg_grenade		( "sk_plr_dmg_grenade","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_grenade		( "sk_npc_dmg_grenade","0", FCVAR_SERVER);
+ConVar	sk_max_grenade			( "sk_max_grenade","0", FCVAR_SERVER);
 
 #ifdef HL2_EPISODIC
-ConVar	sk_max_hopwire			( "sk_max_hopwire", "3", FCVAR_REPLICATED);
-ConVar	sk_max_striderbuster	( "sk_max_striderbuster", "3", FCVAR_REPLICATED);
+ConVar	sk_max_hopwire			( "sk_max_hopwire", "3", FCVAR_SERVER);
+ConVar	sk_max_striderbuster	( "sk_max_striderbuster", "3", FCVAR_SERVER);
 #endif
 
-//ConVar sk_plr_dmg_brickbat	( "sk_plr_dmg_brickbat","0", FCVAR_REPLICATED);
-//ConVar sk_npc_dmg_brickbat	( "sk_npc_dmg_brickbat","0", FCVAR_REPLICATED);
-//ConVar sk_max_brickbat		( "sk_max_brickbat","0", FCVAR_REPLICATED);
+//ConVar sk_plr_dmg_brickbat	( "sk_plr_dmg_brickbat","0", FCVAR_SERVER);
+//ConVar sk_npc_dmg_brickbat	( "sk_npc_dmg_brickbat","0", FCVAR_SERVER);
+//ConVar sk_max_brickbat		( "sk_max_brickbat","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_smg1_grenade	( "sk_plr_dmg_smg1_grenade","0", FCVAR_REPLICATED);
-ConVar	sk_npc_dmg_smg1_grenade	( "sk_npc_dmg_smg1_grenade","0", FCVAR_REPLICATED);
-ConVar	sk_max_smg1_grenade		( "sk_max_smg1_grenade","0", FCVAR_REPLICATED );
+ConVar	sk_plr_dmg_smg1_grenade	( "sk_plr_dmg_smg1_grenade","0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_smg1_grenade	( "sk_npc_dmg_smg1_grenade","0", FCVAR_SERVER);
+ConVar	sk_max_smg1_grenade		( "sk_max_smg1_grenade","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_357			( "sk_plr_dmg_357", "0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_357			( "sk_npc_dmg_357", "0", FCVAR_REPLICATED );
-ConVar	sk_max_357				( "sk_max_357", "0", FCVAR_REPLICATED );
+ConVar	sk_plr_dmg_357			( "sk_plr_dmg_357", "0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_357			( "sk_npc_dmg_357", "0", FCVAR_SERVER);
+ConVar	sk_max_357				( "sk_max_357", "0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_crossbow		( "sk_plr_dmg_crossbow", "0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_crossbow		( "sk_npc_dmg_crossbow", "0", FCVAR_REPLICATED );
-ConVar	sk_max_crossbow			( "sk_max_crossbow", "0", FCVAR_REPLICATED );
+ConVar	sk_plr_dmg_crossbow		( "sk_plr_dmg_crossbow", "0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_crossbow		( "sk_npc_dmg_crossbow", "0", FCVAR_SERVER);
+ConVar	sk_max_crossbow			( "sk_max_crossbow", "0", FCVAR_SERVER);
 
-ConVar	sk_dmg_sniper_penetrate_plr( "sk_dmg_sniper_penetrate_plr","0", FCVAR_REPLICATED);
-ConVar	sk_dmg_sniper_penetrate_npc( "sk_dmg_sniper_penetrate_npc","0", FCVAR_REPLICATED);
+ConVar	sk_dmg_sniper_penetrate_plr( "sk_dmg_sniper_penetrate_plr","0", FCVAR_SERVER);
+ConVar	sk_dmg_sniper_penetrate_npc( "sk_dmg_sniper_penetrate_npc","0", FCVAR_SERVER);
 
-ConVar	sk_plr_dmg_airboat		( "sk_plr_dmg_airboat", "0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_airboat		( "sk_npc_dmg_airboat", "0", FCVAR_REPLICATED );
+ConVar	sk_plr_dmg_airboat		( "sk_plr_dmg_airboat", "0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_airboat		( "sk_npc_dmg_airboat", "0", FCVAR_SERVER);
 
-ConVar	sk_max_gauss_round		( "sk_max_gauss_round", "0", FCVAR_REPLICATED );
+ConVar	sk_max_gauss_round		( "sk_max_gauss_round", "0", FCVAR_SERVER);
 
 // Gunship & Dropship cannons
-ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_REPLICATED );
-ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_REPLICATED );
+ConVar	sk_npc_dmg_gunship			( "sk_npc_dmg_gunship", "0", FCVAR_SERVER);
+ConVar	sk_npc_dmg_gunship_to_plr	( "sk_npc_dmg_gunship_to_plr", "0", FCVAR_SERVER);
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -218,7 +218,7 @@ bool CHalfLife2::Damage_IsTimeBased( int iDmgType )
 #else
 
 #ifdef HL2_EPISODIC
-ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_REPLICATED );
+ConVar  alyx_darkness_force( "alyx_darkness_force", "0", FCVAR_CHEAT | FCVAR_SERVER);
 #endif // HL2_EPISODIC
 
 #endif // CLIENT_DLL
@@ -1153,7 +1153,7 @@ float CHalfLife2::AdjustPlayerDamageInflicted( float damage )
 		break;
 	}
 }
-	#ifdef EZ
+
 void CHalfLife2::OnSkillLevelChanged(int iNewLevel)
 {
 	// Fire achievement change for difficulty level changed
@@ -1166,7 +1166,6 @@ void CHalfLife2::OnSkillLevelChanged(int iNewLevel)
 
 	BaseClass::OnSkillLevelChanged(iNewLevel);
 }
-	#endif
 #endif//CLIENT_DLL
 
 //---------------------------------------------------------

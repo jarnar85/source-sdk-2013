@@ -330,9 +330,7 @@ void PerformCustomEffects( const Vector &vecOrigin, trace_t &tr, const Vector &s
 	else if ( ( iMaterial == CHAR_TEX_DIRT ) || ( iMaterial == CHAR_TEX_SAND ) )
 	{
 		FX_DustImpact( vecOrigin, &tr, iScale );
-#ifdef EZ
 		FX_DebrisFlecks(vecOrigin, &tr, iMaterial, iScale, bNoFlecks); // BREADMAN - this wasn't here before!
-#endif
 	}
 	else if (iMaterial == CHAR_TEX_SNOW)
 	{

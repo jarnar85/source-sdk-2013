@@ -783,6 +783,89 @@ void C_BaseEntity::SetTextureFrameIndex( int iIndex )
 	m_iTextureFrameIndex = iIndex;
 }
 
+
+
+
+
+Class_T C_BaseEntity::GetClassStr(const char* sClass)
+{
+	 auto it = Class_M.begin();
+
+	 while (it != Class_M.end())
+	 {
+		  if (strcmp(sClass, it->first) == 0)
+				return it->second;
+
+		  it++;
+	 }
+
+	 return CLASS_NONE;
+}
+
+PlayerClass_T C_BaseEntity::GetPlayerClass(const char* sClass)
+{
+	 auto it = PlayerClass_M.begin();
+
+	 while (it != PlayerClass_M.end())
+	 {
+		  const char* tClass = it->first;
+
+		  if (strcmp(sClass, tClass) == 0)
+				return it->second;
+
+		  it++;
+	 }
+
+	 return PLC_NONE;
+}
+
+const char* C_BaseEntity::GetPlayerClass(PlayerClass_T tClass)
+{
+	 auto it = PlayerClass_M.begin();
+
+	 while (it != PlayerClass_M.end())
+	 {
+		  if (tClass == it->second)
+				return it->first;
+
+		  it++;
+	 }
+
+	 return "NA";
+}
+
+Job_T C_BaseEntity::GetJob(const char* sJob)
+{
+	 auto it = Job_M.begin();
+
+	 while (it != Job_M.end())
+	 {
+		  if (strcmp(sJob, it->first) == 0)
+				return it->second;
+
+		  it++;
+	 }
+
+	 return JOB_NONE;
+}
+
+const char* C_BaseEntity::GetJob(Job_T tJob)
+{
+	 auto it = Job_M.begin();
+
+	 while (it != Job_M.end())
+	 {
+		  if (tJob == it->second)
+				return it->first;
+
+		  it++;
+	 }
+
+	 return "NA";
+}
+
+
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Input  : *map - 

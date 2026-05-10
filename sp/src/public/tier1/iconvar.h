@@ -59,7 +59,8 @@ class CCommand;
 //  client, of course )
 // If a change is requested it must come from the console (i.e., no remote client changes)
 // If a value is changed while a server is active, it's replicated to all connected clients
-#define FCVAR_REPLICATED		(1<<13)	// server setting enforced on clients, TODO rename to FCAR_SERVER at some time
+#define FCVAR_REPLICATED		(1<<13)	// deprecated! replaced by FCVAR_SERVER
+#define FCVAR_SERVER			(1<<13)	// server setting enforced on clients
 #define FCVAR_DEMO				(1<<16)  // record this cvar when starting a demo file
 #define FCVAR_DONTRECORD		(1<<17)  // don't record these command in demofiles
 #define FCVAR_RELOAD_MATERIALS	(1<<20)	// If this cvar changes, it forces a material reload

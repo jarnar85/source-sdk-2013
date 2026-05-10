@@ -36,11 +36,11 @@ ConVar ai_debug_readiness("ai_debug_readiness", "0" );
 ConVar ai_use_readiness("ai_use_readiness", "1" ); // 0 = off, 1 = on, 2 = on for player squad only
 ConVar ai_readiness_decay( "ai_readiness_decay", "120" );// How many seconds it takes to relax completely
 ConVar ai_new_aiming( "ai_new_aiming", "1" );
-#ifdef EZ2
+
 ConVar ai_jump_rise("ai_jump_rise", "64"); // How high can player companions jump
 ConVar ai_jump_drop("ai_jump_drop", "384"); // How high can player companions fall
 ConVar ai_jump_distance("ai_jump_distance", "160"); // How high can player companions jump
-#endif
+
 ConVar sk_companion_melee_damage("sk_companion_melee_damage", "25");
 
 #define GetReadinessUse()	ai_use_readiness.GetInt()
@@ -230,17 +230,14 @@ void CNPC_PlayerCompanion::Spawn()
 		CapabilitiesAdd( bits_CAP_USE_SHOT_REGULATOR );
 	}
 
-// In Entropy: Zero 2, player companions can do friendly fire damage. Additionally, rebels are considered to be 'player companions' even though they are enemies
-#ifndef EZ
+	// In Entropy: Zero 2, player companions can do friendly fire damage. Additionally, rebels are considered to be 'player companions' even though they are enemies
 	CapabilitiesAdd( bits_CAP_NO_HIT_PLAYER );
-#endif
 	CapabilitiesAdd(bits_CAP_NO_HIT_SQUADMATES | bits_CAP_FRIENDLY_DMG_IMMUNE);
 
 
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND );
-#ifdef EZ2
 	CapabilitiesAdd( bits_CAP_MOVE_JUMP); // 1upD - "player companions" (Rebels and Combine) should jump!
-#endif
+
 	SetMoveType( MOVETYPE_STEP );
 
 	m_HackedGunPos = Vector( 0, 0, 55 );
@@ -641,10 +638,10 @@ void CNPC_PlayerCompanion::BuildScheduleTestBits()
 	if (IsCurSchedule(SCHED_RANGE_ATTACK1) ||
 		IsCurSchedule(SCHED_BACK_AWAY_FROM_ENEMY) ||
 		IsCurSchedule(SCHED_RUN_FROM_ENEMY)
-#ifdef EZ // Melee attack conditions should also interrupt reloads
-		|| IsCurSchedule(SCHED_RELOAD) ||
-		IsCurSchedule(SCHED_HIDE_AND_RELOAD)
-#endif
+		
+		// Melee attack conditions should also interrupt reloads
+		|| IsCurSchedule(SCHED_RELOAD)
+		|| IsCurSchedule(SCHED_HIDE_AND_RELOAD)
 		)
 	{
 		SetCustomInterruptCondition(COND_CAN_MELEE_ATTACK1);
@@ -1580,7 +1577,7 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 			}
 
 			float l_nKickDamage = sk_companion_melee_damage.GetFloat();
-#ifdef EZ2
+
 			// Rebels should 1-hit noncommandable Combine soldiers
 			if (pBCC->ClassMatches("npc_combine_s"))
 			{
@@ -1589,7 +1586,6 @@ void CNPC_PlayerCompanion::HandleAnimEvent( animevent_t *pEvent )
 					l_nKickDamage = pBCC->GetHealth();
 				}
 			}
-#endif
 
 			CTakeDamageInfo info(this, this, l_nKickDamage, DMG_CLUB); // TODO Replace with virtual method for class specific damage
 			CalculateMeleeDamageForce(&info, forward, pBCC->GetAbsOrigin());
@@ -3204,7 +3200,7 @@ bool CNPC_PlayerCompanion::OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal, 
 
 	return BaseClass::OnObstructionPreSteer( pMoveGoal, distClear, pResult );
 }
-#ifdef EZ2
+
 //-----------------------------------------------------------------------------
 // Purpose: Returns true if a reasonable jumping distance
 //		1upD - Copied this from FastZombie to add jumping to soldiers and rebels!
@@ -3220,7 +3216,6 @@ bool CNPC_PlayerCompanion::IsJumpLegal(const Vector & startPos, const Vector & a
 {
 	return BaseClass::IsJumpLegal(startPos, apex, endPos, maxUp, maxDown, maxDist);
 }
-#endif
 
 ////-----------------------------------------------------------------------------
 // Purpose: Whether or not we should always transition with the player

@@ -75,6 +75,9 @@ void CHLMachineGun::PrimaryAttack( void )
 		iBulletsToFire++;
 	}
 
+	if (iBulletsToFire < 1)
+		iBulletsToFire	 = 1;
+
 	// Make sure we don't fire more than the amount in the clip, if this weapon uses clips
 	if ( UsesClipsForAmmo1() )
 	{
@@ -86,12 +89,16 @@ void CHLMachineGun::PrimaryAttack( void )
 	m_iPrimaryAttacks++;
 	gamestats->Event_WeaponFired( pPlayer, true, GetClassname() );
 
+	Vector vecSpread = pPlayer->GetAttackSpread(this);
+	float spreadFloat = vecSpread.x;
+	Vector spreadToUse = RandomVector(-spreadFloat, spreadFloat);
+
 	// Fire the bullets
 	FireBulletsInfo_t info;
 	info.m_iShots = iBulletsToFire;
 	info.m_vecSrc = pPlayer->Weapon_ShootPosition( );
 	info.m_vecDirShooting = pPlayer->GetAutoaimVector( AUTOAIM_SCALE_DEFAULT );
-	info.m_vecSpread = pPlayer->GetAttackSpread( this );
+	info.m_vecSpread = spreadToUse;
 	info.m_flDistance = MAX_TRACE_LENGTH;
 	info.m_iAmmoType = m_iPrimaryAmmoType;
 #ifdef EZ
@@ -208,11 +215,26 @@ void CHLMachineGun::DoMachineGunKick( CBasePlayer *pPlayer, float dampEasy, floa
 //-----------------------------------------------------------------------------
 // Purpose: Reset our shots fired
 //-----------------------------------------------------------------------------
-bool CHLMachineGun::Deploy( void )
+bool CHLMachineGun::Deploy(void)
 {
 	m_nShotsFired = 0;
 
 	return BaseClass::Deploy();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Play reload sound only if reload is allowed
+//-----------------------------------------------------------------------------
+bool CHLMachineGun::Reload(void)
+{
+	bool isReloadAllowed = BaseClass::Reload();
+
+	if (isReloadAllowed) {
+		WeaponSound(RELOAD);
+		return BaseClass::Reload();
+	}
+
+	return false;
 }
 
 
@@ -400,6 +422,19 @@ void CHLSelectFireMachineGun::SecondaryAttack( void )
 		m_iSecondaryAttacks++;
 		gamestats->Event_WeaponFired( pOwner, false, GetClassname() );
 	}
+}
+
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Play reload sound only if reload is allowed
+//-----------------------------------------------------------------------------
+bool CHLSelectFireMachineGun::Reload(void)
+{
+	if(m_iBurstSize > 0)
+		return false;
+		
+	return BaseClass::Reload();
 }
 
 //-----------------------------------------------------------------------------

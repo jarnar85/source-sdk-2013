@@ -10,8 +10,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar scene_print( "scene_print", "0", FCVAR_REPLICATED, "When playing back a scene, print timing and event info to console." );
-ConVar scene_clientflex( "scene_clientflex", "1", FCVAR_REPLICATED, "Do client side flex animation." );
+static ConVar scene_print( "scene_print", "0", FCVAR_SERVER, "When playing back a scene, print timing and event info to console." );
+ConVar scene_clientflex( "scene_clientflex", "1", FCVAR_SERVER, "Do client side flex animation." );
 
 //-----------------------------------------------------------------------------
 // Purpose: 

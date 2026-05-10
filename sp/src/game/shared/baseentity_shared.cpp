@@ -39,9 +39,9 @@
 #endif
 
 #ifdef HL2_EPISODIC
-ConVar hl2_episodic( "hl2_episodic", "1", FCVAR_REPLICATED );
+ConVar hl2_episodic( "hl2_episodic", "1", FCVAR_SERVER );
 #else
-ConVar hl2_episodic( "hl2_episodic", "0", FCVAR_REPLICATED );
+ConVar hl2_episodic( "hl2_episodic", "0", FCVAR_SERVER );
 #endif//HL2_EPISODIC
 
 #ifdef PORTAL
@@ -76,9 +76,9 @@ float k_flMaxEntityEulerAngle = 360.0 * 1000.0f; // really should be restricted 
 float k_flMaxEntitySpeed = k_flMaxVelocity * 2.0f;
 float k_flMaxEntitySpinRate = k_flMaxAngularVelocity * 10.0f;
 
-ConVar	ai_shot_bias_min( "ai_shot_bias_min", "-1.0", FCVAR_REPLICATED );
-ConVar	ai_shot_bias_max( "ai_shot_bias_max", "1.0", FCVAR_REPLICATED );
-ConVar	ai_debug_shoot_positions( "ai_debug_shoot_positions", "0", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar	ai_shot_bias_min( "ai_shot_bias_min", "-1.0", FCVAR_SERVER );
+ConVar	ai_shot_bias_max( "ai_shot_bias_max", "1.0", FCVAR_SERVER );
+ConVar	ai_debug_shoot_positions( "ai_debug_shoot_positions", "0", FCVAR_SERVER | FCVAR_CHEAT );
 
 // Utility func to throttle rate at which the "reasonable position" spew goes out
 static double s_LastEntityReasonableEmitTime;

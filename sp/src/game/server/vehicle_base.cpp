@@ -1106,9 +1106,9 @@ CFourWheelServerVehicle::CFourWheelServerVehicle( void )
 }
 
 #ifdef HL2_EPISODIC
-ConVar r_JeepFOV( "r_JeepFOV", "82", FCVAR_CHEAT | FCVAR_REPLICATED );
+ConVar r_JeepFOV( "r_JeepFOV", "82", FCVAR_CHEAT | FCVAR_SERVER );
 #else
-ConVar r_JeepFOV( "r_JeepFOV", "90", FCVAR_CHEAT | FCVAR_REPLICATED );
+ConVar r_JeepFOV( "r_JeepFOV", "90", FCVAR_CHEAT | FCVAR_SERVER );
 #endif // HL2_EPISODIC
 
 //-----------------------------------------------------------------------------

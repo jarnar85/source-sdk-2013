@@ -26,6 +26,8 @@
 #include "iclientmode.h"
 #include "vgui_bitmapbutton.h"
 #include "vgui_bitmappanel.h"
+#include "vgui_databutton.h"
+#include "vgui_datalabel.h"
 #include "filesystem.h"
 #include "iinput.h"
 
@@ -81,7 +83,7 @@ void ClearKeyValuesCache()
 IMPLEMENT_CLIENTCLASS_DT(C_VGuiScreen, DT_VGuiScreen, CVGuiScreen)
 	RecvPropFloat( RECVINFO(m_flWidth) ),
 	RecvPropFloat( RECVINFO(m_flHeight) ),
-	RecvPropInt( RECVINFO(m_fScreenFlags) ),
+	RecvPropInt(RECVINFO(m_fScreenFlags)),
 	RecvPropInt( RECVINFO(m_nPanelName) ),
 	RecvPropInt( RECVINFO(m_nAttachmentIndex) ),
 	RecvPropInt( RECVINFO(m_nOverlayMaterial) ),
@@ -419,7 +421,6 @@ void C_VGuiScreen::ClientThink( void )
 	int px = (int)(u * m_nPixelWidth + 0.5f);
 	int py = (int)(v * m_nPixelHeight + 0.5f);
 
-	// START TEDDYS FIX
 	for (int i = 0; i < pPanel->GetChildCount(); i++)
 	{
 		vgui::Button *child = dynamic_cast<vgui::Button*>(pPanel->GetChild(i));
@@ -429,14 +430,34 @@ void C_VGuiScreen::ClientThink( void )
 			child->GetBounds(x1, y1, x2, y2);
 
 			// Generate mouse input commands
-			if ((m_nButtonState & IN_ATTACK))
+			if (m_nButtonState & IN_ATTACK)
 			{
 				if (px >= x1 && px <= x1 + x2 && py >= y1 && py <= y1 + y2)
 					child->FireActionSignal();
 			}
+			else
+			{
+				 if (px >= x1 && px <= x1 + x2 && py >= y1 && py <= y1 + y2) {
+					  child->ForceDepressed(true);
+				 }
+				 else {
+					  child->ForceDepressed(false);
+				 }
+			}
+		}
+
+		CDataButton* pButton = dynamic_cast<CDataButton*>(pPanel->GetChild(i));
+		if (pButton)
+		{
+			pButton->UpdateData();
+		}
+
+		CDataLabel* pLabel = dynamic_cast<CDataLabel*>(pPanel->GetChild(i));
+		if (pLabel)
+		{
+			pLabel->UpdateData();
 		}
 	}
-	// FIN TEDDYS FIX
 
 	// Generate mouse input commands
 	if ((px != m_nOldPx) || (py != m_nOldPy))
@@ -870,14 +891,24 @@ bool CVGuiScreenPanel::Init( KeyValues* pKeyValues, VGuiScreenInitData_t* pInitD
 vgui::Panel *CVGuiScreenPanel::CreateControlByName(const char *controlName)
 {
 	// Check the panel metaclass manager to make these controls...
-	if (!Q_strncmp(controlName, "MaterialImage", 20))
+	if (!Q_strncmp(controlName, "MaterialImage", 13))
 	{
 		return new CBitmapPanel(NULL, "BitmapPanel");
 	}
 
-	if (!Q_strncmp(controlName, "MaterialButton", 20))
+	if (!Q_strncmp(controlName, "MaterialButton", 14))
 	{
-		return new CBitmapButton(NULL, "BitmapButton", "");
+		 return new CBitmapButton(NULL, "BitmapButton", "");
+	}
+
+	if (!Q_strncmp(controlName, "DataButton", 10))
+	{
+		return new CDataButton(NULL, "DataButton", "");
+	}
+
+	if (!Q_strncmp(controlName, "DataLabel", 10))
+	{
+		return new CDataLabel(NULL, "DataLabel", "");
 	}
 
 	// Didn't find it? Just use the default stuff
@@ -916,7 +947,7 @@ void CVGuiScreenPanel::OnCommand( const char *command)
 		BaseClass::OnCommand(newcommand);
 		return;
 	}
-	
+
 	if ( Q_stricmp( command, "vguicancel" ) )
 	{
 		engine->ClientCmd( const_cast<char *>( command ) );

@@ -17,6 +17,7 @@
 		// This is the name of the .res file to load up and apply to the vgui panel
 		"resfile"		"scripts/screens/vgui_test_screen.res"
 	}
+	
 	"teleport_countdown_screen"
 	{
 		// Defined in c_info_teleporter_countdown.cpp
@@ -29,6 +30,7 @@
 		// This is the name of the .res file to load up and apply to the vgui panel
 		"resfile"		"scripts/screens/teleport_countdown_screen.res"
 	}
+	
 	"jalopy_radar_panel"
 	{
 		"type"			"jalopy_radar_panel"
@@ -36,6 +38,7 @@
 		"pixelshigh"		"128"
 		"resfile"		"scripts/screens/jalopy_radar_panel.res"
 	}
+	
 	"manhack_screen"
 	{
 		// TERO: Screen for the Combine Console
@@ -52,4 +55,334 @@
 	
 	}
 	
+
+	"ts_interview_start"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview1.res"
+	}
+	
+	"ts_interview_q2"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview2.res"
+	}
+	
+	"ts_interview_q3"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview3.res"
+	}
+	
+	"ts_interview_q4"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview4.res"
+	}
+	
+	"ts_interview_q5"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview5.res"
+	}
+	
+	"ts_interview_q6"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview6.res"
+	}
+	
+	"ts_interview_q7"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview7.res"
+	}
+	
+	"ts_interview_q8"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview8.res"
+	}
+	
+	"ts_interview_q9"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview9.res"
+	}
+	
+	"ts_interview_q10"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview10.res"
+	}
+	
+	"ts_interview_q11"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview11.res"
+	}
+	
+	"ts_interview_q11b"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview11b.res"
+	}
+	
+	"ts_interview_q12"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview12.res"
+	}
+	
+	"ts_interview_q13a"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview13a.res"
+	}
+	"ts_interview_q13b"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview13b.res"
+	}
+	"ts_interview_q13c"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/ts_interview13c.res"
+	}
+	
+	"cp_screen_login"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_login.res"
+	}
+	"cp_screen_home"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_home.res"
+	}
+	"cp_screen_gear"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_gear.res"
+	}
+	"cp_screen_recruit"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_recruit.res"
+	}
+	"cp_screen_task_apc"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_task_apc.res"
+	}
+	"cp_screen_status"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	256
+		"pixelshigh"	256
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/cp_screen_status.res"
+	}
+	
+	"logic_eq"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	128
+		"pixelshigh"	128
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/logic_eq.res"
+	}
+	"logic_ne"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	128
+		"pixelshigh"	128
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/logic_ne.res"
+	}
+	"logic_gt"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	128
+		"pixelshigh"	128
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/logic_gt.res"
+	}
+	"logic_lt"
+	{
+		// Screen for the citizen interview
+		"type"		"vgui_screen_panel"
+
+		// These describe the dimensions of the screen *in pixels*
+		"pixelswide"	128
+		"pixelshigh"	128
+
+		// This is the name of the .res file to load up and apply to the vgui panel
+		"resfile"	"scripts/screens/logic_lt.res"
+	}
+	
+
 }

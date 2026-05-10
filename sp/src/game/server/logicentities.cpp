@@ -1677,6 +1677,7 @@ class CLogicCase : public CLogicalEntity
 	DECLARE_CLASS( CLogicCase, CLogicalEntity );
 private:
 	string_t m_nCase[MAX_LOGIC_CASES];
+	PlayerClass_T m_nClass[MAX_LOGIC_CASES];
 
 	int m_nShuffleCases;
 	int m_nLastShuffleCase;
@@ -1687,7 +1688,8 @@ private:
 	int BuildCaseMap(unsigned char *puchMap);
 
 	// Inputs
-	void InputValue( inputdata_t &inputdata );
+	void InputValue(inputdata_t& inputdata);
+	void InputPlayerClass(inputdata_t& inputdata);
 	void InputPickRandom( inputdata_t &inputdata );
 	void InputPickRandomShuffle( inputdata_t &inputdata );
 
@@ -1730,6 +1732,7 @@ BEGIN_DATADESC( CLogicCase )
 
 	// Inputs
 	DEFINE_INPUTFUNC(FIELD_INPUT, "InValue", InputValue),
+	DEFINE_INPUTFUNC(FIELD_VOID, "InPlayerClass", InputPlayerClass),
 	DEFINE_INPUTFUNC(FIELD_VOID, "PickRandom", InputPickRandom),
 	DEFINE_INPUTFUNC(FIELD_VOID, "PickRandomShuffle", InputPickRandomShuffle),
 
@@ -1773,19 +1776,60 @@ void CLogicCase::Spawn( void )
 // Input  : Value - Variant value to compare against the values of the case fields.
 //				We use a variant so that we can convert any input type to a string.
 //-----------------------------------------------------------------------------
-void CLogicCase::InputValue( inputdata_t &inputdata )
+void CLogicCase::InputValue(inputdata_t& inputdata)
 {
-	const char *pszValue = inputdata.value.String();
+	const char* pszValue = inputdata.value.String();
+
 	for (int i = 0; i < MAX_LOGIC_CASES; i++)
 	{
 		if ((m_nCase[i] != NULL_STRING) && !stricmp(STRING(m_nCase[i]), pszValue))
 		{
-			m_OnCase[i].FireOutput( inputdata.pActivator, this );
+			m_OnCase[i].FireOutput(inputdata.pActivator, this);
 			return;
 		}
 	}
-	
-	m_OnDefault.Set( inputdata.value, inputdata.pActivator, this );
+
+	m_OnDefault.Set(inputdata.value, inputdata.pActivator, this);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Evaluates the new input value, firing the appropriate OnCaseX output
+//			if the input value matches one of the "CaseX" keys.
+// Input  : Value - Variant value to compare against the values of the case fields.
+//				We use a variant so that we can convert any input type to a string.
+//-----------------------------------------------------------------------------
+void CLogicCase::InputPlayerClass(inputdata_t& inputdata)
+{
+	if (!inputdata.pActivator->IsPlayer())
+		return;
+
+
+	CBasePlayer* pPlayer = ToBasePlayer(inputdata.pActivator);
+	PlayerClass_T tClass = pPlayer->GetClass(TRUE);
+
+
+	for (int i = 0; i < MAX_LOGIC_CASES; i++)
+	{
+		if (m_nClass[i] == NULL && m_nCase[i] != NULL_STRING)
+		{
+			char sClass[32];
+
+			Q_snprintf(sClass, 32, "PLC_%s", m_nCase[i]);
+			for (size_t j = 0; j < strlen(sClass); j++) {
+				sClass[j] = toupper(sClass[j]);
+			}
+			
+			m_nClass[i] = CBaseEntity::GetPlayerClass(static_cast<const char*>(sClass));
+		}
+		
+		if (m_nClass[i] == tClass)
+		{
+			m_OnCase[i].FireOutput(inputdata.pActivator, this);
+			return;
+		}
+	}
+
+	m_OnDefault.Set(inputdata.value, inputdata.pActivator, this);
 }
 
 
@@ -1906,6 +1950,166 @@ void CLogicCase::InputPickRandomShuffle( inputdata_t &inputdata )
 
 
 //-----------------------------------------------------------------------------
+// Purpose: Compares the current player class to a predefined value, firing an
+//			output to indicate the result of the comparison.
+//-----------------------------------------------------------------------------
+#define SF_LPCLASS_RUNONCE			0x0002
+
+class CLogicPlayerClass : public CLogicalEntity
+{
+	 DECLARE_CLASS(CLogicPlayerClass, CLogicalEntity);
+
+private:
+	 PlayerClass_T nClass = PLC_NONE;
+	 bool FirstRun = true;
+
+	 // Inputs
+	 void InputCompare(inputdata_t &inputdata);
+
+	 // Outputs
+	 COutputEvent m_OnTrue;			// Fired when the input value is equal to the compare value.
+	 COutputEvent m_OnFalse;		// Fired when the input value is not equal to the compare value.
+
+	 DECLARE_DATADESC();
+};
+
+LINK_ENTITY_TO_CLASS(logic_playerclass, CLogicPlayerClass);
+
+
+BEGIN_DATADESC(CLogicPlayerClass)
+
+// Inputs
+DEFINE_INPUTFUNC(FIELD_VOID, "Compare", InputCompare),
+
+// Outputs
+DEFINE_OUTPUT(m_OnTrue, "OnTrue"),
+DEFINE_OUTPUT(m_OnFalse, "OnFalse"),
+
+END_DATADESC()
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Compares the input value to the compare value, firing the appropriate
+//			output(s) based on the comparison result.
+//-----------------------------------------------------------------------------
+void CLogicPlayerClass::InputCompare(inputdata_t &inputdata)
+{
+	 if (HasSpawnFlags(SF_LPCLASS_RUNONCE) && FirstRun == false)
+		  return;
+
+	 if (FirstRun) {
+		  char sClass[32];
+
+		  Q_snprintf(sClass, 32, "PLC_%s", m_target);
+		  for (size_t i = 0; i < strlen(sClass); i++){
+				sClass[i] = toupper(sClass[i]);
+		  }
+
+		  nClass = CBaseEntity::GetPlayerClass(static_cast<const char*>(sClass));
+
+		  FirstRun = FALSE;
+	 }
+
+	 if (!inputdata.pActivator->IsPlayer())
+		  return;
+	 
+
+	 CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+	 PlayerClass_T tClass = pPlayer->GetClass(TRUE);
+
+
+	 if (tClass == nClass)
+	 {
+		  m_OnTrue.FireOutput(inputdata.pActivator, this);
+	 }
+	 else
+	 {
+		  m_OnFalse.FireOutput(inputdata.pActivator, this);
+	 }
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Compares the current player job to a predefined value, firing an
+//			output to indicate the result of the comparison.
+//-----------------------------------------------------------------------------
+#define SF_LPJOB_RUNONCE			0x0002
+
+class CLogicPlayerJob : public CLogicalEntity
+{
+	 DECLARE_CLASS(CLogicPlayerJob, CLogicalEntity);
+
+private:
+	 Job_T nJob = JOB_NONE;
+	 bool FirstRun = true;
+
+	 // Inputs
+	 void InputCompare(inputdata_t &inputdata);
+
+	 // Outputs
+	 COutputEvent m_OnTrue;			// Fired when the input value is equal to the compare value.
+	 COutputEvent m_OnFalse;		// Fired when the input value is not equal to the compare value.
+
+	 DECLARE_DATADESC();
+};
+
+LINK_ENTITY_TO_CLASS(logic_playerjob, CLogicPlayerJob);
+
+
+BEGIN_DATADESC(CLogicPlayerJob)
+
+// Inputs
+DEFINE_INPUTFUNC(FIELD_VOID, "Compare", InputCompare),
+
+// Outputs
+DEFINE_OUTPUT(m_OnTrue, "OnTrue"),
+DEFINE_OUTPUT(m_OnFalse, "OnFalse"),
+
+END_DATADESC()
+
+
+//-----------------------------------------------------------------------------
+// Purpose: Compares the input value to the compare value, firing the appropriate
+//			output(s) based on the comparison result.
+//-----------------------------------------------------------------------------
+void CLogicPlayerJob::InputCompare(inputdata_t &inputdata)
+{
+	 if (HasSpawnFlags(SF_LPJOB_RUNONCE) && FirstRun == false)
+		  return;
+
+	 if (FirstRun) {
+		  char sJob[32];
+
+		  Q_snprintf(sJob, 32, "JOB_%s", m_target);
+		  for (size_t i = 0; i < strlen(sJob); i++){
+				sJob[i] = toupper(sJob[i]);
+		  }
+
+		  nJob = CBaseEntity::GetJob(static_cast<const char*>(sJob));
+
+		  FirstRun = FALSE;
+	 }
+
+	 if (!inputdata.pActivator->IsPlayer())
+		  return;
+
+
+	 CBasePlayer *pPlayer = ToBasePlayer(inputdata.pActivator);
+	 Job_T tJob = pPlayer->GetJob(TRUE);
+
+
+	 if (tJob == nJob)
+	 {
+		  m_OnTrue.FireOutput(inputdata.pActivator, this);
+	 }
+	 else
+	 {
+		  m_OnFalse.FireOutput(inputdata.pActivator, this);
+	 }
+}
+
+
+//-----------------------------------------------------------------------------
 // Purpose: Compares a floating point input to a predefined value, firing an
 //			output to indicate the result of the comparison.
 //-----------------------------------------------------------------------------
@@ -1930,8 +2134,10 @@ private:
 
 	// Outputs
 	COutputFloat m_OnLessThan;			// Fired when the input value is less than the compare value.
+	COutputFloat m_OnLessEqual;		// Fired when the input value is less or equal to the compare value.
 	COutputFloat m_OnEqualTo;			// Fired when the input value is equal to the compare value.
 	COutputFloat m_OnNotEqualTo;		// Fired when the input value is not equal to the compare value.
+	COutputFloat m_OnGreaterEqual;	// Fired when the input value is greater or equal to the compare value.
 	COutputFloat m_OnGreaterThan;		// Fired when the input value is greater than the compare value.
 
 	DECLARE_DATADESC();
@@ -1956,7 +2162,9 @@ BEGIN_DATADESC( CLogicCompare )
 	DEFINE_OUTPUT(m_OnEqualTo, "OnEqualTo"),
 	DEFINE_OUTPUT(m_OnNotEqualTo, "OnNotEqualTo"),
 	DEFINE_OUTPUT(m_OnGreaterThan, "OnGreaterThan"),
+	DEFINE_OUTPUT(m_OnGreaterEqual, "OnGreaterEqual"),
 	DEFINE_OUTPUT(m_OnLessThan, "OnLessThan"),
+	DEFINE_OUTPUT(m_OnLessEqual, "OnLessEqual"),
 
 END_DATADESC()
 
@@ -2007,7 +2215,9 @@ void CLogicCompare::DoCompare(CBaseEntity *pActivator, float flInValue)
 {
 	if (flInValue == m_flCompareValue)
 	{
-		m_OnEqualTo.Set(flInValue, pActivator, this);
+		 m_OnLessEqual.Set(flInValue, pActivator, this);
+		 m_OnEqualTo.Set(flInValue, pActivator, this);
+		 m_OnGreaterEqual.Set(flInValue, pActivator, this);
 	}
 	else
 	{
@@ -2016,10 +2226,12 @@ void CLogicCompare::DoCompare(CBaseEntity *pActivator, float flInValue)
 		if (flInValue > m_flCompareValue)
 		{
 			m_OnGreaterThan.Set(flInValue, pActivator, this);
+			m_OnGreaterEqual.Set(flInValue, pActivator, this);
 		}
 		else
 		{
 			m_OnLessThan.Set(flInValue, pActivator, this);
+			m_OnLessEqual.Set(flInValue, pActivator, this);
 		}
 	}
 }

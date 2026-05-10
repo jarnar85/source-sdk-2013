@@ -45,8 +45,8 @@ public:
 	// flag to single the HLTV/Replay fake client, not transmitted
 	bool		hltv;
 	bool		replay;
-	int			frags;
-	int			deaths;
+	int		frags;
+	int		deaths;
 #endif
 
 // NOTE:  Only care about this stuff in game/client dlls

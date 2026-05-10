@@ -324,16 +324,10 @@ public:
 	typedef ConCommandBase BaseClass;
 
 								ConVar( const char *pName, const char *pDefaultValue, int flags = 0);
-
-								ConVar( const char *pName, const char *pDefaultValue, int flags, 
-									const char *pHelpString );
-								ConVar( const char *pName, const char *pDefaultValue, int flags, 
-									const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax );
-								ConVar( const char *pName, const char *pDefaultValue, int flags, 
-									const char *pHelpString, FnChangeCallback_t callback );
-								ConVar( const char *pName, const char *pDefaultValue, int flags, 
-									const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax,
-									FnChangeCallback_t callback );
+								ConVar( const char *pName, const char *pDefaultValue, int flags, const char *pHelpString );
+								ConVar( const char *pName, const char *pDefaultValue, int flags, const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax );
+								ConVar( const char *pName, const char *pDefaultValue, int flags, const char *pHelpString, FnChangeCallback_t callback );
+								ConVar( const char *pName, const char *pDefaultValue, int flags, const char *pHelpString, bool bMin, float fMin, bool bMax, float fMax, FnChangeCallback_t callback );
 
 	virtual						~ConVar( void );
 

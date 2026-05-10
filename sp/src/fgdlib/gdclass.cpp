@@ -7,6 +7,8 @@
 #include "fgdlib/GameData.h" // FGDLIB: eliminate dependency
 #include "fgdlib/GDClass.h"
 
+#include "tier1\strtools.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
@@ -964,7 +966,7 @@ bool GDclass::ParseVariables(TokenReader &tr)
 			{
 				char szError[_MAX_PATH];
 
-				sprintf(szError, "%s: Variable '%s' is multiply defined with different types.", GetName(), var->GetName());
+				Q_snprintf(szError, sizeof(szError), "%s: Variable '%s' is multiply defined with different types.", GetName(), var->GetName());
 				GDError(tr, szError);
 			}
 		}

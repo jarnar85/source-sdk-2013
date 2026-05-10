@@ -372,7 +372,7 @@ public:
 	const char *			GetPlayerName() { return m_szNetname; }
 	void					SetPlayerName( const char *name );
 
-	int						GetUserID() { return engine->GetPlayerUserId( edict() ); }
+	int						GetUserID();
 	const char *			GetNetworkIDString(); 
 	virtual const Vector	GetPlayerMins( void ) const; // uses local player
 	virtual const Vector	GetPlayerMaxs( void ) const; // uses local player
@@ -586,10 +586,14 @@ public:
 
 	// Run a user command. The default implementation calls ::PlayerRunCommand. In TF, this controls a vehicle if
 	// the player is in one.
-	virtual void			PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper);
+	virtual void		PlayerRunCommand(CUserCmd *ucmd, IMoveHelper *moveHelper);
 	void					RunNullCommand();
-	CUserCmd *				GetCurrentCommand( void )	{ return m_pCurrentCommand; }
+	CUserCmd *			GetCurrentCommand( void )	{ return m_pCurrentCommand; }
 	float					GetTimeSinceLastUserCommand( void ) { return ( !IsConnected() || IsFakeClient() || IsBot() ) ? 0.f : gpGlobals->curtime - m_flLastUserCommandTime; }
+
+	// roleplay
+	const char *		GetCitizenId(uint  city = 0, uint  unit = 0, bool current = true);
+
 
 	// Class Handling
 	virtual void SetClass(PlayerClass_T nClass, bool updateCounters = true);

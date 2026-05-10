@@ -77,7 +77,7 @@ ConVar func_breakdmg_bullet( "func_breakdmg_bullet", "0.5" );
 ConVar func_breakdmg_club( "func_breakdmg_club", "1.5" );
 ConVar func_breakdmg_explosive( "func_breakdmg_explosive", "1.25" );
 
-ConVar sv_turbophysics( "sv_turbophysics", "0", FCVAR_REPLICATED, "Turns on turbo physics" );
+ConVar sv_turbophysics( "sv_turbophysics", "0", FCVAR_SERVER, "Turns on turbo physics" );
 
 #ifdef HL2_EPISODIC
 	#define PROP_FLARE_LIFETIME 30.0f
@@ -4743,6 +4743,9 @@ private:
 	Vector	m_vecBackBoundsMin;
 	Vector	m_vecBackBoundsMax;
 
+	// trying to fix the origin
+	Vector							m_vecOrigin;
+
 	CHandle<CEntityBlocker>	m_hDoorBlocker;
 };
 
@@ -4812,6 +4815,8 @@ void CPropDoorRotating::Spawn()
 
 	// The axis of rotation must be along the z axis for now.
 	// NOTE: If you change this, be sure to change IsHingeOnLeft to account for it!
+	// SetAbsOrigin(m_vecAxis); // trying to fix origin/rotation axis
+	m_vecOrigin = m_vecAxis;
 	m_vecAxis = Vector(0, 0, 1);
 
 	CalcOpenAngles();

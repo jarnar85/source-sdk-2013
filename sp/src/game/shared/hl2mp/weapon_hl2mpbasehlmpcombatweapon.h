@@ -6,9 +6,9 @@
 #endif
 
 #ifdef CLIENT_DLL
-	#include "c_hl2mp_player.h"
+	#include "c_hl2_player.h"
 #else
-	#include "hl2mp_player.h"
+	#include "hl2_player.h"
 #endif
 
 #include "weapon_hl2mpbase.h"

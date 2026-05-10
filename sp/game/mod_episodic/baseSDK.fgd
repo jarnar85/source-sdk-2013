@@ -11,6 +11,7 @@
 	// Inputs
 	input SetActive(void) : "Make the vgui screen visible."
 	input SetInactive(void) : "Make the vgui screen invisible."
+	output AnyOutput(void) : "Fire any output."
 	output Output1(void) : "Fire output 1."
 	output Output2(void) : "Fire output 2."
 	output Output3(void) : "Fire output 3."
@@ -29,6 +30,114 @@
 	output Output16(void) : "Fire output 16."
 ]
 
+//-------------------------------------------------------------------------
+//
+// Logic Entities
+//
+//-------------------------------------------------------------------------
+
+@PointClass base(Targetname) iconsprite("editor/logic_compare.vmt") = logic_compare :
+	"Compares an input value to another value. " +
+	"If the input value is less than the compare value, the OnLessThan and OnLessEqual outputs are fired with the input value. " +
+	"If the input value is equal to the compare value, the OnLessEqual, OnEqualTo and OnGreaterEqual outputs are fired with the input value. " +	
+	"If the input value is greater than the compare value, the OnGreaterThan and OnGreaterEqual outputs are fired with the input value."
+[
+	// Keys
+	InitialValue(integer) : "Initial value" : : "Initial value for the input value."
+	CompareValue(integer) : "Compare value" : : "The value to compare against."
+	
+	// Inputs
+	input SetValue(float) : "Set the value that will be compared against the compare value."
+	input SetValueCompare(float) : "Set the value that will be compared against the compare value and performs the comparison."
+	input SetCompareValue(float) : "Set the compare value."
+	input Compare(void) : "Force a compare of the input value with the compare value."
+	
+	// Outputs
+	output OnLessThan(float) : "Fired when the input value is less than the compare value. Sends the input value as data." 
+	output OnLessEqual(float) : "Fired when the input value is less than or equal to the compare value. Sends the input value as data." 
+	output OnEqualTo(float) : "Fired when the input value is equal to the compare value. Sends the input value as data." 
+	output OnNotEqualTo(float) : "Fired when the input value is different from the compare value. Sends the input value as data." 
+	output OnGreaterEqual(float) : "Fired when the input value is equal to or greater than the compare value. Sends the input value as data."
+	output OnGreaterThan(float) : "Fired when the input value is greater than the compare value. Sends the input value as data."
+]
+
+@PointClass base(Targetname) iconsprite("editor/logic_branch.vmt") = logic_playerclass : "Compare Player Class to a set value"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 0
+	]
+	
+	target(choices) : "Target Class":"player" =
+	[
+		"player":"Player"
+		"citizen":"Citizen"
+		"rebel":"Rebel"
+		"rebel_medic":"Rebel (medic)"
+		"manhack":"Manhack"
+		"metropolice":"Metrocop"
+		"metropolice_recruit":"Metrocop recruit"
+		"combine_prisonguard":"Combine prison guard"
+		"combine_prisonheavy":"Combine prison guard (shotgunner)"
+		"combine_soldier":"Combine soldier"
+		"combine_charger":"Combine soldier (charger)"
+		"combine_elite":"Combine soldier (elite)"
+		"combine_grunt":"Combine soldier (grunt)"
+		"combine_heavy":"Combine soldier (heavy)"
+		"combine_medic":"Combine soldier (medic)"
+		"combine_ordinal":"Combine soldier (ordinal)"
+		"combine_suppressor":"Combine soldier (suppressor)"
+		"combine_worker":"Combine worker"
+		"combine_worker_hazmat":"Combine worker (Hazmat)"
+		"conscript":"Conscript"
+		"soldier":"Human Soldier"
+		"stalker":"Stalker"
+		"zombie":"Zombie"
+		"zombie_poison":"Zombie (poison)"
+		"zombie_fast":"Zombie (fast)"
+		"zombie_combine":"Zombie (combine)"
+	]
+	
+	// Inputs
+	input Compare(void) : "Compare the player class with the target class."
+	
+	// Outputs
+	output OnTrue(bool) : "Fired when player class matches." 
+	output OnFalse(bool) : "Fired when player class does not match." 
+]
+
+@PointClass base(Targetname) iconsprite("editor/logic_branch.vmt") = logic_playerjob : "Compare Player Job to a set value"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 0
+	]
+	
+	target(choices) : "Target Job":"none" =
+	[
+		"none":"None"
+		"brute":"Brute"
+		"disinfector":"Disinfector"
+		"engineer":"Engineer"
+		"guard":"Guard"
+		"heavy":"Heavy"
+		"medic":"Medic"
+		"officer":"Police officer"
+		"pilot":"Pilot"
+		"scientist":"Scientist"
+		"sniper":"Sniper"
+		"soldier":"Soldier"
+		"worker":"Worker"
+	]
+	
+	// Inputs
+	input Compare(void) : "Compare the player job with the target job."
+	
+	// Outputs
+	output OnTrue(bool) : "Fired when player job matches." 
+	output OnFalse(bool) : "Fired when player job does not match." 
+]
+
 
 //-------------------------------------------------------------------------
 //
@@ -36,7 +145,7 @@
 //
 //-------------------------------------------------------------------------
 
-@PointClass base(Targetname) = game_player_class : "Change Player Class"
+@PointClass base(Targetname) iconsprite("editor/ai_relationship.vmt") = game_player_class : "Change Player Class"
 [
 	spawnflags(flags) =
 	[
@@ -52,6 +161,7 @@
 		"rebel_medic":"Rebel (medic)"
 		"manhack":"Manhack"
 		"metropolice":"Metrocop"
+		"metropolice_recruit":"Metrocop recruit"
 		"combine_prisonguard":"Combine prison guard"
 		"combine_prisonheavy":"Combine prison guard (shotgunner)"
 		"combine_soldier":"Combine soldier"
@@ -77,13 +187,72 @@
 ]
 
 
+@PointClass base(Targetname) iconsprite("editor/ai_relationship.vmt") = game_player_job : "Change Player Job"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 1
+		4 : "Execute when map is loaded" : 0
+	]
+	
+	target(choices) : "Target Job":"none" =
+	[
+		"none":"None"
+		"brute":"Brute"
+		"disinfector":"Disinfector"
+		"engineer":"Engineer"
+		"guard":"Guard"
+		"heavy":"Heavy"
+		"medic":"Medic"
+		"officer":"Police officer"
+		"pilot":"Pilot"
+		"scientist":"Scientist"
+		"sniper":"Sniper"
+		"soldier":"Soldier"
+		"worker":"Worker"
+	]
+	
+	input Enable(void) : "Set the player job."
+]
+
+@PointClass base(Targetname) = game_player_city : "Change player city"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 1
+		4 : "Execute when map is loaded" : 0
+	]
+	
+	// Keys
+	CityID(integer) : "City ID" : : "ID of the City."
+	
+	// Inputs
+	input Enable(void) : "Set the player city."
+]
+
+
+@PointClass base(Targetname) = game_player_squad : "Change player squad"
+[
+	spawnflags(flags) =
+	[
+		2 : "Run only once" : 1
+		4 : "Execute when map is loaded" : 0
+	]
+	
+	// Keys
+	Squad(integer) : "Squad" : : "ID of the players' squad."
+	
+	// Inputs
+	input Enable(void) : "Set the player squad."
+]
+
 //-------------------------------------------------------------------------
 //
 // Filters
 //
 //-------------------------------------------------------------------------
 
-@FilterClass base(BaseFilter) iconsprite("editor/filter_class_t.vmt") = filter_activator_class_t :
+@FilterClass base(BaseFilter) iconsprite("editor/filter_class.vmt") = filter_activator_class_t :
 	"A filter that filters by the class of the activator."
 [
 	filterclass_t(string) : "Filter Class" : : "The class to filter by. If the filter mode is Allow, only entities whose "+
@@ -100,6 +269,211 @@
 
 @NPCClass base(BaseNPC) studio("models/bullsquid.mdl" ) = npc_bullsquid : "Bullsquid"[]
 
+
+@NPCClass base(BaseNPC,RappelNPC) studio("models/Police.mdl") = npc_metropolice : "MetroPolice"
+[
+	model(choices) : "Model" : "models/combine_soldier.mdl" : "Regular Soldier" = 
+	[
+		"models/Police.mdl" : "Metropolice"
+		"models/humans/guard.mdl" : "Security Guard"
+		"models/humans/guard_02.mdl" : "Security Guard 02"
+	]
+
+	additionalequipment(choices) : "Weapons" : "weapon_pistol" =
+	[
+		"weapon_pistol" : "Pistol"
+		"weapon_smg1"  : "SMG1"
+		"weapon_stunstick"  : "Stun Stick"
+		"weapon_shotgun"  : "Shotgun"
+		"0"  : "Nothing"
+	]
+
+	manhacks(Choices) : "Number of Manhacks" : 0 =
+	[
+		0 : "None"
+		1 : "1"
+		2 : "2"
+	]
+
+	weapondrawn(Choices) : "Pistol starts drawn" : 0 =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+	
+	spawnflags(Flags) =
+	[
+		131072 : "Simple cops" : 0
+		262144 : "Rappel (UNCHECK THIS IF IT IS CHECKED!)" : 0
+		524288 : "Always stitch" : 0
+		1048576 : "No chatter" : 0
+		2097152 : "Arrest enemies" : 0
+		4194304 : "No far stitching" : 0
+		8388608 : "Prevent manhack toss" : 0
+		16777216: "Allowed to respond to thrown objects" : 0
+		33554432: "Mid-range attacks (halfway between normal + long-range)" : 0
+	]
+	  
+	// Inputs
+	input EnableManhackToss(void) : "Enables manhack toss (which had been disabled by the spawnflag)"
+	input SetPoliceGoal(string) : "Causes the NPC to police the area defined by an ai_goal_police"
+	input ActivateBaton(void) : "Set the baton to active"
+
+	// Outputs
+	output OnStunnedPlayer(void) : "Fires when the player is hit by a stunstick by this NPC."
+	output OnCupCopped(void) : "Fires if the player hits me with the cupcop can. ONLY use for x360 achievement."
+]
+
+@NPCClass base(BaseCombine) studio("models/Combine_Soldier.mdl") = npc_combine_s : "Combine Soldier"
+[
+	input Assault(string) : "Start an assault. Parameter passed in should be the name of the rally point."
+
+	model(choices) : "Model" : "models/combine_soldier.mdl" : "Regular Soldier" = 
+	[
+		"models/combine_soldier.mdl" : "Regular Soldier"
+		"models/combine_soldier_prisonguard.mdl" : "Nova Prospekt Soldier"
+		"models/combine_super_soldier.mdl" : "Elite Soldier"
+		"models/humans/marine.mdl" : "Marine"
+		"models/humans/masked_marine.mdl" : "Marine (masked)"
+		"models/humans/marine_02.mdl" : "Marine 02"
+		"models/humans/masked_marine_02.mdl" : "Marine 02 (masked)"
+	]
+
+	tacticalvariant(choices) : "Tactical Variant" : "0" =
+	[
+		"0" : "Normal Tactics"
+		"1" : "Pressure the enemy (Keep advancing)"
+		"2" : "Pressure until within 30ft, then normal"
+	]
+	
+	usemarch(choices) : "Walk Easy" : "0" : "When true, will use a variety of more casual walking animations instead of the standard walk. For use in crowds. WARNING: this animation only has a north component. For use under very special circumstances only." =
+	[
+		"0" : "No"
+		"2" : "Yes"
+	]
+]
+
+
+@NPCClass base(BaseNPC,Parentname, TalkNPC, PlayerCompanion ) studio() = npc_citizen : "Citizen"
+[
+
+	spawnflags(Flags) =
+	[
+		65536 : "Follow player on spawn" : 0
+		131072 : "Medic" : 0
+		262144 : "Random Head" : 1
+		524288 : "Ammo Resupplier" : 0
+		1048576 : "Not Commandable" : 0
+		2097152 : "Don't use Speech Semaphore - OBSOLETE" : 0
+		4194304 : "Random male head" : 0
+		8388608 : "Random female head" : 0
+		16777216 : "Use RenderBox in ActBusies" : 0
+	]
+
+	additionalequipment(choices) : "Weapons" : "0" =
+	[
+		"weapon_smg1" : "SMG1"
+		"weapon_ar2" : "AR2"
+		"weapon_stunstick" : "Stun Stick"
+		"weapon_crowbar" : "Crow Bar"
+		"weapon_shotgun" : "Shotgun"
+		"weapon_beerbottle" : "Beer Bottle"
+		"weapon_beerbottle2" : "Beer Bottle2"
+		"weapon_rpg" : "RPG"
+		"0"  : "Nothing"
+	]
+
+	ammosupply(choices) : "Ammo to Resupply (if spawnflag set)" : "SMG1" =
+	[
+		"Pistol" : "Pistol"
+		"SMG1" : "SMG1"
+		"SMG1_Grenade" : "SMG1 Grenade"
+		"AR2" : "AR2"
+		"Buckshot" : "Shotgun"
+		"RPG_Round" : "RPG"
+		"Grenade" : "Grenade"
+		"XBowBolt" : "Crossbow Bolt"
+	]
+	ammoamount(integer) : "Amount of ammo to give" : 1
+
+	citizentype(choices) : "Type" : "Default" =
+	[
+		0 : "Default"	 
+		1 : "Downtrodden"
+		2 : "Refugee"
+		3 : "Rebel"
+		4 : "Unique"
+	]
+
+	expressiontype(choices) : "Expression Type" : "Random" =
+	[
+		0 : "Random"
+		1 : "Scared"
+		2 : "Normal"
+		3 : "Angry"
+	]
+
+	//!!!BUGBUG - don't ship with these names
+	//!!!FIXME - don't ship with these names
+	model(choices) : "Model" : "models/humans/group01/male_01.mdl" =
+	[
+		"models/humans/group01/male_01.mdl" : "Male 1"
+		"models/humans/group01/male_02.mdl" : "Male 2"
+		"models/humans/group01/male_03.mdl" : "Male 3"
+		"models/humans/group01/male_04.mdl" : "Male 4"
+		"models/humans/group01/male_05.mdl" : "Male 5"
+		"models/humans/group01/male_06.mdl" : "Male 6"
+		"models/humans/group01/male_07.mdl" : "Male 7"
+		"models/humans/group01/male_08.mdl" : "Male 8"
+		"models/humans/group01/male_09.mdl" : "Male 9"
+		"models/humans/group01/female_01.mdl" : "Female 1"
+		"models/humans/group01/female_02.mdl" : "Female 2"
+		"models/humans/group01/female_03.mdl" : "Female 3"
+		"models/humans/group01/female_04.mdl" : "Female 4"
+		"models/humans/group01/female_06.mdl" : "Female 5"
+		"models/humans/group01/female_07.mdl" : "Female 6"
+		"models/humans/male_cheaple.mdl" : "Cheaple Male 1"
+		"models/humans/guard.mdl" : "Guard"
+		"models/humans/marine.mdl" : "Marine"
+		"models/odessa.mdl" : "Odessa. DO NOT USE."
+	]
+
+	ExpressionOverride(string) : "Facial expression override"
+
+	notifynavfailblocked(choices) : "Fire output when Nav is blocked?" : 0 =
+	[
+		0 : "No"
+		1 : "Yes"
+	]
+
+	neverleaveplayersquad(choices) : "Permanent squad member?" : 0 : "A permanent squad member cannot leave the player's squad unless killed or explicity removed by entity I/O. Only use this if you're sure you want to override the default AI." =
+	[
+		0 : "No. This is default behavior."
+		1 : "Yes, stay in squad until death."
+	]
+
+	denycommandconcept(string) : "Deny command speech concept" : "" : "If you want your citizens to squad with the player but not obey commands the player gives to move the squad, put a concept here and this citizen will speak the concept instead of obeying the order."
+
+    //Inputs
+	input RemoveFromPlayerSquad(void) : "Remove from player squad, instantly."
+	input SetExpressionOverride(string) : "Set facial expression override"
+
+	input StartPatrolling(void) : "Patrol whenever I'm idle or alert."
+	input StopPatrolling(void) : "Stop patrolling when I'm idle or alert."
+	input SetCommandable(void) : "Make a previously uncommandable citizen commandable"
+	input SetMedicOn(void) : "Set the medic flag on. Will not change the model or skin of the citizen."
+	input SetMedicOff(void) : "Set the medic flag off. Will not change the model or skin of the citizen."
+	input SetAmmoResupplierOn(void) : "Set the ammo-resupplier flag on. Will not change the model or skin of the citizen."
+	input SetAmmoResupplierOff(void) : "Set the ammo-resupplier flag off. Will not change the model or skin of the citizen."
+
+	// Outputs
+	output OnJoinedPlayerSquad(void) : "Fires when joins player squad"
+	output OnLeftPlayerSquad(void) : "Fires when leaves player squad"
+	output OnFollowOrder(void) : "Fires when ordered to follow player"
+	output OnStationOrder(void) : "Fires when ordered to a location by player"
+	output OnPlayerUse(void) : "Fires when a player +USEs the citizen"
+	output OnNavFailBlocked(void) : "Fires when this Citizen's movement fails because he/she is blocked."
+]
 
 //-------------------------------------------------------------------------
 //

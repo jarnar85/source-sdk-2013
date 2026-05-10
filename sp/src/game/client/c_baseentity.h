@@ -216,7 +216,15 @@ public:
 	virtual bool					KeyValue( const char *szKeyName, const char *szValue );
 	virtual bool					KeyValue( const char *szKeyName, float flValue );
 	virtual bool					KeyValue( const char *szKeyName, const Vector &vecValue );
-	virtual bool					GetKeyValue( const char *szKeyName, char *szValue, int iMaxLen );
+	virtual bool					GetKeyValue(const char *szKeyName, char *szValue, int iMaxLen);
+
+
+
+	static Class_T GetClassStr(const char* sFaction);
+	static PlayerClass_T GetPlayerClass(const char* sClass);
+	static const char* GetPlayerClass(PlayerClass_T tClass);
+	static Job_T GetJob(const char* sJob);
+	static const char* GetJob(Job_T tJob);
 
 		// Entities block Line-Of-Sight for NPCs by default.
 	// Set this to false if you want to change this behavior.
@@ -1331,6 +1339,10 @@ public:
 
 	// was pev->speed
 	float							m_flSpeed;
+
+	// Special chracter data
+	int		m_iCity;
+	int		m_iSquad;
 
 	// Special points
 	int		m_iRation;

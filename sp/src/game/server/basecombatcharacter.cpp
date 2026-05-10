@@ -98,7 +98,14 @@ BEGIN_DATADESC( CBaseCombatCharacter )
 	DEFINE_INPUT( m_impactEnergyScale, FIELD_FLOAT, "physdamagescale" ),
 	DEFINE_FIELD( m_CurrentWeaponProficiency, FIELD_INTEGER),
 
-	DEFINE_UTLVECTOR( m_Relationship,	FIELD_EMBEDDED),
+	DEFINE_UTLVECTOR(m_Relationship, FIELD_EMBEDDED),
+	DEFINE_FIELD(m_Class, FIELD_INTEGER),
+	DEFINE_FIELD(m_Faction, FIELD_INTEGER),
+	DEFINE_FIELD(m_Job, FIELD_INTEGER),
+
+	DEFINE_FIELD(m_iCity, FIELD_INTEGER),
+	DEFINE_FIELD(m_iSquad, FIELD_INTEGER),
+
 
 	DEFINE_AUTO_ARRAY( m_iAmmo, FIELD_INTEGER ),
 	DEFINE_AUTO_ARRAY( m_hMyWeapons, FIELD_EHANDLE ),
@@ -191,17 +198,24 @@ END_SEND_TABLE();
 //-----------------------------------------------------------------------------
 IMPLEMENT_SERVERCLASS_ST(CBaseCombatCharacter, DT_BaseCombatCharacter)
 #ifdef GLOWS_ENABLE
-	SendPropBool( SENDINFO( m_bGlowEnabled ) ),
+SendPropBool( SENDINFO( m_bGlowEnabled ) ),
 #endif // GLOWS_ENABLE
-	// Data that only gets sent to the local player.
-	SendPropDataTable( "bcc_localdata", 0, &REFERENCE_SEND_TABLE(DT_BCCLocalPlayerExclusive), SendProxy_SendBaseCombatCharacterLocalDataTable ),
+// Data that only gets sent to the local player.
+SendPropDataTable("bcc_localdata", 0, &REFERENCE_SEND_TABLE(DT_BCCLocalPlayerExclusive), SendProxy_SendBaseCombatCharacterLocalDataTable),
 
-	SendPropEHandle( SENDINFO( m_hActiveWeapon ) ),
-	SendPropArray3( SENDINFO_ARRAY3(m_hMyWeapons), SendPropEHandle( SENDINFO_ARRAY(m_hMyWeapons) ) ),
+SendPropEHandle(SENDINFO(m_hActiveWeapon)),
+SendPropArray3(SENDINFO_ARRAY3(m_hMyWeapons), SendPropEHandle(SENDINFO_ARRAY(m_hMyWeapons))),
 
 #ifdef INVASION_DLL
-	SendPropInt( SENDINFO(m_iPowerups), MAX_POWERUPS, SPROP_UNSIGNED ), 
+SendPropInt( SENDINFO(m_iPowerups), MAX_POWERUPS, SPROP_UNSIGNED ), 
 #endif
+
+SendPropInt(SENDINFO(m_Class), NUM_PC_CLASSES, SPROP_UNSIGNED),
+SendPropInt(SENDINFO(m_Faction), NUM_AI_CLASSES, SPROP_UNSIGNED),
+SendPropInt(SENDINFO(m_Job), NUM_JOB_CLASSES, SPROP_UNSIGNED),
+
+SendPropInt(SENDINFO(m_iCity), 7, SPROP_UNSIGNED),
+SendPropInt(SENDINFO(m_iSquad), 7, SPROP_UNSIGNED)
 
 END_SEND_TABLE()
 
@@ -691,6 +705,9 @@ CBaseCombatCharacter::CBaseCombatCharacter( void )
 	m_HackedGunPos.Init();
 #endif
 
+	m_iCity = 17;
+	RandomSquad();
+
 	// Zero the damage accumulator.
 	m_flDamageAccumulator = 0.0f;
 
@@ -754,6 +771,8 @@ void CBaseCombatCharacter::Spawn( void )
 	{
 		m_damageHistory[t].team = TEAM_INVALID;
 	}
+
+	SetCity(17);
 
 	// not standing on a nav area yet
 	ClearLastKnownArea();
@@ -2851,6 +2870,169 @@ int CBaseCombatCharacter::IRelationPriority( CBaseEntity *pTarget )
 //-----------------------------------------------------------------------------
 
 
+const char * CBaseCombatCharacter::GetCitizenId(uint id, uint city, uint unit, bool current) {
+
+	PlayerClass_T tClass;
+	Job_T tJob;
+	if (current) {
+		tClass = m_Class;
+		tJob = m_Job;
+	}
+	else {
+		tClass = p_Class;
+		tJob = p_Job;
+	}
+
+	 
+	char citIdPrefix[8];
+	char* citId = new char[64];
+
+	if (city > 99)
+		city = city % 100;
+
+	if (city > 0)
+		Q_snprintf(citIdPrefix, 8, "314-C%02i", city);
+	else
+		V_snprintf(citIdPrefix, 8, "UU");
+
+	const char* pFormatDSI = "%s.%s-%s-%d.%d";
+	const char* pFormatDI = "%s.%s-%s.%d";
+	const char* pFormatSI = "%s.%s-%d.%d";
+
+	if (id == 0)
+		id = rand();
+
+	switch (tClass)
+	{
+		case PLC_NONE:
+		case PLC_SOLDIER:
+		case PLC_POLICE:
+			V_snprintf(citId, 64, "%d", id);
+			break;
+		case PLC_PLAYER:
+		case PLC_CITIZEN:
+		case PLC_REBEL:
+		case PLC_REBEL_MEDIC:
+			V_snprintf(citId, 64, "%s.CIV.%d", citIdPrefix, id);
+			break;
+		case PLC_MEDIC:
+		case PLC_SCIENTIST:
+		case PLC_COMBINE_WORKER:
+			if (tJob == JOB_MEDIC || tJob == JOB_SURGEON) // Medical Staff or Surgeons
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "MED", id);
+			else if (tJob == JOB_ENGINEER || tJob == JOB_SCIENTIST)
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "IND", id);
+			else
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "ECO", id);
+
+			break;
+		case PLC_COMBINE_WORKER_HAZMAT:
+			V_snprintf(citId, 64, pFormatSI, citIdPrefix, "CHS", unit, id);
+			break;
+		case PLC_CREMATOR:
+			V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CHS", "VICE", id);
+			break;
+		case PLC_METROPOLICE:
+			if (m_iMemRepl >= 1) { // Elite Officers
+				if (tJob == JOB_SNIPER || tJob == JOB_PILOT)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "WRAITH", unit, id);
+				else if (tJob == JOB_GUARD)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "SPEAR", unit, id);
+				else if (tJob == JOB_MEDIC) // Senior Corpsman
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "APEX", unit, id);
+				else if (tJob == JOB_ENGINEER) // Engineering Sergeant
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "ANVIL", unit, id);
+				else // if (tJob == JOB_OFFICER)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "BLADE", unit, id);
+			}
+			else { // Normal Officers
+				if (tJob == JOB_SNIPER || tJob == JOB_PILOT)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "GHOST", unit, id);
+				else if (tJob == JOB_GUARD)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "RAZOR", unit, id);
+				else if (tJob == JOB_MEDIC) // Corpsman
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "HELIX", unit, id);
+				else if (tJob == JOB_ENGINEER) // Technical Officer
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "GRID", unit, id);
+				else // if (tJob == JOB_OFFICER)
+					V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "MCP", "UNION", unit, id);
+			}
+			break;
+		case PLC_METROPOLICE_RECRUIT:
+			V_snprintf(citId, 64, pFormatDI, citIdPrefix, "MCP", "RCT", id);
+			break;
+		//Basic Footsoldiers
+		case PLC_CONSCRIPT:
+			V_snprintf(citId, 64, pFormatSI, citIdPrefix, "CON", unit, id);
+			break;
+		case PLC_COMBINE_GRUNT:
+			if (tJob == JOB_ENGINEER) // Field technician
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "SIERRA", unit, id);
+			else
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "ECHO", unit, id);
+			break;
+		// Regular Soldiers
+		case PLC_COMBINE_CHARGER:
+			V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "WALLHAMMER", unit, id);
+			break;
+		case PLC_COMBINE_HEAVY:
+		case PLC_COMBINE_SOLDIER:
+			if (tJob == JOB_BRUTE)
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "MACE", unit, id);
+			else if (tJob == JOB_ENGINEER) // Combat Engineer
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "SENTINEL", unit, id);
+			else if (tJob == JOB_HEAVY)
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "HAMMER", unit, id);
+			else if (tJob == JOB_PILOT)
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "HURRICANE", unit, id);
+			else if (tJob == JOB_SNIPER)
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "RANGER", unit, id);
+			else
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "UNION", unit, id);
+
+			break;
+		case PLC_COMBINE_MEDIC:
+			if (tJob == JOB_SURGEON)// Biomechanical Specialist
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "NEXUS", unit, id);
+			else // Combat Medic
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "XRAY", unit, id);
+			break;
+		case PLC_COMBINE_SUPPRESSOR:
+			V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "APF", unit, id);
+			break;
+		// Prison Guards
+		case PLC_COMBINE_PRISONGUARD:
+			V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "NOVA", unit, id);
+			break;
+		case PLC_COMBINE_PRISONHEAVY:
+			V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "WARDEN", unit, id);
+			break;
+		// Officers
+		case PLC_COMBINE_ELITE:
+			if (tJob == JOB_ENGINEER) // Synth Engineer
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "FORGE", unit, id);
+			else if (tJob == JOB_SCIENTIST) // Synth Scientists
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "VECTOR", unit, id);
+			else
+				V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "KING", unit, id);
+			break;
+		case PLC_COMBINE_ORDINAL:
+			V_snprintf(citId, 64, pFormatDSI, citIdPrefix, "OTA", "ORDINAL", unit, id);
+			break;
+		// Slaves
+		case PLC_STALKER:
+			V_snprintf(citId, 64, "%s.VICE.%d", citIdPrefix, id);
+			break;
+	}
+
+	return citId;
+}
+
+const char * CBaseCombatCharacter::GetCitizenId(uint id, bool current) {
+	 return GetCitizenId(id, m_iCity.m_Value, m_iSquad.m_Value, current);
+}
+
+
 PlayerClass_T CBaseCombatCharacter::GetClass(bool current)
 {
 	if (current)
@@ -2858,7 +3040,6 @@ PlayerClass_T CBaseCombatCharacter::GetClass(bool current)
 	
 	return p_Class;
 }
-
 
 void CBaseCombatCharacter::SetClass(PlayerClass_T cls)
 {
@@ -2871,6 +3052,7 @@ void CBaseCombatCharacter::ResetClass()
 	m_Class = p_Class;
 }
 
+
 Class_T CBaseCombatCharacter::GetFaction(bool current)
 {
 	if (current)
@@ -2878,7 +3060,6 @@ Class_T CBaseCombatCharacter::GetFaction(bool current)
 
 	return p_Faction;
 }
-
 
 void CBaseCombatCharacter::SetFaction(Class_T faction)
 {
@@ -2891,6 +3072,7 @@ void CBaseCombatCharacter::ResetFaction()
 	m_Faction = p_Faction;
 }
 
+
 Job_T CBaseCombatCharacter::GetJob(bool current)
 {
 	if (current)
@@ -2898,7 +3080,6 @@ Job_T CBaseCombatCharacter::GetJob(bool current)
 
 	return p_Job;
 }
-
 
 void CBaseCombatCharacter::SetJob(Job_T job)
 {
@@ -2909,6 +3090,23 @@ void CBaseCombatCharacter::SetJob(Job_T job)
 void CBaseCombatCharacter::ResetJob()
 {
 	m_Job = p_Job;
+}
+
+
+void CBaseCombatCharacter::SetCity(uint city_id) {
+	 if (city_id > 99)
+		  city_id = city_id % 100;
+
+	 m_iCity = city_id;
+}
+
+
+void CBaseCombatCharacter::RandomSquad(){
+	 m_iSquad = RandomInt(10, 99);
+}
+
+void CBaseCombatCharacter::SetSquad(uint squad_id){
+	 m_iSquad = squad_id;
 }
 
 //-----------------------------------------------------------------------------

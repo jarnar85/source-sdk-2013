@@ -138,6 +138,9 @@ public:
 	CBaseEntity		*FindUseEntity( void );
 	virtual bool	IsUseableEntity( CBaseEntity *pEntity, unsigned int requiredCaps );
 
+	// roleplay
+	const char *		GetCitizenId(uint  city_id = 0, uint  squad = 0);
+
 	// Data handlers
 	virtual bool	IsPlayer( void ) const { return true; }
 	virtual int		GetHealth() const { return m_iHealth; }
@@ -417,21 +420,24 @@ public:
 	// Data common to all other players, too
 	CPlayerState			pl;
 
-	// default values for players
+	// player data
 	PlayerClass_T		m_Class;
 	Class_T				m_Faction;
-	Job_T				m_Job;
+	Job_T				  	m_Job;
+
+	uint		m_iCity;
+	uint		m_iSquad;
 
 
-	string_t	m_szCitizenID;
-	int	m_iCitizenID;
+	string_t		m_szCitizenID;
+	int			m_iCitizenID;
 
 	// Player FOV values
-	int						m_iFOV;				// field of view
-	int						m_iFOVStart;		// starting value of the FOV changing over time (client only)
+	int					m_iFOV;				// field of view
+	int				   m_iFOVStart;		// starting value of the FOV changing over time (client only)
 	float					m_flFOVTime;		// starting time of the FOV zoom
-	int						m_iDefaultFOV;		// default FOV if no other zooms are occurring
-	EHANDLE					m_hZoomOwner;		// This is a pointer to the entity currently controlling the player's zoom
+	int					m_iDefaultFOV;		// default FOV if no other zooms are occurring
+	EHANDLE				m_hZoomOwner;		// This is a pointer to the entity currently controlling the player's zoom
 												// Only this entity can change the zoom state once it has ownership
 
 	// For weapon prediction
@@ -439,17 +445,17 @@ public:
 	
 	char			m_szAnimExtension[32];
 
-	int				m_afButtonLast;
-	int				m_afButtonPressed;
-	int				m_afButtonReleased;
+	int			m_afButtonLast;
+	int			m_afButtonPressed;
+	int			m_afButtonReleased;
 
-	int				m_nButtons;
+	int			m_nButtons;
 
 	CUserCmd		*m_pCurrentCommand;
 
 	// Movement constraints
-	EHANDLE			m_hConstraintEntity;
-	Vector			m_vecConstraintCenter;
+	EHANDLE		m_hConstraintEntity;
+	Vector		m_vecConstraintCenter;
 	float			m_flConstraintRadius;
 	float			m_flConstraintWidth;
 	float			m_flConstraintSpeedFactor;
@@ -457,18 +463,17 @@ public:
 	// General player data
 protected:
 
-	void				CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
-	void				CalcVehicleView(IClientVehicle *pVehicle, Vector& eyeOrigin, QAngle& eyeAngles,
-							float& zNear, float& zFar, float& fov );
+	void				  	CalcPlayerView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
+	void				  	CalcVehicleView(IClientVehicle *pVehicle, Vector& eyeOrigin, QAngle& eyeAngles, float& zNear, float& zFar, float& fov );
 	virtual void		CalcObserverView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
 	virtual Vector		GetChaseCamViewOffset( CBaseEntity *target );
-	void				CalcChaseCamView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
+	void			 		CalcChaseCamView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
 	virtual void		CalcInEyeCamView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
 
 	virtual float		GetDeathCamInterpolationTime();
 
 	virtual void		CalcDeathCamView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
-	void				CalcRoamingView(Vector& eyeOrigin, QAngle& eyeAngles, float& fov);
+	void			 		CalcRoamingView(Vector& eyeOrigin, QAngle& eyeAngles, float& fov);
 	virtual void		CalcFreezeCamView( Vector& eyeOrigin, QAngle& eyeAngles, float& fov );
 
 	// Check to see if we're in vgui input mode...
@@ -488,10 +493,10 @@ protected:
 	bool			JustEnteredVehicle();
 
 // DATA
-	int				m_iObserverMode;	// if in spectator mode != 0
-	EHANDLE			m_hObserverTarget;	// current observer target
+	int			m_iObserverMode;	// if in spectator mode != 0
+	EHANDLE		m_hObserverTarget;	// current observer target
 	float			m_flObserverChaseDistance; // last distance to observer traget
-	Vector			m_vecFreezeFrameStart;
+	Vector		m_vecFreezeFrameStart;
 	float			m_flFreezeFrameStartTime;	// Time at which we entered freeze frame observer mode
 	float			m_flFreezeFrameDistance;
 	bool			m_bWasFreezeFraming; 
@@ -519,17 +524,17 @@ private:
 	CInterpolatedVar< Vector >	m_iv_vecViewOffset;
 
 	// Not replicated
-	Vector			m_vecWaterJumpVel;
+	Vector		m_vecWaterJumpVel;
 	float			m_flWaterJumpTime;  // used to be called teleport_time
-	int				m_nImpulse;
+	int			m_nImpulse;
 
 	float			m_flSwimSoundTime;
-	Vector			m_vecLadderNormal;
+	Vector		m_vecLadderNormal;
 	
 	QAngle			m_vecOldViewAngles;
 
 	bool			m_bWasFrozen;
-	int				m_flPhysics;
+	int			m_flPhysics;
 
 	int				m_nTickBase;
 	int				m_nFinalPredictedTick;

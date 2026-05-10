@@ -1047,7 +1047,7 @@ void CBasePlayer::SelectItem( const char *pstr, int iSubType )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-ConVar sv_debug_player_use( "sv_debug_player_use", "0", FCVAR_REPLICATED, "Visualizes +use logic. Green cross=trace success, Red cross=trace too far, Green box=radius success" );
+ConVar sv_debug_player_use( "sv_debug_player_use", "0", FCVAR_SERVER, "Visualizes +use logic. Green cross=trace success, Red cross=trace too far, Green box=radius success" );
 float IntervalDistance( float x, float x0, float x1 )
 {
 	// swap so x0 < x1
@@ -1398,7 +1398,7 @@ void CBasePlayer::PlayerUse ( void )
 #endif
 }
 
-ConVar	sv_suppress_viewpunch( "sv_suppress_viewpunch", "0", FCVAR_REPLICATED | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
+ConVar	sv_suppress_viewpunch( "sv_suppress_viewpunch", "0", FCVAR_SERVER | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -1439,7 +1439,7 @@ void CBasePlayer::ViewPunchReset( float tolerance )
 
 #endif
 
-static ConVar smoothstairs( "smoothstairs", "1", FCVAR_REPLICATED, "Smooth player eye z coordinate when traversing stairs." );
+static ConVar smoothstairs( "smoothstairs", "1", FCVAR_SERVER, "Smooth player eye z coordinate when traversing stairs." );
 
 //-----------------------------------------------------------------------------
 // Handle view smoothing when going up or down stairs

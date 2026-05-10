@@ -18,7 +18,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar player_squad_transient_commands( "player_squad_transient_commands", "1", FCVAR_REPLICATED );
+ConVar player_squad_transient_commands( "player_squad_transient_commands", "1", FCVAR_SERVER );
 
 //-----------------------------------------------------------------------------
 // Purpose: Shows the sprint power bar

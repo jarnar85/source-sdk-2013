@@ -5195,7 +5195,6 @@ void CNPC_MetroPolice::PrecriminalUse( CBaseEntity *pActivator, CBaseEntity *pCa
 	}
 }
 
-#ifdef EZ
 //-----------------------------------------------------------------------------
 // Purpose: Return the glow attributes for a given index
 //-----------------------------------------------------------------------------
@@ -5229,7 +5228,6 @@ int CNPC_MetroPolice::GetNumGlows()
 		return 1;
 	return 0;
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //

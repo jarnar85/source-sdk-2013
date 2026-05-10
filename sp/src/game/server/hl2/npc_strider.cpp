@@ -107,13 +107,14 @@ ConVar sk_strider_num_missiles3("sk_strider_num_missiles3", "7");
 
 ConVar strider_missile_suppress_dist( "strider_missile_suppress_dist", "240" );
 ConVar strider_missile_suppress_time( "strider_missile_suppress_time", "3" );
+ConVar sk_strider_heavy_attack_dmg("sk_strider_heavy_attack_dmg", "200", FCVAR_SERVER);
 
 
 //-----------------------------------------------------------------------------
 
 float GetCurrentGravity( void );
 
-extern void CreateConcussiveBlast( const Vector &origin, const Vector &surfaceNormal, CBaseEntity *pOwner, float magnitude );
+extern void CreateConcussiveBlast( const Vector &origin, const Vector &surfaceNormal, CBaseEntity *pOwner, float magnitude, float damage);
 
 //-----------------------------------------------------------------------------
 
@@ -1905,7 +1906,7 @@ void CNPC_Strider::HandleAnimEvent( animevent_t *pEvent )
 		}
 		break;
 	case STRIDER_AE_CANNONHIT:
-		CreateConcussiveBlast( m_blastHit, m_blastNormal, this, 2.5 );
+		CreateConcussiveBlast( m_blastHit, m_blastNormal, this, 2.5, sk_strider_heavy_attack_dmg.GetFloat() );
 		break;
 
 	case STRIDER_AE_SHOOTMINIGUN:
@@ -4104,7 +4105,7 @@ void CNPC_Strider::CannonHitThink()
 	{
 		bool fAlive = pCannonTarget->IsAlive();
 
-		CreateConcussiveBlast( m_blastHit, m_blastNormal, this, 2.5 );
+		CreateConcussiveBlast( m_blastHit, m_blastNormal, this, 2.5, sk_strider_heavy_attack_dmg.GetFloat());
 
 		// If the target was alive, check to make sure it is now dead. If not,
 		// Kill it and warn the designer.

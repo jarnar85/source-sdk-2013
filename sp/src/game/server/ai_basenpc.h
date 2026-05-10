@@ -1643,8 +1643,10 @@ public:
 	
 	CAI_Squad *			GetSquad()						{ return m_pSquad; 		}
 	virtual void		SetSquad( CAI_Squad *pSquad );
-	void				AddToSquad( string_t name );
+	void CAI_BaseNPC::SetSquad(uint squad_id);
+	void				AddToSquad(string_t name);
 	void				RemoveFromSquad();
+	void				RemoveSquad();
 	void				CheckSquad();
 	void				SetSquadName( string_t name )	{ m_SquadName = name; 	}
 	bool				IsInSquad() const				{ return m_pSquad != NULL; }
@@ -2157,7 +2159,6 @@ public:
 
 	void				StartPingEffect( void ) { m_flTimePingEffect = gpGlobals->curtime + 2.0f; DispatchUpdateTransmitState(); }
 
-#ifdef EZ
 protected:
 	// Glow Effects
 	CSprite		* m_pEyeGlow;
@@ -2168,7 +2169,6 @@ protected:
 	virtual void		  SetGlowSpritePtr(int i, CSprite * sprite);
 	virtual EyeGlow_t	* GetEyeGlowData(int i) { return NULL; };
 	virtual int			GetNumGlows() { return 1; };
-#endif
 };
 
 
@@ -2290,7 +2290,7 @@ inline void CAI_BaseNPC::ResetScheduleCurTaskIndex()
 //-----------------------------------------------------------------------------
 inline bool CAI_BaseNPC::CrouchIsDesired( void ) const
 {
-	return ( (CapabilitiesGet() & bits_CAP_DUCK) && (m_bCrouchDesired | m_bForceCrouch) );
+	return ( (CapabilitiesGet() & bits_CAP_DUCK) && (m_bCrouchDesired || m_bForceCrouch) );
 }
 
 //-----------------------------------------------------------------------------

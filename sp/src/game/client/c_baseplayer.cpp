@@ -100,13 +100,13 @@ static ConVar	cl_smoothtime	(
 	 );
 
 #ifdef CSTRIKE_DLL
-ConVar	spec_freeze_time( "spec_freeze_time", "5.0", FCVAR_CHEAT | FCVAR_REPLICATED, "Time spend frozen in observer freeze cam." );
-ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.7", FCVAR_CHEAT | FCVAR_REPLICATED, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
+ConVar	spec_freeze_time( "spec_freeze_time", "5.0", FCVAR_CHEAT | FCVAR_SERVER, "Time spend frozen in observer freeze cam." );
+ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.7", FCVAR_CHEAT | FCVAR_SERVER, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
 ConVar	spec_freeze_distance_min( "spec_freeze_distance_min", "80", FCVAR_CHEAT, "Minimum random distance from the target to stop when framing them in observer freeze cam." );
 ConVar	spec_freeze_distance_max( "spec_freeze_distance_max", "90", FCVAR_CHEAT, "Maximum random distance from the target to stop when framing them in observer freeze cam." );
 #else
-ConVar	spec_freeze_time( "spec_freeze_time", "4.0", FCVAR_CHEAT | FCVAR_REPLICATED, "Time spend frozen in observer freeze cam." );
-ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FCVAR_REPLICATED, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
+ConVar	spec_freeze_time( "spec_freeze_time", "4.0", FCVAR_CHEAT | FCVAR_SERVER, "Time spend frozen in observer freeze cam." );
+ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FCVAR_SERVER, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
 ConVar	spec_freeze_distance_min( "spec_freeze_distance_min", "96", FCVAR_CHEAT, "Minimum random distance from the target to stop when framing them in observer freeze cam." );
 ConVar	spec_freeze_distance_max( "spec_freeze_distance_max", "200", FCVAR_CHEAT, "Maximum random distance from the target to stop when framing them in observer freeze cam." );
 #endif
@@ -277,9 +277,6 @@ END_RECV_TABLE()
 		RecvPropEHandle( RECVINFO(m_hUseEntity) ),
 
 		RecvPropInt(RECVINFO(m_iHealth)),
-		// RecvPropDataTable(RECVINFO(m_Class)),
-		// RecvPropDataTable(RECVINFO(m_Faction)),
-		// RecvPropDataTable(RECVINFO(m_Job)),
 		RecvPropInt		(RECVINFO(m_lifeState)),
 
 		RecvPropInt		(RECVINFO(m_iBonusProgress)),
@@ -295,6 +292,16 @@ END_RECV_TABLE()
 		
 
 		RecvPropString( RECVINFO(m_szLastPlaceName) ),
+
+
+		RecvPropInt(RECVINFO(m_iRation)),
+		RecvPropInt(RECVINFO(m_iRank)),
+		RecvPropInt(RECVINFO(m_iCredits)),
+		RecvPropInt(RECVINFO(m_iMemRepl)),
+		RecvPropInt(RECVINFO(m_iMemory)),
+
+		RecvPropInt(RECVINFO(m_iCity)),
+		RecvPropInt(RECVINFO(m_iSquad)),
 
 #if defined USES_ECON_ITEMS
 		RecvPropUtlVector( RECVINFO_UTLVECTOR( m_hMyWearables ), MAX_WEARABLES_SENT_FROM_SERVER,	RecvPropEHandle(NULL, 0, 0) ),
@@ -396,11 +403,6 @@ BEGIN_PREDICTION_DATA( C_BasePlayer )
 	DEFINE_PRED_ARRAY( m_hViewModel, FIELD_EHANDLE, MAX_VIEWMODELS, FTYPEDESC_INSENDTABLE ),
 
 	DEFINE_FIELD( m_surfaceFriction, FIELD_FLOAT ),
-
-
-	// DEFINE_CUSTOM_FIELD(m_Class, func),
-	// DEFINE_CUSTOM_FIELD(m_Faction, func),
-	// DEFINE_CUSTOM_FIELD(m_Job, func),
 
 
 END_PREDICTION_DATA()
@@ -740,7 +742,7 @@ void C_BasePlayer::FireGameEvent( IGameEvent *event )
 //-----------------------------------------------------------------------------
 const char * C_BasePlayer::GetPlayerName()
 {
-	return g_PR ? g_PR->GetPlayerName( entindex() ) : "";
+	 return g_PR ? g_PR->GetPlayerName(entindex()) : "";
 }
 
 //-----------------------------------------------------------------------------
@@ -1067,12 +1069,12 @@ void C_BasePlayer::DetermineVguiInputMode( CUserCmd *pCmd )
 
 	// If we're in vgui mode *and* we're holding down mouse buttons,
 	// stay in vgui mode even if we're outside the screen bounds
-	if (m_pCurrentVguiScreen.Get() && (pCmd->buttons & (IN_ATTACK | IN_ATTACK2)))
+	if (m_pCurrentVguiScreen.Get() && (pCmd->buttons & (IN_ATTACK | IN_ATTACK2 | IN_VALIDVGUIINPUT)))
 	{
 		SetVGuiScreenButtonState( m_pCurrentVguiScreen.Get(), pCmd->buttons );
 
 		// Kill all attack inputs if we're in vgui screen mode
-		pCmd->buttons &= ~(IN_ATTACK | IN_ATTACK2);
+		pCmd->buttons &= ~(IN_ATTACK | IN_ATTACK2 | IN_VALIDVGUIINPUT);
 		return;
 	}
 
@@ -1223,6 +1225,65 @@ bool C_BasePlayer::CreateMove(float flInputSampleTime, CUserCmd *pCmd)
 {
 	return CreateMove(flInputSampleTime, pCmd, false);
 }
+
+//================================================================================
+// RolePlay
+//================================================================================
+const char * C_BasePlayer::GetCitizenId(uint city_id, uint squad) {
+
+	if (city_id != 0 && city_id != m_iCity)
+	{
+		if (city_id > 99)
+			city_id = city_id % 100;
+
+		m_iCity = city_id;
+	}
+
+	if (squad != 0 && squad != m_iSquad)
+	{
+		m_iSquad = squad;
+	}
+	else if (squad == 0 && m_iSquad == 0)
+	{
+		m_iSquad = RandomInt(10, 99);
+	}
+
+
+	 const char * pName = GetPlayerName();
+
+	 uint id = 0;
+
+	 const int charToValue[26] = {
+		  1, 2, 3, 4, 5, 6, 7, 8, 9, // 'a' to 'i'
+		  1, 2, 3, 4, 5, 6, 7, 8, 9, // 'j' to 'r'
+		  1, 2, 3, 4, 5, 6, 7, 8     // 's' to 'z'
+	 };
+
+	 size_t nameLength = strlen(pName);
+	 size_t startIndex = (nameLength > 8) ? nameLength - 8 : 0;
+
+	 for (size_t i = startIndex; i < nameLength; i++) {
+		  if (i > 0)
+				id *= 10;
+
+
+		  char c = tolower(pName[i]); // Convert to lowercase for case-insensitivity
+
+		  if (isalpha(c)) {
+				id += charToValue[c - 'a'];
+		  }
+		  else if (isdigit(c)) {
+				id += (c - '0');
+		  }
+	 }
+
+	 // make big IDs replicably smaller (cut of at ~ 16.7M)
+	 id = id & 0x00FFFFFF;
+
+	 return C_BaseCombatCharacter::GetCitizenId(id);
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Purpose: Player has changed to a new team

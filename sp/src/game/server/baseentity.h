@@ -270,8 +270,8 @@ public:
 	DECLARE_DATADESC();
 	
 	// memory handling
-    void *operator new( size_t stAllocateBlock );
-    void *operator new( size_t stAllocateBlock, int nBlockUse, const char *pFileName, int nLine );
+   void *operator new( size_t stAllocateBlock );
+   void *operator new( size_t stAllocateBlock, int nBlockUse, const char *pFileName, int nLine );
 	void operator delete( void *pMem );
 	void operator delete( void *pMem, int nBlockUse, const char *pFileName, int nLine ) { operator delete(pMem); }
 
@@ -280,7 +280,9 @@ public:
 
 	static Class_T GetClassStr(const char* sFaction);
 	static PlayerClass_T GetPlayerClass(const char* sClass);
+	static const char* GetPlayerClass(PlayerClass_T tClass);
 	static Job_T GetJob(const char* sJob);
+	static const char* GetJob(Job_T tJob);
 
 	Class_T GetClassFaction(PlayerClass_T nClass);
 	int GetClassHealth(PlayerClass_T nClass);
@@ -1043,7 +1045,10 @@ public:
 	CNetworkVarForDerived(int, m_iMemRepl);
 	CNetworkVarForDerived(int, m_iMemory);
 
-	CNetworkHandleForDerived(Job_T, m_job);
+	CNetworkVarForDerived(int, m_iCity);
+	CNetworkVarForDerived(int, m_iSquad);
+
+	CNetworkHandleForDerived(Job_T, m_Job);
 	CNetworkVarForDerived(char, m_gender);
 
 	CNetworkVarForDerived( char, m_lifeState );

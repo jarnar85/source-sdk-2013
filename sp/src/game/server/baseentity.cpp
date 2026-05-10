@@ -2948,19 +2948,34 @@ Class_T CBaseEntity::GetClassStr(const char* sClass)
 
 PlayerClass_T CBaseEntity::GetPlayerClass(const char* sClass)
 {
-	auto it = PlayerClass_M.begin();
+	 auto it = PlayerClass_M.begin();
 
-	while (it != PlayerClass_M.end())
-	{
-		const char* tClass = it->first;
-		
-		if (strcmp(sClass, tClass) == 0)
-			return it->second;
+	 while (it != PlayerClass_M.end())
+	 {
+		  const char* tClass = it->first;
 
-		it++;
-	}
+		  if (strcmp(sClass, tClass) == 0)
+				return it->second;
 
-	return PLC_NONE;
+		  it++;
+	 }
+
+	 return PLC_NONE;
+}
+
+const char* CBaseEntity::GetPlayerClass(PlayerClass_T tClass)
+{
+	 auto it = PlayerClass_M.begin();
+
+	 while (it != PlayerClass_M.end())
+	 {
+		  if (tClass == it->second)
+				return it->first;
+
+		  it++;
+	 }
+
+	 return "NA";
 }
 
 Job_T CBaseEntity::GetJob(const char* sJob)
@@ -2976,6 +2991,21 @@ Job_T CBaseEntity::GetJob(const char* sJob)
 	}
 
 	return JOB_NONE;
+}
+
+const char* CBaseEntity::GetJob(Job_T tJob)
+{
+	 auto it = Job_M.begin();
+
+	 while (it != Job_M.end())
+	 {
+		  if (tJob == it->second)
+				return it->first;
+
+		  it++;
+	 }
+
+	 return "NA";
 }
 
 Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
@@ -2999,6 +3029,7 @@ Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
 	case PLC_CONSCRIPT:
 		return CLASS_CONSCRIPT;
 	case PLC_METROPOLICE:
+	case PLC_METROPOLICE_RECRUIT:
 		return CLASS_METROPOLICE;
 	case PLC_COMBINE_CHARGER:
 	case PLC_COMBINE_ELITE:
@@ -3012,6 +3043,7 @@ Class_T CBaseEntity::GetClassFaction(PlayerClass_T nClass)
 	case PLC_COMBINE_SUPPRESSOR:
 	case PLC_COMBINE_WORKER:
 	case PLC_COMBINE_WORKER_HAZMAT:
+	case PLC_CREMATOR:
 		return CLASS_COMBINE;
 	case PLC_STALKER:
 		return CLASS_STALKER;
@@ -3033,6 +3065,7 @@ int CBaseEntity::GetClassHealth(PlayerClass_T nClass)
 	{
 	case PLC_MANHACK:
 			return 25;
+
 	case PLC_CITIZEN:
 	case PLC_COMBINE_WORKER:
 	case PLC_COMBINE_WORKER_HAZMAT:
@@ -3040,33 +3073,44 @@ int CBaseEntity::GetClassHealth(PlayerClass_T nClass)
 	case PLC_REBEL_MEDIC:
 	case PLC_MEDIC:
 	case PLC_METROPOLICE:
+	case PLC_METROPOLICE_RECRUIT:
 	case PLC_POLICE:
 	case PLC_SCIENTIST:
-		return 40;
+		return 40; // Non-combat and minimally trained combat roles
+
+	case PLC_CONSCRIPT:
+	case PLC_SOLDIER:
+		return 50; // Standard human combat roles with basic training
+
+	case PLC_CREMATOR:
+	case PLC_STALKER:
 	case PLC_COMBINE_GRUNT:
-	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_MEDIC:
 	case PLC_COMBINE_PRISONGUARD:
+	case PLC_ZOMBIE:
+	case PLC_ZOMBIE_FAST:
+		return 60; // Modified or lightly augmented roles
+
+	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_PRISONHEAVY:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_COMBINE_SUPPRESSOR:
-	case PLC_CONSCRIPT:
-	case PLC_SOLDIER:
-	case PLC_STALKER:
-	case PLC_ZOMBIE:
-	case PLC_ZOMBIE_FAST:
-		return 50;
+		return 80; // Heavily modified transhuman units
+
 	case PLC_COMBINE_ELITE:
 	case PLC_COMBINE_ORDINAL:
-		return 70;
 	case PLC_PLAYER:
+		return 100; // Elite transhuman units with extensive modifications
+
 	case PLC_ZOMBIE_COMBINE:
 	case PLC_COMBINE_CHARGER:
-		return 100;
+		return 120; // Special transhuman units, and very heavily modified units
+
 	case PLC_ZOMBIE_POISON:
-		return 175;
+		return 175;// Special enemy types with high resilience
+
 	default:
-		return 100;
+		return 100; // Default value for unspecified classes
 	}
 }
 
@@ -3088,6 +3132,7 @@ const char* CBaseEntity::GetClassModel(PlayerClass_T nClass)
 		return "models/humans/group03m/male_04.mdl";
 	case PLC_POLICE:
 	case PLC_METROPOLICE:
+	case PLC_METROPOLICE_RECRUIT:
 		return "models/police.mdl";
 		// return "models/cultist/hl_a/metropolice/metrocop.mdl";
 	case PLC_COMBINE_PRISONGUARD:
@@ -3103,6 +3148,7 @@ const char* CBaseEntity::GetClassModel(PlayerClass_T nClass)
 	case PLC_COMBINE_SUPPRESSOR:
 	case PLC_COMBINE_WORKER:
 	case PLC_COMBINE_WORKER_HAZMAT:
+	case PLC_CREMATOR:
 		return "models/combine_soldier.mdl";
 		// return "models/soldier_stripped.mdl";
 

@@ -57,6 +57,143 @@ int	C_BaseCombatCharacter::GetAmmoCount( char *szName ) const
 }
 */
 
+
+
+
+//-----------------------------------------------------------------------------
+// Character stats
+//-----------------------------------------------------------------------------
+
+
+const char * C_BaseCombatCharacter::GetCitizenId(uint id, uint city, uint unit) {
+
+	 char citIdPrefix[8];
+	 char* citId = new char[64];
+
+	 if (city > 99)
+		  city = city % 100;
+
+	 if (city > 0)
+		  Q_snprintf(citIdPrefix, 8, "314-C%02i", city);
+	 else
+		  V_snprintf(citIdPrefix, 8, "UU");
+
+	 const char* pFormatDUI = "%s.%s-%s-%d.%d";
+	 const char* pFormatDI = "%s.%s-%s.%d";
+	 const char* pFormatUI = "%s.%s-%d.%d";
+
+	 if (id == 0)
+		  id = rand();
+
+	 switch (m_Class)
+	 {
+	 case PLC_NONE:
+	 case PLC_SOLDIER:
+	 case PLC_POLICE:
+		  V_snprintf(citId, 64, "%d", id);
+		  break;
+	 case PLC_PLAYER:
+	 case PLC_CITIZEN:
+	 case PLC_REBEL:
+	 case PLC_REBEL_MEDIC:
+		  V_snprintf(citId, 64, "%s.CIV.%d", citIdPrefix, id);
+		  break;
+	 case PLC_MEDIC:
+	 case PLC_SCIENTIST:
+	 case PLC_COMBINE_WORKER:
+		  if (m_Job == JOB_MEDIC)
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "MED", id);
+		  else if (m_Job == JOB_ENGINEER || m_Job == JOB_SCIENTIST)
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "IND", id);
+		  else
+				V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CWU", "ECO", id);
+
+		  break;
+	 case PLC_COMBINE_WORKER_HAZMAT:
+		  V_snprintf(citId, 64, pFormatUI, citIdPrefix, "CHS", unit, id);
+		  break;
+	 case PLC_CREMATOR:
+		  V_snprintf(citId, 64, pFormatDI, citIdPrefix, "CHS", "VICE", id);
+		  break;
+	 case PLC_METROPOLICE:
+		  if (m_iMemRepl > 0){
+				if (m_Job == JOB_SNIPER || m_Job == JOB_PILOT)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "WRAITH", unit, id);
+				else if (m_Job == JOB_GUARD)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "SPEAR", unit, id);
+				else if (m_Job == JOB_MEDIC)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "APEX", unit, id);
+				else if (m_Job == JOB_ENGINEER)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "ANVIL", unit, id);
+				else // if (m_Job == JOB_OFFICER)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "BLADE", unit, id);
+		  }
+		  else
+		  {
+				if (m_Job == JOB_SNIPER || m_Job == JOB_PILOT)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "GHOST", unit, id);
+				else if (m_Job == JOB_GUARD)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "RAZOR", unit, id);
+				else if (m_Job == JOB_MEDIC)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "HELIX", unit, id);
+				else if (m_Job == JOB_ENGINEER)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "GRID", unit, id);
+				else // if (m_Job == JOB_OFFICER)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "MCP", "UNION", unit, id);
+		  }
+		  break;
+	 case PLC_METROPOLICE_RECRUIT:
+		 V_snprintf(citId, 64, pFormatDI, citIdPrefix, "MCP", "RCT", id);
+		 break;
+	 case PLC_CONSCRIPT:
+		  V_snprintf(citId, 64, pFormatUI, citIdPrefix, "CON", unit, id);
+		  break;
+	 case PLC_COMBINE_CHARGER:
+	 case PLC_COMBINE_ELITE:
+	 case PLC_COMBINE_GRUNT:
+	 case PLC_COMBINE_HEAVY:
+	 case PLC_COMBINE_MEDIC:
+	 case PLC_COMBINE_ORDINAL:
+	 case PLC_COMBINE_PRISONHEAVY:
+	 case PLC_COMBINE_SOLDIER:
+	 case PLC_COMBINE_SUPPRESSOR:
+		  if (m_Job == JOB_SNIPER)
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "RANGER", unit, id);
+		  else if (m_Job == JOB_PILOT)
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "HURRICANE", unit, id);
+		  else if (m_Job == JOB_MEDIC)
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "XRAY", unit, id);
+		  else if (m_Job == JOB_BRUTE)
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "MACE", unit, id);
+		  else if (m_Job == JOB_HEAVY)
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "HAMMER", unit, id);
+		  else if (m_Job == JOB_SOLDIER) {
+				if (m_iMemRepl > 2)
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "KING", unit, id);
+				else
+					 V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "PHANTOM", unit, id);
+		  }
+		  else
+				V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "ECHO", unit, id);
+
+		  break;
+	 case PLC_STALKER:
+		  V_snprintf(citId, 64, "%s.VICE.%d", citIdPrefix, id);
+		  break;
+	 case PLC_COMBINE_PRISONGUARD:
+		  V_snprintf(citId, 64, pFormatDUI, citIdPrefix, "OTA", "NOVA", unit, id);
+		  break;
+	 }
+
+	 return citId;
+}
+
+const char * C_BaseCombatCharacter::GetCitizenId(uint id) {
+	 return GetCitizenId(id, m_iCity, m_iSquad);
+}
+
+
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -166,6 +303,12 @@ BEGIN_RECV_TABLE(C_BaseCombatCharacter, DT_BaseCombatCharacter)
 #ifdef INVASION_CLIENT_DLL
 	RecvPropInt( RECVINFO( m_iPowerups ) ),
 #endif
+	RecvPropInt(RECVINFO(m_Class)),
+	RecvPropInt(RECVINFO(m_Faction)),
+	RecvPropInt(RECVINFO(m_Job)),
+
+	RecvPropInt(RECVINFO(m_iCity)),
+	RecvPropInt(RECVINFO(m_iSquad)),
 
 END_RECV_TABLE()
 
@@ -175,6 +318,9 @@ BEGIN_PREDICTION_DATA( C_BaseCombatCharacter )
 	DEFINE_PRED_ARRAY( m_iAmmo, FIELD_INTEGER,  MAX_AMMO_TYPES, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_flNextAttack, FIELD_FLOAT, FTYPEDESC_INSENDTABLE ),
 	DEFINE_PRED_FIELD( m_hActiveWeapon, FIELD_EHANDLE, FTYPEDESC_INSENDTABLE ),
-	DEFINE_PRED_ARRAY( m_hMyWeapons, FIELD_EHANDLE, MAX_WEAPONS, FTYPEDESC_INSENDTABLE ),
+	DEFINE_PRED_ARRAY(m_hMyWeapons, FIELD_EHANDLE, MAX_WEAPONS, FTYPEDESC_INSENDTABLE),
+	DEFINE_PRED_FIELD(m_iCity, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+	DEFINE_PRED_FIELD(m_iSquad, FIELD_INTEGER, FTYPEDESC_INSENDTABLE),
+
 
 END_PREDICTION_DATA()

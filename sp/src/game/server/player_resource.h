@@ -34,8 +34,11 @@ protected:
 	CNetworkArray( int, m_iDeaths, MAX_PLAYERS+1 );
 	CNetworkArray( int, m_bConnected, MAX_PLAYERS+1 );
 	CNetworkArray( int, m_iTeam, MAX_PLAYERS+1 );
-	CNetworkArray( int, m_bAlive, MAX_PLAYERS+1 );
-	CNetworkArray( int, m_iHealth, MAX_PLAYERS+1 );
+	CNetworkArray(int, m_bAlive, MAX_PLAYERS + 1);
+	CNetworkArray(int, m_iHealth, MAX_PLAYERS + 1);
+
+	CNetworkArray(int, m_iCity, MAX_PLAYERS + 1);
+	CNetworkArray(int, m_iSquad, MAX_PLAYERS + 1);
 	
 	CNetworkArray(int, p_Class, MAX_PLAYERS + 1);
 	CNetworkArray(int, p_Faction, MAX_PLAYERS + 1);

@@ -41,10 +41,13 @@ public:
 	bool		Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
 	
 	void		Drop( const Vector &vecVelocity );
-	void		ImpactEffect( trace_t &traceHit );
+	// void		ImpactEffect( trace_t &traceHit );
 	void		SecondaryAttack( void )	{}
 	void		SetStunState( bool state );
 	bool		GetStunState( void );
+
+	virtual void	ItemPostFrame(void);
+
 	void		Operator_HandleAnimEvent( animevent_t *pEvent, CBaseCombatCharacter *pOperator );
 	
 	float		GetDamageForActivity( Activity hitActivity );
@@ -53,7 +56,9 @@ public:
 
 private:
 
+	bool	InSwing(void); // Moved from client to be shared with client and server
 	CNetworkVar( bool, m_bActive );
+	CNetworkVar(bool, m_bInSwing);
 };
 
 #endif // WEAPON_STUNSTICK_H

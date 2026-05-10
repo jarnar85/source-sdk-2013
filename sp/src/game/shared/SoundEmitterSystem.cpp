@@ -37,9 +37,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar sv_soundemitter_trace( "sv_soundemitter_trace", "0", FCVAR_REPLICATED, "Show all EmitSound calls including their symbolic name and the actual wave file they resolved to\n" );
+static ConVar sv_soundemitter_trace( "sv_soundemitter_trace", "0", FCVAR_SERVER, "Show all EmitSound calls including their symbolic name and the actual wave file they resolved to\n" );
 #ifdef STAGING_ONLY
-static ConVar sv_snd_filter( "sv_snd_filter", "", FCVAR_REPLICATED, "Filters out all sounds not containing the specified string before being emitted\n" );
+static ConVar sv_snd_filter( "sv_snd_filter", "", FCVAR_SERVER, "Filters out all sounds not containing the specified string before being emitted\n" );
 #endif // STAGING_ONLY
 
 extern ISoundEmitterSystemBase *soundemitterbase;

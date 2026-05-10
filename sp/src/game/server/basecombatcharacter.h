@@ -484,31 +484,41 @@ protected:
 public:
 	static int					GetInteractionID();	// Returns the next interaction #
 
-	PlayerClass_T	GetClass(bool current=true);
-	void			SetClass(PlayerClass_T cls);
-	void			ResetClass();
-	Class_T			GetFaction(bool current=true);
-	void			SetFaction(Class_T faction);
-	void			ResetFaction();
-	Job_T			GetJob(bool current=true);
-	void			SetJob(Job_T job);
-	void			ResetJob();
+	PlayerClass_T	  GetClass(bool current=true);
+	void				  SetClass(PlayerClass_T cls);
+	void				  ResetClass();
+
+	Class_T	GetFaction(bool current=true);
+	void		SetFaction(Class_T faction);
+	void		ResetFaction();
+
+	Job_T		GetJob(bool current=true);
+	void		SetJob(Job_T job);
+	void		ResetJob();
+
+	uint GetCity() { return m_iCity; }
+	void SetCity(uint city_id);
+
+	uint GetSquad() { return m_iSquad; }
+	void RandomSquad();
+	void SetSquad(uint squad_id);
+
+	const char* GetCitizenId(uint id = 0, uint  city = 0, uint  squad = 0, bool current = true);
+	const char* GetCitizenId(uint id = 0, bool current = true);
 
 protected:
 	// Visibility-related stuff
 	bool ComputeLOS( const Vector &vecEyePosition, const Vector &vecTarget ) const;
 
 	// -------------------
-	// character abilities
+	// character data
 	// -------------------
-	PlayerClass_T		m_Class;
-	Class_T				m_Faction;
-	Job_T				m_Job;
-
+	
 	// previous values
-	PlayerClass_T		p_Class = PLC_NONE;
-	Class_T				p_Faction = CLASS_NONE;
-	Job_T				p_Job = JOB_NONE;
+	PlayerClass_T	  p_Class	   = PLC_NONE;
+	Class_T			  p_Faction	   = CLASS_NONE;
+	Job_T				  p_Job		   = JOB_NONE;
+
 private:
 	// For weapon strip
 	void ThrowDirForWeaponStrip( CBaseCombatWeapon *pWeapon, const Vector &vecForward, Vector *pVecThrowDir );
@@ -520,9 +530,9 @@ private:
 	static Relationship_t**		m_DefaultRelationship;
 
 	// attack/damage
-	int					m_LastHitGroup;			// the last body region that took damage
-	float				m_flDamageAccumulator;	// so very small amounts of damage do not get lost.
-	int					m_iDamageCount;			// # of times NPC has been damaged.  used for tracking 1-shot kills.
+	int		m_LastHitGroup;			// the last body region that took damage
+	float		m_flDamageAccumulator;	// so very small amounts of damage do not get lost.
+	int		m_iDamageCount;			// # of times NPC has been damaged.  used for tracking 1-shot kills.
 	
 	// Weapon proficiency gets calculated each time an NPC changes his weapon, and then
 	// cached off as the CurrentWeaponProficiency.
@@ -534,15 +544,21 @@ private:
 	CUtlVector<Relationship_t>		m_Relationship;						// Array of relationships
 
 protected:
+	friend class CCleanupDefaultRelationShips;
+
 	// shared ammo slots
 	CNetworkArrayForDerived( int, m_iAmmo, MAX_AMMO_SLOTS );
 
 	// Usable character items 
 	CNetworkArray( CBaseCombatWeaponHandle, m_hMyWeapons, MAX_WEAPONS );
+	CNetworkHandle(CBaseCombatWeapon, m_hActiveWeapon);
 
-	CNetworkHandle( CBaseCombatWeapon, m_hActiveWeapon );
+	CNetworkVar(PlayerClass_T, m_Class);
+	CNetworkVar(Class_T, m_Faction);
+	CNetworkVar(Job_T, m_Job);
 
-	friend class CCleanupDefaultRelationShips;
+	CNetworkVar(uint, m_iCity);
+	CNetworkVar(uint, m_iSquad);
 	
 	IntervalTimer m_aliveTimer;
 

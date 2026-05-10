@@ -75,9 +75,7 @@ public:
 	float			GetDefaultNavGoalTolerance();
 
 	void			UpdateOnRemove( void );
-#ifndef EZ
 	void			KillSprites( float flDelay );
-#endif
 
 	void			OnStateChange( NPC_STATE OldState, NPC_STATE NewState );
 
@@ -122,14 +120,12 @@ public:
 
 	virtual void			BladesInit();
 	virtual void			SoundInit( void );
-#ifdef EZ
 	virtual CSprite		* GetGlowSpritePtr(int i);
 	virtual void		  SetGlowSpritePtr(int i, CSprite * sprite);
 	virtual EyeGlow_t	* GetEyeGlowData(int i);
 	virtual int			  GetNumGlows() { return 2; };
-#else
 	virtual void			StartEye( void );
-#endif
+
 
 	bool			HandleInteraction(int interactionType, void* data, CBaseCombatCharacter* sourceEnt);
 
@@ -264,9 +260,7 @@ private:
 	bool			m_bIgnoreClipbrushes;
 
 	float			m_flBladeSpeed;
-#ifndef EZ // Declared in BaseNPC
 	CSprite			*m_pEyeGlow;
-#endif
 	CSprite			*m_pLightGlow;
 	
 	CHandle<SmokeTrail>	m_hSmokeTrail;

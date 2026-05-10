@@ -24,7 +24,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar soundpatch_captionlength( "soundpatch_captionlength", "2.0", FCVAR_REPLICATED, "How long looping soundpatch captions should display for." );
+static ConVar soundpatch_captionlength( "soundpatch_captionlength", "2.0", FCVAR_SERVER, "How long looping soundpatch captions should display for." );
 
 // Envelope
 // This is a class that controls a ramp for a sound (pitch / volume / etc)

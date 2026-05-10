@@ -1835,7 +1835,7 @@ inline bool PoseIsAllZeros(
 //			the triangle is a right triangle, and the diagonal is between elements [0] and [2]
 //-----------------------------------------------------------------------------
 
-static ConVar anim_3wayblend( "anim_3wayblend", "1", FCVAR_REPLICATED, "Toggle the 3-way animation blending code." );
+static ConVar anim_3wayblend( "anim_3wayblend", "1", FCVAR_SERVER, "Toggle the 3-way animation blending code." );
 
 void Calc3WayBlendIndices( int i0, int i1, float s0, float s1, const mstudioseqdesc_t &seqdesc, int *pAnimIndices, float *pWeight )
 {
@@ -4778,7 +4778,7 @@ void DoQuatInterpBone(
  * but to turn it back on, uncomment this and the section in DoAimAtBone() below
  *
 
-static ConVar aim_constraint( "aim_constraint", "1", FCVAR_REPLICATED, "Toggle <aimconstraint> Helper Bones" );
+static ConVar aim_constraint( "aim_constraint", "1", FCVAR_SERVER, "Toggle <aimconstraint> Helper Bones" );
 
 */
 

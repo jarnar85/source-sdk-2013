@@ -67,7 +67,7 @@ int groundlinksallocated = 0;
 #define DEF_THINK_LIMIT "10"
 #endif
 
-ConVar think_limit( "think_limit", DEF_THINK_LIMIT, FCVAR_REPLICATED, "Maximum think time in milliseconds, warning is printed if this is exceeded." );
+ConVar think_limit( "think_limit", DEF_THINK_LIMIT, FCVAR_SERVER, "Maximum think time in milliseconds, warning is printed if this is exceeded." );
 #ifndef CLIENT_DLL
 ConVar debug_touchlinks( "debug_touchlinks", "0", 0, "Spew touch link activity" );
 #define DebugTouchlinks() debug_touchlinks.GetBool()

@@ -37,6 +37,7 @@ PRECACHE_REGISTER( vgui_screen );
 //-----------------------------------------------------------------------------
 BEGIN_DATADESC( CVGuiScreen )
 
+	DEFINE_OUTPUT(AnyOutput, "AnyOutput"),
 	DEFINE_OUTPUT(Output1, "Output1"),
 	DEFINE_OUTPUT(Output2, "Output2"),
 	DEFINE_OUTPUT(Output3, "Output3"),
@@ -56,15 +57,15 @@ BEGIN_DATADESC( CVGuiScreen )
 
 	DEFINE_CUSTOM_FIELD( m_nPanelName, &g_VguiScreenStringOps ),
 	DEFINE_FIELD( m_nAttachmentIndex, FIELD_INTEGER ),
-//	DEFINE_FIELD( m_nOverlayMaterial, FIELD_INTEGER ),
-	DEFINE_FIELD( m_fScreenFlags, FIELD_INTEGER ),
+	//	DEFINE_FIELD( m_nOverlayMaterial, FIELD_INTEGER ),
+	DEFINE_FIELD(m_fScreenFlags, FIELD_INTEGER),
 	DEFINE_KEYFIELD( m_flWidth, FIELD_FLOAT, "width" ),
 	DEFINE_KEYFIELD( m_flHeight, FIELD_FLOAT, "height" ),
 	DEFINE_KEYFIELD( m_strOverlayMaterial, FIELD_STRING, "overlaymaterial" ),
 	DEFINE_FIELD( m_hPlayerOwner, FIELD_EHANDLE ),
 
-	DEFINE_INPUTFUNC( FIELD_VOID, "SetActive", InputSetActive ),
-	DEFINE_INPUTFUNC( FIELD_VOID, "SetInactive", InputSetInactive ),
+	DEFINE_INPUTFUNC(FIELD_VOID, "SetActive", InputSetActive ),
+	DEFINE_INPUTFUNC(FIELD_VOID, "SetInactive", InputSetInactive),
 
 END_DATADESC()
 
@@ -271,12 +272,14 @@ void CVGuiScreen::InputSetActive( inputdata_t &inputdata )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CVGuiScreen::InputSetInactive( inputdata_t &inputdata )
+void CVGuiScreen::InputSetInactive(inputdata_t& inputdata)
 {
-	SetActive( false );
+	SetActive(false);
 }
 
-bool CVGuiScreen::IsVisibleOnlyToTeammates() const 
+
+
+bool CVGuiScreen::IsVisibleOnlyToTeammates() const
 { 
 	return (m_fScreenFlags & VGUI_SCREEN_VISIBLE_TO_TEAMMATES) != 0; 
 }

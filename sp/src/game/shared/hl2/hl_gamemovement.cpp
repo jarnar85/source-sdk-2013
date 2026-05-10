@@ -12,10 +12,10 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static ConVar sv_autoladderdismount( "sv_autoladderdismount", "1", FCVAR_REPLICATED, "Automatically dismount from ladders when you reach the end (don't have to +USE)." );
-static ConVar sv_ladderautomountdot( "sv_ladderautomountdot", "0.4", FCVAR_REPLICATED, "When auto-mounting a ladder by looking up its axis, this is the tolerance for looking now directly along the ladder axis." );
+static ConVar sv_autoladderdismount( "sv_autoladderdismount", "1", FCVAR_SERVER, "Automatically dismount from ladders when you reach the end (don't have to +USE)." );
+static ConVar sv_ladderautomountdot( "sv_ladderautomountdot", "0.4", FCVAR_SERVER, "When auto-mounting a ladder by looking up its axis, this is the tolerance for looking now directly along the ladder axis." );
 
-static ConVar sv_ladder_useonly( "sv_ladder_useonly", "0", FCVAR_REPLICATED, "If set, ladders can only be mounted by pressing +USE" );
+static ConVar sv_ladder_useonly( "sv_ladder_useonly", "0", FCVAR_SERVER, "If set, ladders can only be mounted by pressing +USE" );
 
 #define USE_DISMOUNT_SPEED 100
 

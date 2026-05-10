@@ -1093,7 +1093,65 @@ void CC_Player_Set_Class(const CCommand &args)
 	}
 
 }
-static ConCommand npc_class("player_setclass", CC_Player_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+static ConCommand npc_setclass("player_setclass", CC_Player_Set_Class, "Set the class of the player.\n\tArguments:   	{class_name}", FCVAR_CHEAT);
+
+void CC_Player_Class(const CCommand &args)
+{
+	 CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	 if (pPlayer)
+	 {
+		  PlayerClass_T tClass = pPlayer->GetClass(TRUE);
+
+		  const char* sClass = CBaseEntity::GetPlayerClass(tClass);
+
+		  Msg("Player class is: %s\n", sClass);
+	 }
+}
+static ConCommand npc_class("player_class", CC_Player_Class, "Show the class of the player.\n", FCVAR_CHEAT);
+
+void CC_Player_Set_Job(const CCommand &args)
+{
+	 CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	 if (pPlayer)
+	 {
+		  char sJob[32];
+
+		  Q_snprintf(sJob, 32, "JOB_%s", args[1]);
+		  for (size_t i = 0; i<strlen(sJob); i++){
+				sJob[i] = toupper(sJob[i]);
+		  }
+
+		  Job_T nJob = CBaseEntity::GetJob(static_cast<const char*>(sJob));
+
+		  // change player relation to NPCs
+		  if (nJob == JOB_NONE)
+		  {
+				Msg("Invalid job: %s\n", args[1]);
+		  }
+		  else
+		  {
+				Msg("Set job ... ");
+				pPlayer->SetJob(nJob);
+				Msg(sJob);
+		  }
+	 }
+
+}
+static ConCommand npc_setjob("player_setjob", CC_Player_Set_Job, "Set the job of the player.\n\tArguments:   	{job_name}", FCVAR_CHEAT);
+
+void CC_Player_Job(const CCommand &args)
+{
+	 CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	 if (pPlayer)
+	 {
+		  Job_T tJob = pPlayer->GetJob(TRUE);
+
+		  const char* sJob = CBaseEntity::GetJob(tJob);
+
+		  Msg("Player job is: %s\n", sJob);
+	 }
+}
+static ConCommand npc_job("player_job", CC_Player_Job, "Show the job of the player.\n", FCVAR_CHEAT);
 
 void CC_Player_Gender(const CCommand &args)
 {
@@ -1137,7 +1195,12 @@ void CC_Player_Rank(const CCommand &args)
 	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
 	if (pPlayer)
 	{
-		Msg("%s has %d Ration Units, %d Rank Points, %d Credits and undergone %d Memory replacements\n%d%% of your original Memory is left.", pPlayer->GetPlayerName(), pPlayer->m_iRation, pPlayer->m_iRank, pPlayer->m_iCredits, pPlayer->m_iMemRepl, pPlayer->m_iMemory);
+		 const char * pName = pPlayer->GetPlayerName();
+
+		 // const char * citId = pPlayer->GetCitizenId(8, 15);
+		 const char * citId = pPlayer->GetCitizenId();
+		 
+		 Msg("%s(%s) has %d Ration Units, %d Rank Points, %d Credits and undergone %d Memory replacements\n%d%% of your original Memory is left.", pName, citId, pPlayer->m_iRation, pPlayer->m_iRank, pPlayer->m_iCredits, pPlayer->m_iMemRepl, pPlayer->m_iMemory);
 	}
 	else
 	{

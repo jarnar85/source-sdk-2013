@@ -202,15 +202,128 @@ void CAI_BaseNPC::SetSquad( CAI_Squad *pSquad )
 	m_pSquad = pSquad; 	
 }
 
+void CAI_BaseNPC::SetSquad(uint squad_id) {
+	 CBaseCombatCharacter::SetSquad(squad_id);
+	 
+	 char* squadName = new char[64];
+
+
+	 const char* pFormatCJS = "%s-%s-%d";
+	 const char* pFormatCS = "%s-%d";
+	 const char* pFormatS = "%d";
+
+	 switch (m_Class)
+	 {
+	 case PLC_NONE:
+	 case PLC_SOLDIER:
+	 case PLC_POLICE:
+	 case PLC_PLAYER:
+	 case PLC_CITIZEN:
+	 case PLC_REBEL:
+	 case PLC_REBEL_MEDIC:
+	 case PLC_MEDIC:
+	 case PLC_SCIENTIST:
+	 case PLC_COMBINE_WORKER:
+		  V_snprintf(squadName, 64, pFormatS, squad_id);
+		  break;
+	 case PLC_COMBINE_WORKER_HAZMAT:
+		  V_snprintf(squadName, 64, pFormatCS, "CHS", squad_id);
+		  break;
+	 case PLC_CREMATOR:
+		  V_snprintf(squadName, 64, pFormatCJS, "CHS", "VICE", squad_id);
+		  break;
+	 case PLC_METROPOLICE:
+		  if (m_iMemRepl > 1){
+				if (m_Job == JOB_SNIPER || m_Job == JOB_PILOT)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "WRAITH", squad_id);
+				else if (m_Job == JOB_GUARD)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "SPEAR", squad_id);
+				else if (m_Job == JOB_MEDIC)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "APEX", squad_id);
+				else if (m_Job == JOB_ENGINEER)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "ANVIL", squad_id);
+				else // if (m_Job == JOB_OFFICER)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "BLADE", squad_id);
+		  }
+		  else
+		  {
+				if (m_Job == JOB_SNIPER || m_Job == JOB_PILOT)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "GHOST", squad_id);
+				else if (m_Job == JOB_GUARD)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "RAZOR", squad_id);
+				else if (m_Job == JOB_MEDIC)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "HELIX", squad_id);
+				else if (m_Job == JOB_ENGINEER)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "GRID", squad_id);
+				else // if (m_Job == JOB_OFFICER)
+					 V_snprintf(squadName, 64, pFormatCJS, "MCP", "UNION", squad_id);
+
+		  }
+		  break;
+	 case PLC_METROPOLICE_RECRUIT:
+		 V_snprintf(squadName, 64, pFormatCJS, "MCP", "RCT", squad_id);
+		 break;
+	 case PLC_CONSCRIPT:
+		  V_snprintf(squadName, 64, pFormatCS, "CON", squad_id);
+		  break;
+	 case PLC_COMBINE_CHARGER:
+	 case PLC_COMBINE_ELITE:
+	 case PLC_COMBINE_GRUNT:
+	 case PLC_COMBINE_HEAVY:
+	 case PLC_COMBINE_MEDIC:
+	 case PLC_COMBINE_ORDINAL:
+	 case PLC_COMBINE_PRISONHEAVY:
+	 case PLC_COMBINE_SOLDIER:
+	 case PLC_COMBINE_SUPPRESSOR:
+		  if (m_Job == JOB_SNIPER)
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "RANGER", squad_id);
+		  else if (m_Job == JOB_PILOT)
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "HURRICANE", squad_id);
+		  else if (m_Job == JOB_MEDIC)
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "XRAY", squad_id);
+		  else if (m_Job == JOB_BRUTE)
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "MACE", squad_id);
+		  else if (m_Job == JOB_HEAVY)
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "HAMMER", squad_id);
+		  else if (m_Job == JOB_SOLDIER) {
+				if (m_iMemRepl > 3)
+					 V_snprintf(squadName, 64, pFormatCJS, "OTA", "KING", squad_id);
+				else
+					 V_snprintf(squadName, 64, pFormatCJS, "OTA", "PHANTOM", squad_id);
+		  }
+		  else
+				V_snprintf(squadName, 64, pFormatCJS, "OTA", "ECHO", squad_id);
+
+		  break;
+	 case PLC_STALKER:
+		  V_snprintf(squadName, 64, pFormatCS, "VICE", squad_id);
+		  break;
+	 case PLC_COMBINE_PRISONGUARD:
+		  V_snprintf(squadName, 64, pFormatCJS, "OTA", "NOVA", squad_id);
+		  break;
+	 }
+
+
+	 AddToSquad(castable_string_t(squadName));
+}
+
 //-----------------------------------------------------------------------------
 
 void CAI_BaseNPC::RemoveFromSquad()
 {
-	if ( m_pSquad )
-	{
-		m_pSquad->RemoveFromSquad( this, false );
-		m_pSquad = NULL;
-	}
+	 if (m_pSquad)
+	 {
+		  m_pSquad->RemoveFromSquad(this, false);
+		  m_pSquad = NULL;
+	 }
+}
+
+void CAI_BaseNPC::RemoveSquad()
+{
+	 if (m_pSquad)
+	 {
+		  m_pSquad = NULL;
+	 }
 }
 
 //-----------------------------------------------------------------------------

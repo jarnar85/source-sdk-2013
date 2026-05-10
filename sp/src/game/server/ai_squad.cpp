@@ -238,7 +238,7 @@ void CAI_Squad::RemoveFromSquad( CAI_BaseNPC *pNPC, bool bDeath )
 		}
 	}
 
-	pNPC->SetSquad(NULL);
+	pNPC->RemoveSquad();
 	pNPC->SetSquadName( NULL_STRING );
 }
 

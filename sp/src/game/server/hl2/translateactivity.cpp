@@ -102,7 +102,7 @@ ConVar hl2_darkness_flashlight_factor ( "hl2_darkness_flashlight_factor", "1" );
 ConVar player_showpredictedposition( "player_showpredictedposition", "0" );
 ConVar player_showpredictedposition_timestep( "player_showpredictedposition_timestep", "1.0" );
 
-ConVar player_squad_transient_commands( "player_squad_transient_commands", "1", FCVAR_REPLICATED );
+ConVar player_squad_transient_commands( "player_squad_transient_commands", "1", FCVAR_SERVER );
 ConVar player_squad_double_tap_time( "player_squad_double_tap_time", "0.25" );
 #ifdef EZ
 ConVar sv_infinite_aux_power( "sv_infinite_aux_power", "1", FCVAR_CHEAT );
@@ -114,15 +114,15 @@ ConVar autoaim_unlock_target( "autoaim_unlock_target", "0.8666" );
 
 ConVar sv_stickysprint("sv_stickysprint", "0", FCVAR_ARCHIVE | FCVAR_ARCHIVE_XBOX);
 #ifdef EZ2
-ConVar sv_command_viewmodel_anims("sv_command_viewmodel_anims", "1", FCVAR_REPLICATED);
-ConVar sv_disallow_zoom_fire("sv_disallow_zoom_fire", "0", FCVAR_REPLICATED);
+ConVar sv_command_viewmodel_anims("sv_command_viewmodel_anims", "1", FCVAR_SERVER);
+ConVar sv_disallow_zoom_fire("sv_disallow_zoom_fire", "0", FCVAR_SERVER);
 #else
-ConVar sv_command_viewmodel_anims("sv_command_viewmodel_anims", "0", FCVAR_REPLICATED);
-ConVar sv_disallow_zoom_fire("sv_disallow_zoom_fire", "1", FCVAR_REPLICATED);
+ConVar sv_command_viewmodel_anims("sv_command_viewmodel_anims", "0", FCVAR_SERVER);
+ConVar sv_disallow_zoom_fire("sv_disallow_zoom_fire", "1", FCVAR_SERVER);
 #endif
 
 // Maximum suit value
-ConVar sk_suit_maxarmor("sk_suit_maxarmor", "100", FCVAR_REPLICATED);
+ConVar sk_suit_maxarmor("sk_suit_maxarmor", "100", FCVAR_SERVER);
 
 #define	FLASH_DRAIN_TIME	 1.1111	// 100 units / 90 secs
 #define	FLASH_CHARGE_TIME	 50.0f	// 100 units / 2 secs
@@ -887,11 +887,6 @@ void CHL2_Player::PreThink(void)
 	// If we're in VGUI mode we should avoid shooting
 	if (GetVGUIMode())
 	{
-		if (m_nButtons & (IN_ATTACK | IN_ATTACK2))
-		{
-			Warning("attack\n");
-		}
-		
 		m_nButtons &= ~(IN_ATTACK | IN_ATTACK2);
 	}
 
@@ -1628,22 +1623,19 @@ bool CHL2_Player::CommanderExecuteOne( CAI_BaseNPC *pNpc, const commandgoal_t &g
 {
 	if ( goal.m_pGoalEntity )
 	{
-#ifdef EZ
 		// 1upD - If this is a recall order, try to play the 'recall squad' viewmodel animation
 		if ( sv_command_viewmodel_anims.GetBool() && GetActiveWeapon() && goal.m_pGoalEntity == this ) {
 			GetActiveWeapon()->SendViewModelAnim(ACT_VM_COMMAND_RECALL);
 		}
-#endif
+
 		return pNpc->TargetOrder( goal.m_pGoalEntity, Allies, numAllies );
 	}
 	else if ( pNpc->IsInPlayerSquad() )
 	{
-#ifdef EZ
 		// 1upD - Try to play the 'send squad' viewmodel animation
 		if (sv_command_viewmodel_anims.GetBool() && GetActiveWeapon() && goal.m_pGoalEntity == this ) {
 			GetActiveWeapon()->SendViewModelAnim(ACT_VM_COMMAND_SEND);
 		}
-#endif
 		pNpc->MoveOrder( goal.m_vecGoalLocation, Allies, numAllies );
 	}
 	
@@ -2038,40 +2030,55 @@ void CHL2_Player::EquipByClass(PlayerClass_T nClass)
 	case PLC_MANHACK:
 	case PLC_MEDIC:
 	case PLC_SCIENTIST:
-		sk_suit_maxarmor.SetValue(10);
+	case PLC_STALKER:
+		sk_suit_maxarmor.SetValue(10); // Minimal armor for non-combat roles
 			break;
+
 	case PLC_COMBINE_WORKER:
 	case PLC_COMBINE_WORKER_HAZMAT:
+	case PLC_CREMATOR:
+	case PLC_METROPOLICE_RECRUIT:
+		sk_suit_maxarmor.SetValue(30); // Light armor for basic combat roles
+		break;
+
+	case PLC_CONSCRIPT:
 	case PLC_METROPOLICE:
+	case PLC_POLICE:
 	case PLC_REBEL:
 	case PLC_REBEL_MEDIC:
-	case PLC_CONSCRIPT:
 	case PLC_SOLDIER:
-	case PLC_POLICE:
-		sk_suit_maxarmor.SetValue(50);
+		sk_suit_maxarmor.SetValue(50);	// Moderate armor for standard combat roles
 		break;
-	case PLC_COMBINE_CHARGER:
+
 	case PLC_COMBINE_GRUNT:
-	case PLC_COMBINE_HEAVY:
 	case PLC_COMBINE_MEDIC:
-	case PLC_COMBINE_ORDINAL:
 	case PLC_COMBINE_PRISONGUARD:
-	case PLC_COMBINE_PRISONHEAVY:
 	case PLC_COMBINE_SOLDIER:
 	case PLC_PLAYER:
 	case PLC_ZOMBIE_COMBINE:
-		sk_suit_maxarmor.SetValue(100);
+		sk_suit_maxarmor.SetValue(100);	// Higher armor for advanced combat roles
 		break;
+
+	case PLC_COMBINE_CHARGER:
+	case PLC_COMBINE_HEAVY:
+	case PLC_COMBINE_PRISONHEAVY:
+		sk_suit_maxarmor.SetValue(120); // Increased armor for heavy units, still lower than elite units
+		break;
+
+	case PLC_COMBINE_ORDINAL:
+		sk_suit_maxarmor.SetValue(130); // High armor reflecting command role with additional protection
+		break;
+
 	case PLC_COMBINE_ELITE:
 	case PLC_COMBINE_SUPPRESSOR:
-		sk_suit_maxarmor.SetValue(200);
+		sk_suit_maxarmor.SetValue(150); // High armor for elite units
 		break;
-	case PLC_STALKER:
+
 	case PLC_ZOMBIE:
 	case PLC_ZOMBIE_POISON:
 	case PLC_ZOMBIE_FAST:
 	default:
-		sk_suit_maxarmor.SetValue(0);
+		sk_suit_maxarmor.SetValue(0); // No armor for non-protected or non-combat roles
 	}
 
 	BaseClass::EquipByClass(nClass);
@@ -2702,12 +2709,14 @@ void CHL2_Player::Event_KilledOther( CBaseEntity *pVictim, const CTakeDamageInfo
 	switch (m_Class)
 	{
 		case PLC_METROPOLICE:
+		case PLC_METROPOLICE_RECRUIT:
 		case PLC_CONSCRIPT:
 			iCredits *= 2;
 
 			if (iCredits < 1)
 				iCredits = 1;
 			break;
+		case PLC_CREMATOR:
 		case PLC_STALKER:
 			iCredits	 *= 2;
 			break;
@@ -2913,25 +2922,24 @@ int CHL2_Player::GiveAmmo( int nCount, int nAmmoIndex, bool bSuppressSound)
 //-----------------------------------------------------------------------------
 bool CHL2_Player::Weapon_CanUse( CBaseCombatWeapon *pWeapon )
 {
-#ifndef HL2MP
-#ifdef EZ
+	bool canUse = BaseClass::Weapon_CanUse(pWeapon);
+
 	// Allow pickup, if already picked up just apply battery
-	if (pWeapon->ClassMatches("weapon_stunstick") && Weapon_OwnsThisType("weapon_stunstick"))
+	if (canUse && pWeapon->ClassMatches("weapon_stunstick") && Weapon_OwnsThisType("weapon_stunstick"))
 	{
 		if (ApplyBattery(0.5))
 			UTIL_Remove(pWeapon);
 		return false;
 	}
-#else
-	if ( pWeapon->ClassMatches( "weapon_stunstick" ) )
+
+	if (!canUse &&  pWeapon->ClassMatches("weapon_stunstick"))
 	{
 		if ( ApplyBattery( 0.5 ) )
 			UTIL_Remove( pWeapon );
 		return false;
 	}
-#endif
-#endif
-	return BaseClass::Weapon_CanUse( pWeapon );
+
+	return canUse;
 }
 
 //-----------------------------------------------------------------------------

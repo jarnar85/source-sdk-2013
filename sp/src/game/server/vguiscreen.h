@@ -63,8 +63,8 @@ private:
 	void SetAttachmentIndex( int nIndex );
  	void SetPanelName( const char *pPanelName );
 	void InputSetActive( inputdata_t &inputdata );
-	void InputSetInactive( inputdata_t &inputdata );
-
+	void InputSetInactive(inputdata_t& inputdata);
+	
 	string_t m_strOverlayMaterial;
 
 	CNetworkVar( float, m_flWidth ); 
@@ -72,12 +72,13 @@ private:
 	CNetworkVar( int, m_nPanelName );	// The name of the panel 
 	CNetworkVar( int, m_nAttachmentIndex );
 	CNetworkVar( int, m_nOverlayMaterial );
-	CNetworkVar( int, m_fScreenFlags );
+	CNetworkVar( int, m_fScreenFlags);
 	CNetworkVar( EHANDLE, m_hPlayerOwner );
 
 	friend CVGuiScreen *CreateVGuiScreen( const char *pScreenClassname, const char *pScreenType, CBaseEntity *pAttachedTo, CBaseEntity *pOwner, int nAttachmentIndex );
 
 public:
+	COutputEvent AnyOutput;
 	COutputEvent Output1;
 	COutputEvent Output2;
 	COutputEvent Output3;

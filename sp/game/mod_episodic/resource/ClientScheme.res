@@ -282,13 +282,12 @@ Scheme
 				"range" 		"0x0000 0x00FF"
 				"weight"		"0"
 			}
-		}
-		"DefaultVerySmall"
+		}		"DefaultVerySmall"
 		{
 			"1"
 			{
 				"name"		"Verdana"
-				"tall"		"12"
+				"tall"		"6"
 				"weight"	"0"
 				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 				"yres"	"480 599"
@@ -296,7 +295,7 @@ Scheme
 			"2"
 			{
 				"name"		"Verdana"
-				"tall"		"13"
+				"tall"		"6"
 				"weight"	"0"
 				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 				"yres"	"600 767"
@@ -304,7 +303,7 @@ Scheme
 			"3"
 			{
 				"name"		"Verdana"
-				"tall"		"14"
+				"tall"		"7"
 				"weight"	"0"
 				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 				"yres"	"768 1023"
@@ -313,7 +312,7 @@ Scheme
 			"4"
 			{
 				"name"		"Verdana"
-				"tall"		"20"
+				"tall"		"10"
 				"weight"	"0"
 				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 				"yres"	"1024 1199"
@@ -322,7 +321,7 @@ Scheme
 			"5"
 			{
 				"name"		"Verdana"
-				"tall"		"24"
+				"tall"		"12"
 				"weight"	"0"
 				"range"		"0x0000 0x017F" //	Basic Latin, Latin-1 Supplement, Latin Extended-A
 				"yres"	"1200 6000"
@@ -330,15 +329,8 @@ Scheme
 			}
 			"6"
 			{
-				"name"		"Verdana"
-				"tall"		"12"
-				"range" 		"0x0000 0x00FF"
-				"weight"		"0"
-			}
-			"7"
-			{
 				"name"		"Arial"
-				"tall"		"11"
+				"tall"		"5"
 				"range" 		"0x0000 0x00FF"
 				"weight"		"0"
 			}
@@ -694,6 +686,49 @@ Scheme
 				"name"		"Trebuchet MS"
 				"tall"		"18"
 				"weight"	"900"
+			}
+		}
+		"CPscreen"
+		{
+			"1"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"700"
+				"antialias" "1"
+				"yres"	"1 599"
+			}
+			"2"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"700"
+				"antialias" "1"
+				"yres"	"600 767"
+			}
+			"3"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"900"
+				"antialias" "1"
+				"yres"	"768 1023"
+			}
+			"4"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"900"
+				"antialias" "1"
+				"yres"	"1024 1199"
+			}
+			"5"
+			{
+				"name"		"Verdana"
+				"tall"		"8"
+				"weight"	"1000"
+				"antialias" "1"
+				"yres"	"1200 10000"
 			}
 		}
 		CombineScreen

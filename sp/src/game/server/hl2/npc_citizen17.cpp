@@ -61,11 +61,10 @@ ConVar	sk_citizen_heal_ally_min_pct	( "sk_citizen_heal_ally_min_pct",		"0.90");
 ConVar	sk_citizen_player_stare_time	( "sk_citizen_player_stare_time",		"1.0" );
 ConVar  sk_citizen_player_stare_dist	( "sk_citizen_player_stare_dist",		"72" );
 ConVar	sk_citizen_stare_heal_time		( "sk_citizen_stare_heal_time",			"5" );
-#ifdef EZ
+
 ConVar  sk_citizen_ar2_proficiency("sk_citizen_ar2_proficiency", "2"); // Added by 1upD. Skill rating 0 - 4 of how accurate the AR2 should be
 ConVar  sk_citizen_default_proficiency("sk_citizen_default_proficiency", "1"); // Added by 1upD. Skill rating 0 - 4 of how accurate all weapons but the AR2 should be
 ConVar  sk_citizen_default_willpower("sk_citizen_default_willpower", "1"); // Added by 1upD. Amount of mental stress damage citizen can take before panic
-#endif
 
 ConVar	cls_citizen_faction("cls_citizen_faction", "0");
 ConVar	cls_citizen_health("cls_citizen_health", "0");
@@ -104,23 +103,21 @@ ConVar player_squad_autosummon_move_tolerance( "player_squad_autosummon_move_tol
 ConVar player_squad_autosummon_player_tolerance( "player_squad_autosummon_player_tolerance", "10" );
 ConVar player_squad_autosummon_time_after_combat( "player_squad_autosummon_time_after_combat", "8" );
 ConVar player_squad_autosummon_debug( "player_squad_autosummon_debug", "0" );
-#ifdef EZ
+
 ConVar ai_debug_willpower("ai_debug_willpower", "0"); // 1upD - use this to print messages to the log about Citizen willpower
 ConVar ai_debug_rebel_suppressing_fire("ai_debug_rebel_suppressing_fire", "0"); // 1upD - use this to print messages to the log about Citizen willpower
-ConVar ai_min_suppression_distance("ai_min_suppression_distance", "256", FCVAR_REPLICATED); // 1upD - minimum distance from object for an NPC to use suppressing fire
-ConVar ai_suppression_distance_ratio("ai_suppression_distance_ratio", "0.5", FCVAR_REPLICATED); // 1upD - What percent of distance to suppression target must be covered
-ConVar ai_willpower_translate_schedules("ai_willpower_translate_schedules", "1", FCVAR_REPLICATED); // 1upD - Should new EZ2 schedules be used?
-#endif
+ConVar ai_min_suppression_distance("ai_min_suppression_distance", "256", FCVAR_SERVER); // 1upD - minimum distance from object for an NPC to use suppressing fire
+ConVar ai_suppression_distance_ratio("ai_suppression_distance_ratio", "0.5", FCVAR_SERVER); // 1upD - What percent of distance to suppression target must be covered
+ConVar ai_willpower_translate_schedules("ai_willpower_translate_schedules", "1", FCVAR_SERVER); // 1upD - Should new EZ2 schedules be used?
+
 #define ShouldAutosquad() (npc_citizen_auto_player_squad.GetBool())
 
 enum SquadSlot_T
 {
 	SQUAD_SLOT_CITIZEN_RPG1	= LAST_SHARED_SQUADSLOT,
 	SQUAD_SLOT_CITIZEN_RPG2,
-#ifdef EZ
 	SQUAD_SLOT_CITIZEN_INVESTIGATE,
 	SQUAD_SLOT_CITIZEN_ADVANCE
-#endif EZ
 };
 
 const float HEAL_MOVE_RANGE = 30*12;
@@ -360,10 +357,10 @@ BEGIN_DATADESC( CNPC_Citizen )
 	DEFINE_KEYFIELD(	m_bNotifyNavFailBlocked,	FIELD_BOOLEAN, "notifynavfailblocked" ),
 	DEFINE_KEYFIELD(	m_bNeverLeavePlayerSquad,	FIELD_BOOLEAN, "neverleaveplayersquad" ),
 	DEFINE_KEYFIELD(	m_iszDenyCommandConcept,	FIELD_STRING, "denycommandconcept" ),
-#ifdef EZ
+
 	DEFINE_KEYFIELD(	m_iWillpowerModifier,		FIELD_INTEGER, "willpowermodifier"),
 	DEFINE_KEYFIELD(    m_bWillpowerDisabled, FIELD_BOOLEAN, "willpowerdisabled"),
-#endif
+
 	DEFINE_OUTPUT(		m_OnJoinedPlayerSquad,	"OnJoinedPlayerSquad" ),
 	DEFINE_OUTPUT(		m_OnLeftPlayerSquad,	"OnLeftPlayerSquad" ),
 	DEFINE_OUTPUT(		m_OnFollowOrder,		"OnFollowOrder" ),
@@ -542,17 +539,16 @@ void CNPC_Citizen::Spawn()
 		CapabilitiesRemove( bits_CAP_USE_SHOT_REGULATOR );
 		pRPG->StopGuiding();
 	}
-#ifdef EZ
+
 	// TODO Remember to remove this if you implement "enable melee" keyvalue!
 	if (m_spawnEquipment != NULL_STRING)
-		CapabilitiesAdd(bits_CAP_INNATE_MELEE_ATTACK1); 
-	#ifndef EZ2
+		CapabilitiesAdd(bits_CAP_INNATE_MELEE_ATTACK1);
+
 	if (m_Type == CT_LONGFALL)
 	{
 		CapabilitiesAdd(bits_CAP_MOVE_JUMP);
 	}
-	#endif
-#endif
+
 	m_flTimePlayerStare = FLT_MAX;
 
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
@@ -754,7 +750,6 @@ void CNPC_Citizen::SelectModel()
 	// Unique citizen models are left alone
 	if ( m_Type != CT_UNIQUE )
 	{
-#ifdef EZ2
 		const char * subtype = ""; // 1upD - used to be the only subtype was "m" for medic
 		subtype = (m_spawnEquipment == AllocPooledString("weapon_shotgun")) ? "b" : subtype;	// Rebel Brute - may wish to rethind this approach
 																								//	Currently, rebels with shotguns are still CT_REBEL with modelset Group03b
@@ -767,9 +762,7 @@ void CNPC_Citizen::SelectModel()
 			subtype = "x"; // We may wish to change this so that long fall boot rebels are Group04. We would do this in order to get a separate -b and -m group for long fall citizens - for now let's not bother
 
 		SetModelName( AllocPooledString( CFmtStr( "models/humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], subtype )), pszModelName ) ) );
-#else		
-	SetModelName( AllocPooledString( CFmtStr( "models/humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], ( IsMedic() ) ? "m" : "" )), pszModelName ) ) );
-#endif
+		// SetModelName( AllocPooledString( CFmtStr( "models/humans/%s/%s", (const char *)(CFmtStr(g_ppszModelLocs[ m_Type ], ( IsMedic() ) ? "m" : "" )), pszModelName ) ) );
 	}
 }
 
@@ -1029,7 +1022,6 @@ void CNPC_Citizen::OnChangeRunningBehavior( CAI_BehaviorBase *pOldBehavior,  CAI
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-#ifdef EZ
 void CNPC_Citizen::GatherWillpowerConditions()
 {
 	if (m_bWillpowerDisabled || m_NPCState != NPC_STATE_COMBAT)
@@ -1161,19 +1153,18 @@ const char* CNPC_Citizen::GetSquadSlotDebugName(int iSquadSlot)
 
 	return BaseClass::GetSquadSlotDebugName(iSquadSlot);
 }
-#endif
+
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::GatherConditions()
 {
 	BaseClass::GatherConditions();
-#ifdef EZ
 	GatherWillpowerConditions();
-#endif
+
 	if( IsInPlayerSquad() && hl2_episodic.GetBool() )
 	{
 		// Leave the player squad if someone has made me neutral to player.
-		if( IRelationType(UTIL_GetLocalPlayer()) == D_NU )
+		if(IRelationType(UTIL_GetLocalPlayer()) != D_LI)
 		{
 			RemoveFromPlayerSquad();
 		}
@@ -1432,7 +1423,6 @@ int CNPC_Citizen::SelectFailSchedule( int failedSchedule, int failedTask, AI_Tas
 			return SCHED_STANDOFF;
 		}
 		break;
-#ifdef EZ
 	case SCHED_RANGE_ATTACK1:
 		if (!GetShotRegulator()->IsInRestInterval()) // If the reason range attack 1 failed was because of the shot regulator, don't try it again
 		{
@@ -1441,7 +1431,6 @@ int CNPC_Citizen::SelectFailSchedule( int failedSchedule, int failedTask, AI_Tas
 				return attackSchedule;
 		}
 		break;
-#endif
 	}
 
 	return BaseClass::SelectFailSchedule( failedSchedule, failedTask, taskFailCode );
@@ -1757,7 +1746,6 @@ int CNPC_Citizen::TranslateSchedule( int scheduleType )
 
 	case SCHED_ESTABLISH_LINE_OF_FIRE:
 	case SCHED_MOVE_TO_WEAPON_RANGE:
-#ifdef EZ
 		// Per Breadman's changes to ai_basenpc_schedule, fire at where you think the enemy will be instead of advancing
 		if ( !HasCondition(COND_SEE_ENEMY) && !HasCondition(COND_TOO_CLOSE_TO_ATTACK)) // We don't want this to use Attack squad slots because it could 'steal' a slot from a squadmate who might need it. 
 		{
@@ -1765,7 +1753,7 @@ int CNPC_Citizen::TranslateSchedule( int scheduleType )
 			if (suppressingFireSchedule != scheduleType)
 				return suppressingFireSchedule;
 		}
-#endif
+
 		if( !IsMortar( GetEnemy() ) && HaveCommandGoal() )
 		{
 			if ( GetActiveWeapon() && ( GetActiveWeapon()->CapabilitiesGet() & bits_CAP_WEAPON_RANGE_ATTACK1 ) && random->RandomInt( 0, 1 ) && HasCondition(COND_SEE_ENEMY) && !HasCondition ( COND_NO_PRIMARY_AMMO ) )
@@ -1825,7 +1813,6 @@ int CNPC_Citizen::TranslateSchedule( int scheduleType )
 	return BaseClass::TranslateSchedule( scheduleType );
 }
 
-#ifdef EZ
 //-----------------------------------------------------------------------------
 // Purpose: translate the given scheduleType based on the willpower conditions
 // (COND_CIT_WILLPOWER_LOW, COND_CIT_WILLPOWER_HIGH)
@@ -1956,7 +1943,6 @@ int CNPC_Citizen::TranslateSuppressingFireSchedule(int scheduleType)
 
 	return scheduleType;
 }
-#endif
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -2499,14 +2485,11 @@ bool CNPC_Citizen::OnBeginMoveAndShoot()
 {
 	if ( BaseClass::OnBeginMoveAndShoot() )
 	{
-#ifdef EZ
 		if (HasCondition(COND_NO_PRIMARY_AMMO))
 			return false;
 
+		// if( m_iMySquadSlot == SQUAD_SLOT_ATTACK1 || m_iMySquadSlot == SQUAD_SLOT_ATTACK2 )
 		if( m_iMySquadSlot == SQUAD_SLOT_ATTACK1 || m_iMySquadSlot == SQUAD_SLOT_ATTACK2 || m_iMySquadSlot == SQUAD_SLOT_CITIZEN_ADVANCE)
-#else
-		if( m_iMySquadSlot == SQUAD_SLOT_ATTACK1 || m_iMySquadSlot == SQUAD_SLOT_ATTACK2 )
-#endif
 			return true; // already have the slot I need
 
 		if( m_iMySquadSlot == SQUAD_SLOT_NONE && OccupyStrategySlotRange( SQUAD_SLOT_ATTACK1, SQUAD_SLOT_ATTACK2 ) )
@@ -2520,11 +2503,10 @@ bool CNPC_Citizen::OnBeginMoveAndShoot()
 //-----------------------------------------------------------------------------
 void CNPC_Citizen::OnEndMoveAndShoot()
 {
-#ifdef EZ
 	// Don't vacate strategy slot if that slot is 'advance'
-	if(m_iMySquadSlot == SQUAD_SLOT_CITIZEN_ADVANCE)
-		return
-#endif
+	if (m_iMySquadSlot == SQUAD_SLOT_CITIZEN_ADVANCE)
+		return;
+
 	VacateStrategySlot();
 }
 
@@ -2534,7 +2516,6 @@ void CNPC_Citizen::OnEndMoveAndShoot()
 // I've commented this back in to see what it does!
 void CNPC_Citizen::LocateEnemySound()
 {
-#ifdef EZ
 	if ( !GetEnemy() )
 		return;
 
@@ -2552,7 +2533,6 @@ void CNPC_Citizen::LocateEnemySound()
 	{
 		EmitSound( "NPC_Citizen.OverHere" );
 	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -2779,7 +2759,7 @@ bool CNPC_Citizen::IsCommandable()
 //-----------------------------------------------------------------------------
 bool CNPC_Citizen::IsPlayerAlly( CBasePlayer *pPlayer )											
 { 
-	if ( Classify() == CLASS_CITIZEN_PASSIVE && GlobalEntity_GetState("gordon_precriminal") == GLOBAL_ON )
+	if ( Classify() == CLASS_CITIZEN_PASSIVE && GlobalEntity_GetState("gordon_precriminal") == GLOBAL_ON && pPlayer->Classify() == PLC_PLAYER )
 	{
 		// Robin: Citizens use friendly speech semaphore in trainstation
 		return true;
@@ -4128,7 +4108,6 @@ void CNPC_Citizen::Heal()
 }
 
 
-
 #if HL2_EPISODIC
 //-----------------------------------------------------------------------------
 // Like Heal(), but tosses a healthkit in front of the player rather than just juicing him up.
@@ -4208,7 +4187,7 @@ void	CNPC_Citizen::InputForceHealthKitToss( inputdata_t &inputdata )
 	TossHealthKit( UTIL_GetLocalPlayer(), Vector(48.0f, 0.0f, 0.0f)  );
 }
 
-#endif
+#endif // HL2_EPISODIC
 
 
 
@@ -4331,9 +4310,7 @@ void CNPC_Citizen::DeathSound( const CTakeDamageInfo &info )
 //------------------------------------------------------------------------------
 void CNPC_Citizen::FearSound( void )
 {
-#ifdef EZ
 	SpeakIfAllowed(TLK_DANGER); // Say something when afraid
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -4376,7 +4353,6 @@ AI_BEGIN_CUSTOM_NPC( npc_citizen, CNPC_Citizen )
 	DECLARE_CONDITION( COND_CIT_PLAYERHEALREQUEST )
 	DECLARE_CONDITION( COND_CIT_COMMANDHEAL )
 	DECLARE_CONDITION( COND_CIT_START_INSPECTION )
-#ifdef EZ
 	DECLARE_CONDITION(COND_CIT_WILLPOWER_LOW)
 	DECLARE_CONDITION(COND_CIT_WILLPOWER_HIGH)
 
@@ -4385,7 +4361,6 @@ AI_BEGIN_CUSTOM_NPC( npc_citizen, CNPC_Citizen )
 	DECLARE_SQUADSLOT(SQUAD_SLOT_CITIZEN_ADVANCE)
 	DECLARE_SQUADSLOT(SQUAD_SLOT_CITIZEN_INVESTIGATE)
 	DECLARE_SQUADSLOT(SQUAD_SLOT_CITIZEN_ADVANCE)
-#endif
 
 	//Events
 	DECLARE_ANIMEVENT( AE_CITIZEN_GET_PACKAGE )
@@ -4541,7 +4516,7 @@ AI_BEGIN_CUSTOM_NPC( npc_citizen, CNPC_Citizen )
 		""
 		"	Interrupts"
 	)
-#ifdef EZ
+
 	//=========================================================
 	// > RangeAttack1Advance
 	//	New schedule by 1upD to fire and then charge towards the player
@@ -4601,7 +4576,6 @@ AI_BEGIN_CUSTOM_NPC( npc_citizen, CNPC_Citizen )
 		"		COND_CAN_MELEE_ATTACK2"
 		"		COND_TOO_CLOSE_TO_ATTACK"
 	);
-#endif
 AI_END_CUSTOM_NPC()
 
 
@@ -4820,7 +4794,7 @@ int CNPC_Citizen::DrawDebugTextOverlays( void )
 	}
 	return text_offset;
 }
-#ifdef EZ
+
 //------------------------------------------------------------------------------
 // Added by 1upD. Citizen weapon proficiency should be configurable
 //------------------------------------------------------------------------------
@@ -4879,4 +4853,3 @@ bool CNPC_Citizen::IsJumpLegal(const Vector &startPos, const Vector &apex, const
 
 	return BaseClass::IsJumpLegal(startPos, apex, endPos);
 }
-#endif

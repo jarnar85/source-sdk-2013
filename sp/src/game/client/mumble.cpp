@@ -57,7 +57,7 @@ MumbleSharedMemory_t *g_pMumbleMemory = NULL;
 HANDLE g_hMapObject = NULL;
 #endif
 
-ConVar sv_mumble_positionalaudio( "sv_mumble_positionalaudio", "1", FCVAR_REPLICATED, "Allows players using Mumble to have support for positional audio." );
+ConVar sv_mumble_positionalaudio( "sv_mumble_positionalaudio", "1", FCVAR_SERVER, "Allows players using Mumble to have support for positional audio." );
 
 //-----------------------------------------------------------------------------
 // Singleton

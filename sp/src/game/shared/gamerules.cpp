@@ -34,8 +34,8 @@
 #include "tier0/memdbgon.h"
 
 
-ConVar g_Language( "g_Language", "0", FCVAR_REPLICATED );
-ConVar sk_autoaim_mode( "sk_autoaim_mode", "1", FCVAR_ARCHIVE | FCVAR_REPLICATED );
+ConVar g_Language( "g_Language", "0", FCVAR_SERVER );
+ConVar sk_autoaim_mode( "sk_autoaim_mode", "1", FCVAR_ARCHIVE | FCVAR_SERVER );
 
 #ifndef CLIENT_DLL
 ConVar log_verbose_enable( "log_verbose_enable", "0", FCVAR_GAMEDLL, "Set to 1 to enable verbose server log on the server." );
@@ -112,7 +112,7 @@ void CGameRulesProxy::NotifyNetworkStateChanged()
 
 
 
-ConVar	old_radius_damage( "old_radiusdamage", "0.0", FCVAR_REPLICATED );
+ConVar	old_radius_damage( "old_radiusdamage", "0.0", FCVAR_SERVER );
 
 #ifdef CLIENT_DLL //{
 

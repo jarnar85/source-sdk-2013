@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+﻿//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Functions dealing with the player.
 //
@@ -88,14 +88,14 @@ ConVar autoaim_max_dist( "autoaim_max_dist", "2160" ); // 2160 = 180 feet
 ConVar autoaim_max_deflect( "autoaim_max_deflect", "0.99" );
 
 #ifdef CSTRIKE_DLL
-ConVar	spec_freeze_time( "spec_freeze_time", "5.0", FCVAR_CHEAT | FCVAR_REPLICATED, "Time spend frozen in observer freeze cam." );
-ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.7", FCVAR_CHEAT | FCVAR_REPLICATED, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
+ConVar	spec_freeze_time( "spec_freeze_time", "5.0", FCVAR_CHEAT | FCVAR_SERVER, "Time spend frozen in observer freeze cam." );
+ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.7", FCVAR_CHEAT | FCVAR_SERVER, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
 #else
-ConVar	spec_freeze_time( "spec_freeze_time", "4.0", FCVAR_CHEAT | FCVAR_REPLICATED, "Time spend frozen in observer freeze cam." );
-ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FCVAR_REPLICATED, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
+ConVar	spec_freeze_time( "spec_freeze_time", "4.0", FCVAR_CHEAT | FCVAR_SERVER, "Time spend frozen in observer freeze cam." );
+ConVar	spec_freeze_traveltime( "spec_freeze_traveltime", "0.4", FCVAR_CHEAT | FCVAR_SERVER, "Time taken to zoom in to frame a target in observer freeze cam.", true, 0.01, false, 0 );
 #endif
 
-ConVar sv_bonus_challenge( "sv_bonus_challenge", "0", FCVAR_REPLICATED, "Set to values other than 0 to select a bonus map challenge type." );
+ConVar sv_bonus_challenge( "sv_bonus_challenge", "0", FCVAR_SERVER, "Set to values other than 0 to select a bonus map challenge type." );
 
 static ConVar sv_maxusrcmdprocessticks( "sv_maxusrcmdprocessticks", "24", FCVAR_NOTIFY, "Maximum number of client-issued usrcmd ticks that can be replayed in packet loss conditions, 0 to allow no restrictions" );
 
@@ -109,14 +109,14 @@ bool IsInCommentaryMode( void );
 bool IsListeningToCommentary( void );
 
 #if !defined( CSTRIKE_DLL )
-ConVar cl_sidespeed( "cl_sidespeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_forwardspeed( "cl_forwardspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
-ConVar cl_backspeed( "cl_backspeed", "450", FCVAR_REPLICATED | FCVAR_CHEAT );
+ConVar cl_sidespeed( "cl_sidespeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_upspeed( "cl_upspeed", "320", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_forwardspeed( "cl_forwardspeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
+ConVar cl_backspeed( "cl_backspeed", "450", FCVAR_SERVER | FCVAR_CHEAT );
 #endif // CSTRIKE_DLL
 
 // This is declared in the engine, too
-ConVar	sv_noclipduringpause( "sv_noclipduringpause", "0", FCVAR_REPLICATED | FCVAR_CHEAT, "If cheats are enabled, then you can noclip with the game paused (for doing screenshots, etc.)." );
+ConVar	sv_noclipduringpause( "sv_noclipduringpause", "0", FCVAR_SERVER | FCVAR_CHEAT, "If cheats are enabled, then you can noclip with the game paused (for doing screenshots, etc.)." );
 
 extern ConVar sv_maxunlag;
 extern ConVar sv_turbophysics;
@@ -301,6 +301,9 @@ BEGIN_DATADESC( CBasePlayer )
 	DEFINE_FIELD(m_Class, FIELD_INTEGER),
 	DEFINE_FIELD(m_Faction, FIELD_INTEGER),
 	DEFINE_FIELD(m_Job, FIELD_INTEGER),
+
+	DEFINE_FIELD(m_iCity, FIELD_INTEGER),
+	DEFINE_FIELD(m_iSquad, FIELD_INTEGER),
 
 	// recreate, don't restore
 	// DEFINE_FIELD( m_CommandContext, CUtlVector < CCommandContext > ),
@@ -6186,11 +6189,8 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 #endif		
 		GiveNamedItem( "weapon_smg1" );
 		GiveNamedItem( "weapon_frag" );
-#ifdef EZ1
-		GiveNamedItem("weapon_stunstick");
-#else
-		GiveNamedItem("weapon_crowbar");
-#endif
+		GiveNamedItem( "weapon_stunstick");
+		GiveNamedItem( "weapon_crowbar");
 #ifndef EZ2
 		GiveNamedItem( "weapon_pistol" );
 #endif
@@ -6217,11 +6217,8 @@ void CBasePlayer::CheatImpulseCommands( int iImpulse )
 		GiveNamedItem("weapon_slam");
 		GiveNamedItem("weapon_hopwire");
 #endif
-
-#ifdef EZ1
 		GiveNamedItem("weapon_manhacktoss");
 		GiveAmmo(2, "Manhack");
-#endif
 
 		if ( GetHealth() < 100 )
 		{
@@ -6627,6 +6624,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output1.FireOutput(this, NULL);
 						return true;
 					}
@@ -6651,6 +6649,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output2.FireOutput(this, NULL);
 						return true;
 					}
@@ -6675,6 +6674,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output3.FireOutput(this, NULL);
 						return true;
 					}
@@ -6699,6 +6699,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output4.FireOutput(this, NULL);
 						return true;
 					}
@@ -6723,6 +6724,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output5.FireOutput(this, NULL);
 						return true;
 					}
@@ -6747,6 +6749,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output6.FireOutput(this, NULL);
 						return true;
 					}
@@ -6771,6 +6774,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output7.FireOutput(this, NULL);
 						return true;
 					}
@@ -6795,6 +6799,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output8.FireOutput(this, NULL);
 						return true;
 					}
@@ -6819,6 +6824,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output9.FireOutput(this, NULL);
 						return true;
 					}
@@ -6843,6 +6849,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output10.FireOutput(this, NULL);
 						return true;
 					}
@@ -6867,6 +6874,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output11.FireOutput(this, NULL);
 						return true;
 					}
@@ -6891,6 +6899,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output12.FireOutput(this, NULL);
 						return true;
 					}
@@ -6915,6 +6924,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output13.FireOutput(this, NULL);
 						return true;
 					}
@@ -6939,6 +6949,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output14.FireOutput(this, NULL);
 						return true;
 					}
@@ -6963,6 +6974,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output15.FireOutput(this, NULL);
 						return true;
 					}
@@ -6987,6 +6999,7 @@ bool CBasePlayer::ClientCommand( const CCommand &args )
 				{
 					if (screen->entindex() == entindex)
 					{
+						screen->AnyOutput.FireOutput(this, NULL);
 						screen->Output16.FireOutput(this, NULL);
 						return true;
 					}
@@ -7912,6 +7925,55 @@ void CBasePlayer::PlayWearableAnimsForPlaybackEvent( wearableanimplayback_t iPla
 #endif // USES_ECON_ITEMS
 
 //================================================================================
+// RolePlay
+//================================================================================
+const char * CBasePlayer::GetCitizenId(uint city, uint squad, bool current) {
+
+	 if (city != 0 && city != m_iCity)
+		  SetCity(city);
+
+	 if (squad != 0 && squad != m_iSquad)
+		  SetSquad(squad);
+	 else if (squad == 0 && m_iSquad == 0)
+		  RandomSquad();
+
+	 const char * pName = GetPlayerName();
+
+	 uint id = 0;
+
+	 const int charToValue[26] = {
+		  1, 2, 3, 4, 5, 6, 7, 8, 9, // 'a' to 'i'
+		  1, 2, 3, 4, 5, 6, 7, 8, 9, // 'j' to 'r'
+		  1, 2, 3, 4, 5, 6, 7, 8     // 's' to 'z'
+	 };
+
+	 size_t nameLength = strlen(pName);
+	 size_t startIndex = (nameLength > 8) ? nameLength - 8 : 0;
+
+	 for (size_t i = startIndex; i < nameLength; i++) {
+		  if (i > 0)
+				id *= 10;
+
+
+		  char c = tolower(pName[i]); // Convert to lowercase for case-insensitivity
+
+		  if (isalpha(c)) {
+				id += charToValue[c - 'a'];
+		  }
+		  else if (isdigit(c)) {
+				id += (c - '0');
+		  }
+	 }
+
+	 // make big IDs replicably smaller (cut of at ~ 16.7M)
+	 id = id & 0x00FFFFFF;
+
+	 return CBaseCombatCharacter::GetCitizenId(id, current);
+}
+
+
+
+//================================================================================
 // CLASS HANDLING
 //================================================================================
 
@@ -7936,6 +7998,7 @@ void CBasePlayer::SetClass(PlayerClass_T nClass, bool updateCounters)
 		case PLC_COMBINE_PRISONHEAVY:
 		case PLC_COMBINE_SOLDIER:
 		case PLC_COMBINE_SUPPRESSOR:
+		case PLC_CREMATOR:
 		case PLC_STALKER:
 			m_iMemRepl = 3;
 			break;
@@ -7963,6 +8026,7 @@ void CBasePlayer::SetClass(PlayerClass_T nClass, bool updateCounters)
 		case PLC_ZOMBIE_POISON:
 			break;
 		case PLC_METROPOLICE:
+		case PLC_METROPOLICE_RECRUIT:
 			m_iRank = 1;
 			m_iCredits = 10;
 			break;
@@ -8522,7 +8586,7 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 	EXTERN_SEND_TABLE(DT_AttributeList);
 #endif
 
-	IMPLEMENT_SERVERCLASS_ST( CBasePlayer, DT_BasePlayer )
+	IMPLEMENT_SERVERCLASS_ST(CBasePlayer, DT_BasePlayer)
 
 #if defined USES_ECON_ITEMS
 		SendPropDataTable(SENDINFO_DT(m_AttributeList), &REFERENCE_SEND_TABLE(DT_AttributeList)),
@@ -8532,24 +8596,30 @@ void SendProxy_CropFlagsToPlayerFlagBitsLength( const SendProp *pProp, const voi
 
 		SendPropEHandle(SENDINFO(m_hVehicle)),
 		SendPropEHandle(SENDINFO(m_hUseEntity)),
-		// SendPropInt(SENDINFO(m_Class), -1, SPROP_UNSIGNED),
-		// SendPropInt(SENDINFO(m_Faction), -1, SPROP_UNSIGNED),
-		// SendPropInt(SENDINFO(m_Job), -1, SPROP_UNSIGNED),
-		SendPropInt		(SENDINFO(m_iHealth), -1, SPROP_VARINT | SPROP_CHANGES_OFTEN ),
-		SendPropInt		(SENDINFO(m_lifeState), 3, SPROP_UNSIGNED ),
-		SendPropInt		(SENDINFO(m_iBonusProgress), 15 ),
-		SendPropInt		(SENDINFO(m_iBonusChallenge), 4 ),
-		SendPropFloat	(SENDINFO(m_flMaxspeed), 12, SPROP_ROUNDDOWN, 0.0f, 2048.0f ),  // CL
-		SendPropInt		(SENDINFO(m_fFlags), PLAYER_FLAG_BITS, SPROP_UNSIGNED|SPROP_CHANGES_OFTEN, SendProxy_CropFlagsToPlayerFlagBitsLength ),
-		SendPropInt		(SENDINFO(m_iObserverMode), 3, SPROP_UNSIGNED ),
-		SendPropEHandle	(SENDINFO(m_hObserverTarget) ),
-		SendPropInt		(SENDINFO(m_iFOV), 8, SPROP_UNSIGNED ),
-		SendPropInt		(SENDINFO(m_iFOVStart), 8, SPROP_UNSIGNED ),
-		SendPropFloat	(SENDINFO(m_flFOVTime) ),
-		SendPropInt		(SENDINFO(m_iDefaultFOV), 8, SPROP_UNSIGNED ),
-		SendPropEHandle	(SENDINFO(m_hZoomOwner) ),
-		SendPropArray	( SendPropEHandle( SENDINFO_ARRAY( m_hViewModel ) ), m_hViewModel ),
-		SendPropString	(SENDINFO(m_szLastPlaceName) ),
+		SendPropInt(SENDINFO(m_iHealth), -1, SPROP_VARINT | SPROP_CHANGES_OFTEN),
+		SendPropInt(SENDINFO(m_lifeState), 3, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iBonusProgress), 15),
+		SendPropInt(SENDINFO(m_iBonusChallenge), 4),
+		SendPropFloat(SENDINFO(m_flMaxspeed), 12, SPROP_ROUNDDOWN, 0.0f, 2048.0f),  // CL
+		SendPropInt(SENDINFO(m_fFlags), PLAYER_FLAG_BITS, SPROP_UNSIGNED | SPROP_CHANGES_OFTEN, SendProxy_CropFlagsToPlayerFlagBitsLength),
+		SendPropInt(SENDINFO(m_iObserverMode), 3, SPROP_UNSIGNED),
+		SendPropEHandle(SENDINFO(m_hObserverTarget)),
+		SendPropInt(SENDINFO(m_iFOV), 8, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iFOVStart), 8, SPROP_UNSIGNED),
+		SendPropFloat(SENDINFO(m_flFOVTime)),
+		SendPropInt(SENDINFO(m_iDefaultFOV), 8, SPROP_UNSIGNED),
+		SendPropEHandle(SENDINFO(m_hZoomOwner)),
+		SendPropArray(SendPropEHandle(SENDINFO_ARRAY(m_hViewModel)), m_hViewModel),
+		SendPropString(SENDINFO(m_szLastPlaceName)),
+
+		SendPropInt(SENDINFO(m_iRation), 1, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iRank), 1, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iCredits), 1, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iMemRepl), 1, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iMemory), 1, SPROP_UNSIGNED),
+
+		SendPropInt(SENDINFO(m_iCity), 1, SPROP_UNSIGNED),
+		SendPropInt(SENDINFO(m_iSquad), 1, SPROP_UNSIGNED),
 
 #if defined USES_ECON_ITEMS
 		SendPropUtlVector( SENDINFO_UTLVECTOR( m_hMyWearables ), MAX_WEARABLES_SENT_FROM_SERVER, SendPropEHandle( NULL, 0 ) ),
@@ -9183,6 +9253,7 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		case PLC_COMBINE_ELITE:
 		case PLC_COMBINE_HEAVY:
 		case PLC_COMBINE_PRISONHEAVY:
+		case PLC_CREMATOR:
 		case PLC_STALKER:
 		case PLC_MANHACK:
 		case PLC_ZOMBIE:
@@ -9204,6 +9275,7 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 		case PLC_COMBINE_WORKER:
 		case PLC_COMBINE_WORKER_HAZMAT:
 		case PLC_METROPOLICE:
+		case PLC_METROPOLICE_RECRUIT:
 		case PLC_POLICE:
 		case PLC_ZOMBIE_COMBINE:
 			WRITE_SHORT((int)HUDCLR_BLU);
@@ -9233,8 +9305,10 @@ void CBasePlayer::EquipByClass(PlayerClass_T nClass)
 	case PLC_COMBINE_WORKER:
 	case PLC_COMBINE_WORKER_HAZMAT:
 	case PLC_COMBINE_SOLDIER:
+	case PLC_CREMATOR:
 	case PLC_MANHACK:
 	case PLC_METROPOLICE:
+	case PLC_METROPOLICE_RECRUIT:
 	case PLC_PLAYER:
 	case PLC_STALKER:
 	case PLC_ZOMBIE_COMBINE:
@@ -9265,7 +9339,24 @@ void CBasePlayer::SetStats()
 	SetModelCaching(data.szModelName);
 	m_nSkin = random->RandomInt(0, GetModelPtr()->numskinfamilies() - 1);
 
-	// GetViewModel(1)->SetModel(data.szModelArms);
+	// set hand/viewmodel
+	if (data.szModelArms && data.szModelArms[0])
+	{
+		CBaseEntity::PrecacheModel(data.szModelArms);
+
+		if (!GetViewModel(1))
+		{
+			// CreateHandModel(Index, otherVMIndex) — 1 folgt 0
+			CreateHandModel(1, 0);
+		}
+
+		CBaseViewModel* pHandVM = GetViewModel(1);
+		if (pHandVM)
+		{
+			pHandVM->SetModel(data.szModelArms);
+			pHandVM->SetOwner(this);
+		}
+	}
 
 	// set relationships
 	CBaseCombatCharacter::SetPlayerRelationship(data.nFaction);
@@ -9278,6 +9369,10 @@ void CBasePlayer::SetStats()
 
 	SetHealth(iHealth);
 	SetMaxHealth(data.iMaxHealth);
+
+	// force immediate Client‑Update
+	ForceClientDllUpdate();
+
 }
 
 void CBasePlayer::PostLevelChange()
@@ -9624,6 +9719,12 @@ void CBasePlayer::SetPlayerName( const char *name )
 
 		Q_strncpy( m_szNetname, name, sizeof(m_szNetname) );
 	}
+}
+
+int CBasePlayer::GetUserID() {
+	 const edict_t *m_pPev = edict();
+	 
+	 return engine->GetPlayerUserId(m_pPev);
 }
 
 //-----------------------------------------------------------------------------

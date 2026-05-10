@@ -20,6 +20,9 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+ConVar sk_plr_dmg_cguard("sk_plr_dmg_cguard", "200", FCVAR_SERVER);
+ConVar sk_npc_dmg_cguard("sk_plr_npc_cguard", "200", FCVAR_SERVER);
+
 //Concussive explosion entity
 
 class CTEConcussiveExplosion : public CTEParticleSystem
@@ -112,7 +115,7 @@ public:
 	// Output :
 	//-----------------------------------------------------------------------------
 
-	void Explode( float magnitude )
+	void Explode( float magnitude, float damage )
 	{
 		//Create a concussive explosion
 		CPASFilter filter( GetAbsOrigin() );
@@ -150,7 +153,7 @@ public:
 			);
 
 		//Do the radius damage
-		RadiusDamage( CTakeDamageInfo( this, GetOwnerEntity(), 200, DMG_BLAST|DMG_DISSOLVE ), GetAbsOrigin(), 256, CLASS_NONE, NULL );
+		RadiusDamage( CTakeDamageInfo( this, GetOwnerEntity(), damage, DMG_BLAST|DMG_DISSOLVE ), GetAbsOrigin(), 256, CLASS_NONE, NULL );
 
 		UTIL_Remove( this );
 	}
@@ -171,7 +174,7 @@ END_DATADESC()
 //-----------------------------------------------------------------------------
 // Purpose: Create a concussive blast entity and detonate it
 //-----------------------------------------------------------------------------
-void CreateConcussiveBlast( const Vector &origin, const Vector &surfaceNormal, CBaseEntity *pOwner, float magnitude )
+void CreateConcussiveBlast( const Vector &origin, const Vector &surfaceNormal, CBaseEntity *pOwner, float magnitude, float damage )
 {
 	QAngle angles;
 	VectorAngles( surfaceNormal, angles );
@@ -179,14 +182,11 @@ void CreateConcussiveBlast( const Vector &origin, const Vector &surfaceNormal, C
 
 	if ( pBlast )
 	{
-		pBlast->Explode( magnitude );
+		pBlast->Explode( magnitude, damage);
 	}
 }
 
 // Combine Guard weapon
-
-#if 0
-
 class CWeaponCGuard : public CBaseHLCombatWeapon
 {
 	DECLARE_DATADESC();
@@ -283,7 +283,8 @@ void CWeaponCGuard::AlertTargets( void )
 
 	// Fire the bullets
 	Vector vecSrc	 = pPlayer->Weapon_ShootPosition( );
-	Vector vecAiming = pPlayer->GetRadialAutoVector( NEW_AUTOAIM_RADIUS, NEW_AUTOAIM_DIST );
+	// Vector vecAiming = pPlayer->GetRadialAutoVector( NEW_AUTOAIM_RADIUS, NEW_AUTOAIM_DIST );
+	Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
 
 	Vector	impactPoint	= vecSrc + ( vecAiming * MAX_TRACE_LENGTH );
 
@@ -437,7 +438,8 @@ void CWeaponCGuard::DelayedFire( void )
 
 	// Fire the bullets
 	Vector vecSrc	 = pPlayer->Weapon_ShootPosition( );
-	Vector vecAiming = pPlayer->GetRadialAutoVector( NEW_AUTOAIM_RADIUS, NEW_AUTOAIM_DIST );
+	// Vector vecAiming = pPlayer->GetRadialAutoVector( NEW_AUTOAIM_RADIUS, NEW_AUTOAIM_DIST );
+	Vector vecAiming = pPlayer->GetAutoaimVector(AUTOAIM_5DEGREES);
 
 	//Factor in the view kick
 	AddViewKick();
@@ -447,7 +449,7 @@ void CWeaponCGuard::DelayedFire( void )
 	trace_t	tr;
 	UTIL_TraceHull( vecSrc, impactPoint, Vector( -2, -2, -2 ), Vector( 2, 2, 2 ), MASK_SHOT, pPlayer, COLLISION_GROUP_NONE, &tr );
 
-	CreateConcussiveBlast( tr.endpos, tr.plane.normal, this, 1.0 );
+	CreateConcussiveBlast( tr.endpos, tr.plane.normal, this, 1.0, sk_plr_dmg_cguard.GetFloat() );
 }
 
 //-----------------------------------------------------------------------------
@@ -478,4 +480,4 @@ void CWeaponCGuard::AddViewKick( void )
 	pPlayer->ViewPunch( QAngle( random->RandomInt( -8, -12 ), random->RandomInt( -2, 2 ), random->RandomInt( -8, 8 ) ) );
 }
 
-#endif
+

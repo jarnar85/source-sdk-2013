@@ -47,14 +47,14 @@
 #include "tf_gamerules.h"
 #endif
 
-ConVar	cc_achievement_debug( "achievement_debug", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Turn on achievement debug msgs." );
+ConVar	cc_achievement_debug( "achievement_debug", "0", FCVAR_CHEAT | FCVAR_SERVER, "Turn on achievement debug msgs." );
 
 #ifdef CSTRIKE_DLL
 //=============================================================================
 // HPE_BEGIN:
 // [Forrest] Allow achievements/stats to be turned off for a server
 //=============================================================================
-ConVar	sv_nostats( "sv_nostats", "0", FCVAR_REPLICATED | FCVAR_NOTIFY, "Disable collecting statistics and awarding achievements." );
+ConVar	sv_nostats( "sv_nostats", "0", FCVAR_SERVER | FCVAR_NOTIFY, "Disable collecting statistics and awarding achievements." );
 //=============================================================================
 // HPE_END
 //=============================================================================
