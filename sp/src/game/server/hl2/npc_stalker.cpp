@@ -198,7 +198,7 @@ float CNPC_Stalker::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 Class_T CNPC_Stalker::Classify( void )
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
 		Class_T nClass = pPlayer->Classify();

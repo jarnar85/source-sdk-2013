@@ -190,7 +190,7 @@ Class_T	CNPC_GroundTurret::Classify( void )
 	}
 	else
 	{
-		CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 		if (pPlayer)
 		{
 			Class_T nClass = pPlayer->Classify();

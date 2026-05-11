@@ -618,6 +618,7 @@ bool CNPC_MetroPolice::CreateComponents()
 //-----------------------------------------------------------------------------
 void CNPC_MetroPolice::Spawn( void )
 {
+	m_Faction = CLASS_METROPOLICE;
 	Precache();
 
 #ifdef _XBOX
@@ -2715,24 +2716,6 @@ float CNPC_MetroPolice::MaxYawSpeed( void )
 // Purpose: 
 //
 //
-//-----------------------------------------------------------------------------
-Class_T	CNPC_MetroPolice::Classify ( void )
-{
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (pPlayer)
-	{
-		Class_T nClass = pPlayer->Classify();
-
-		// change player relation to NPCs
-		if (nClass == CLASS_METROPOLICE)
-		{
-			return	CLASS_PLAYER_ALLY;
-		}
-	}
-	
-	return CLASS_METROPOLICE;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Return the base data for this type of NPC.
 //-----------------------------------------------------------------------------

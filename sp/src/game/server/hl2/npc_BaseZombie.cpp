@@ -414,19 +414,8 @@ Class_T	CNPC_BaseZombie::Classify( void )
 	if ( IsSlumped() )
 		return CLASS_NONE;
 
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (pPlayer)
-	{
-		Class_T nClass = pPlayer->Classify();
-
-		// change player relation to NPCs
-		if (nClass == CLASS_ZOMBIE)
-		{
-			return	CLASS_PLAYER_ALLY;
-		}
-	}
-
-	return(CLASS_ZOMBIE);
+	m_Faction = CLASS_ZOMBIE;
+	return BaseClass::Classify();
 }
 
 //-----------------------------------------------------------------------------

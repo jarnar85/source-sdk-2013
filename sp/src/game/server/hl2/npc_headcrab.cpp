@@ -364,22 +364,9 @@ Class_T	CBaseHeadcrab::Classify( void )
 		// Effectively invisible to other AI's while hidden.
 		return( CLASS_NONE ); 
 	}
-	else
-	{
-		CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-		if (pPlayer)
-		{
-			Class_T nClass = pPlayer->Classify();
 
-			// change player relation to NPCs
-			if (nClass == CLASS_HEADCRAB)
-			{
-				return	CLASS_PLAYER_ALLY;
-			}
-		}
-		
-		return( CLASS_HEADCRAB ); 
-	}
+	m_Faction = CLASS_HEADCRAB;
+	return BaseClass::Classify();
 }
 
 

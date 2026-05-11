@@ -180,7 +180,7 @@ void CNPC_Monk::BuildScheduleTestBits( void )
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Monk::Classify( void )
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 	if (pPlayer)
 	{
 		Class_T nClass = pPlayer->Classify();

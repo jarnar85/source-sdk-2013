@@ -2689,9 +2689,18 @@ void CBaseCombatCharacter::AllocateDefaultRelationships( )
 //-----------------------------------------------------------------------------
 void CBaseCombatCharacter::SetPlayerRelationship(Class_T nClass)
 {
+	if ( g_pGameRules )
+	{
+		g_pGameRules->InitDefaultAIRelationships();
+	}
 
 	if (m_DefaultRelationship)
 	{
+		if ( nClass < 0 || nClass >= NUM_AI_CLASSES )
+		{
+			return;
+		}
+
 		Disposition_t disp_self = m_DefaultRelationship[nClass][nClass].disposition;
 		int prio_self = m_DefaultRelationship[nClass][nClass].priority;
 
@@ -2751,7 +2760,15 @@ void CBaseCombatCharacter::CopyDefaultRelationship(Class_T nClass, Class_T nClas
 {
 	if (m_DefaultRelationship)
 	{
-		m_DefaultRelationship[nClass] = m_DefaultRelationship[nClassTarget];
+		if ( nClass < 0 || nClass >= NUM_AI_CLASSES || nClassTarget < 0 || nClassTarget >= NUM_AI_CLASSES )
+		{
+			return;
+		}
+
+		for ( int i = 0; i < NUM_AI_CLASSES; ++i )
+		{
+			m_DefaultRelationship[nClass][i] = m_DefaultRelationship[nClassTarget][i];
+		}
 	}
 }
 
@@ -2780,6 +2797,20 @@ void CBaseCombatCharacter::SetFullDefaultRelationship(Class_T nClass, Class_T nC
 {
 	CBaseCombatCharacter::SetDefaultRelationship(nClass, nClassTarget, nDisposition, nPriority);
 	CBaseCombatCharacter::SetDefaultRelationship(nClassTarget, nClass, nDispositionTarget, nPriority);
+}
+
+Class_T CBaseCombatCharacter::Classify( void )
+{
+	// CBaseEntity::Classify() returns CLASS_NONE, so the effective class source here is m_Faction.
+	Class_T nClass = m_Faction;
+
+	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
+	if ( pPlayer && pPlayer->Classify() == nClass )
+	{
+		return CLASS_PLAYER_ALLY;
+	}
+
+	return nClass;
 }
 
 //-----------------------------------------------------------------------------

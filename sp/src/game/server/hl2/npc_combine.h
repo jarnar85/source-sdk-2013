@@ -77,7 +77,6 @@ public:
 	void			Precache( void );
 	void			Activate();
 
-	Class_T			Classify(void);
 	bool			IsElite() { return m_fIsElite; }
 	void			DelayAltFireAttack( float flDelay );
 	void			DelaySquadAltFireAttack( float flDelay );

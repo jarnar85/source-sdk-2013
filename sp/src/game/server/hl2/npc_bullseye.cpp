@@ -314,19 +314,8 @@ void CNPC_Bullseye::ImpactTrace( trace_t *pTrace, int iDamageType, const char *p
 //-----------------------------------------------------------------------------
 Class_T	CNPC_Bullseye::Classify( void )
 {
-	CBasePlayer *pPlayer = ToBasePlayer(UTIL_GetCommandClient());
-	if (pPlayer)
-	{
-		Class_T nClass = pPlayer->Classify();
-
-		// change player relation to NPCs
-		if (nClass == CLASS_BULLSEYE)
-		{
-			return	CLASS_PLAYER_ALLY;
-		}
-	}
-
-	return	CLASS_BULLSEYE;
+	m_Faction = CLASS_BULLSEYE;
+	return BaseClass::Classify();
 }
 
 void CNPC_Bullseye::OnRestore( void )
