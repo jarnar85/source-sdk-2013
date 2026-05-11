@@ -1121,27 +1121,25 @@ const char *GetFileTimetamp( FILETIME ft )
 	FileTimeToSystemTime( &localFileTime, &local );
 
 	static char out[ 256 ];
+	char dateStr[ 128 ];
+	char timeStr[ 128 ];
 
-	bool am = true;
-	WORD hour = local.wHour;
-	if ( hour >= 12 )
+	int nDateChars = GetDateFormatA( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &local, NULL, dateStr, ARRAYSIZE( dateStr ) );
+	int nTimeChars = GetTimeFormatA( LOCALE_USER_DEFAULT, 0, &local, NULL, timeStr, ARRAYSIZE( timeStr ) );
+	if ( nDateChars > 0 && nTimeChars > 0 )
 	{
-		am = false;
-		// 12:42 pm displays as 12:42 pm
-		// 13:42 pm displays as 1:42 pm
-		if ( hour > 12 )
-		{
-			hour -= 12;
-		}
+		Q_snprintf( out, sizeof( out ), "%s %s", dateStr, timeStr );
 	}
-	Q_snprintf( out, sizeof( out ), "%d/%02d/%04d %d:%02d %s",
-		local.wMonth, 
-		local.wDay,
-		local.wYear,
-		hour,
-		local.wMinute,
-		am ? "AM" : "PM" // TODO: Localize this?
-		);
+	else
+	{
+		// Fallback formatting (US) for environments where locale APIs fail.
+		Q_snprintf( out, sizeof( out ), "%d/%02d/%04d %02d:%02d",
+			local.wMonth,
+			local.wDay,
+			local.wYear,
+			local.wHour,
+			local.wMinute );
+	}
 	return out;
 }
 #endif
