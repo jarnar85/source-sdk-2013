@@ -667,7 +667,7 @@ bool CAI_BaseNPC::PassesDamageFilter( const CTakeDamageInfo &info )
 	if ( ai_block_damage.GetBool() )
 		return false;
 	// FIXME: hook a friendly damage filter to the npc instead?
-	if ( (CapabilitiesGet() & bits_CAP_FRIENDLY_DMG_IMMUNE) && info.GetAttacker() && info.GetAttacker() != this )
+	if ( (CapabilitiesGet() & bits_CAP_FRIENDLY_DMG_IMMUNE) && info.GetAttacker() && info.GetAttacker() != this && !info.GetAttacker()->IsPlayer() )
 	{
 		// check attackers relationship with me
 		CBaseCombatCharacter *npcEnemy = info.GetAttacker()->MyCombatCharacterPointer();
