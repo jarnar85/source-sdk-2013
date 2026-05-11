@@ -129,6 +129,14 @@ class CAI_ScriptedSequence;
 class CSound;
 
 struct NPC_Basedata {
+	NPC_Basedata()
+		: nFaction(CLASS_NONE)
+		, iMaxHealth(0)
+		, szModelName(NULL)
+		, szModelArms(NULL)
+	{
+	}
+
 	Class_T nFaction;
 	int iMaxHealth;
 	const char* szModelName;
